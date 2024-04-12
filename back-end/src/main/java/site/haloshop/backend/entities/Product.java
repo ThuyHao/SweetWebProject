@@ -1,15 +1,22 @@
 package site.haloshop.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
+
 import jakarta.persistence.*;
-import lombok.Data;
+
+import java.util.List;
 
 @Entity
 @Table(name = "products")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(name = "nameProduct")
     private String nameProduct;
@@ -17,26 +24,21 @@ public class Product {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "idView")
-    private Integer idView;
+    @ManyToOne
+    @JoinColumn(name = "idSupplier", nullable = false)
+    private Supplier supplier;
 
-    @Column(name = "idStar")
-    private Integer idStar;
+    @ManyToOne
+    @JoinColumn(name = "idProducer", nullable = false)
+    private Producer producer;
 
-    @Column(name = "idComment")
-    private Integer idComment;
+    @ManyToOne
+    @JoinColumn(name = "idCategorie", nullable = false)
+    private Category category;
 
-    @Column(name = "idSupplier")
-    private int idSupplier;
-
-    @Column(name = "idProducer")
-    private int idProducer;
-
-    @Column(name = "idCategorie")
-    private int idCategorie;
-
-    @Column(name = "idSubCategorie")
-    private Integer idSubCategorie;
+    @ManyToOne
+    @JoinColumn(name = "idSubCategorie", nullable = false)
+    private SubCategory subCategory;
 
     @Column(name = "isActive")
     private String isActive;
@@ -46,5 +48,28 @@ public class Product {
 
     @Column(name = "status")
     private String status;
-}
 
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private ProductPrice productPrice;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ImageProduct> imageProducts;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<SizeColorProduct> sizeColorProducts;
+
+    @OneToMany(mappedBy = "product")
+    @JsonIgnore
+    private List<Rate> rates;
+
+    @OneToMany(mappedBy = "product")
+    @JsonIgnore
+    private List<ImportCouponDetail> importCouponDetails;
+
+    @OneToMany(mappedBy = "product")
+    @JsonIgnore
+    private List<OrderDetail> orderDetails;
+}
