@@ -13,7 +13,6 @@ public interface ProductMapper {
     ProductDto mapToProductDto(Product product);
     Product mapToProduct(ProductDto product);
     ImageProduct mapToImageProduct(ImageProduct imageProductDto);
-    ImageProductDto maptoImageProductDto(ImageProduct imageProduct);
     SizeColorProduct mapToSizeColorProduct(SizeColorProduct SizeColorProductDto);
-    SizeColorProductDto maptoSizeColorProductDto(SizeColorProduct sizeColorProduct);
+
 }

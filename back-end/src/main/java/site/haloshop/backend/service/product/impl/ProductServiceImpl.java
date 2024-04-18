@@ -1,6 +1,9 @@
 package site.haloshop.backend.service.product.impl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import site.haloshop.backend.dto.product.ProductDto;
 import site.haloshop.backend.entities.ImageProduct;
@@ -126,6 +129,14 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product is not exist with given id: " + productId));
         existingProduct.setIsDelete("true");
         productRepository.save(existingProduct);
+    }
+
+    @Override
+    public Page<ProductDto> getAllProduct(Pageable pageable) {
+        Page<Product> products = productRepository.findAll(pageable);
+        List<ProductDto> productDtos = products.stream().map(product -> productMapper.mapToProductDto(product)).collect(Collectors.toList());
+
+        return new PageImpl<>(productDtos, pageable, products.getTotalElements());
     }
 
 
