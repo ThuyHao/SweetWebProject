@@ -965,5 +965,11 @@ a.quickview-close.close-window:hover {
 	/* Hiệu ứng khi rơi chuột vào slider */
 	transform: scale(1.1); /* Phóng to slider lên 110% */
   }
-  
+  .section_flashsale.flashsale {
+	background-color: #a50a06;
+  }
+
+  .section_flashsale.flashsale .heading-bar__title {
+	color: #ffffff;
+  }
   

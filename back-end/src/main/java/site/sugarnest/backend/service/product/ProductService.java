@@ -3,6 +3,7 @@ package site.sugarnest.backend.service.product;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -62,16 +63,23 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public Page<ProductDto> getAllProduct(Pageable pageable) {
+        Page<ProductEntity> products = iProductRepository.findAll(pageable);
+        List<ProductDto> productDtos = products.stream().map(product -> iProductMapper.mapToProductDto(product)).collect(Collectors.toList());
+
+        return new PageImpl<>(productDtos, pageable, products.getTotalElements());
+    }
+
+    @Override
+    public List<ProductDto> findProductByCategoryId(Long categoryId, int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        List<ProductEntity> products = iProductRepository.findProductByCategoryId(categoryId, pageable);
+        return products.stream().map(product -> iProductMapper.mapToProductDto(product)).collect(Collectors.toList());
+    }
+    @Override
     public ProductDto getProductById(Long productId) {
         ProductEntity product = iProductRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product is not exist with given id: " + productId));
         return iProductMapper.mapToProductDto(product);
-    }
-
-
-    @Override
-    public List<ProductDto> getAllProduct() {
-        List<ProductEntity> products = iProductRepository.findAll();
-        return products.stream().map(product -> iProductMapper.mapToProductDto(product)).collect(Collectors.toList());
     }
 
     @Override
@@ -129,14 +137,4 @@ public class ProductService implements IProductService {
         existingProduct.setIsDelete("true");
         iProductRepository.save(existingProduct);
     }
-
-    @Override
-    public Page<ProductDto> getAllProduct(Pageable pageable) {
-        Page<ProductEntity> products = iProductRepository.findAll(pageable);
-        List<ProductDto> productDtos = products.stream().map(product -> iProductMapper.mapToProductDto(product)).collect(Collectors.toList());
-
-        return new PageImpl<>(productDtos, pageable, products.getTotalElements());
-    }
-
-
 }
