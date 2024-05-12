@@ -1,6 +1,11 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom'
 const HeaderComponent = () => {
+  const navigator = useNavigate();
+  function getHomePage() {
+    navigator(`/`)
+  }
   return (
     <div>
       <header className="header header_menu">
@@ -17,9 +22,9 @@ const HeaderComponent = () => {
                     </div>
                   </div>
                   <div className='col-lg-3 col-4 logo-col'>
-                    <a href="/" className="logo-wrapper" title='EGA Cake'>
+                    <a onClick={getHomePage} className="logo-wrapper" title='EGA Cake'>
                       <img loading="lazy" className="img-fluid"
-                        src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/logo.png?1704435927037"
+                        src="https://bizweb.dktcdn.net/100/419/628/themes/897067/assets/logo.png?1704435927037"
                         alt="logo EGA Cake" width="187" height="50" />
                     </a>
                   </div>
