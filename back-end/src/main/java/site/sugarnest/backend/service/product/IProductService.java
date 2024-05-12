@@ -10,13 +10,14 @@ import java.util.List;
 public interface IProductService {
     ProductDto createProduct(ProductDto productDto);
 
-    ProductDto getProductById(Long productId);
-    List<ProductDto> getAllProduct();
+    Page<ProductDto> getAllProduct(Pageable pageable);
 
-    ProductDto updateProduct(Long productId,ProductDto updateProduct);
+    List<ProductDto> findProductByCategoryId(Long categoryId, int limit);
+
+    ProductDto getProductById(Long productId);
+
+    ProductDto updateProduct(Long productId, ProductDto updateProduct);
 
     void deleteProduct(Long productId);
-
-    Page<ProductDto> getAllProduct(Pageable pageable);
 }
 

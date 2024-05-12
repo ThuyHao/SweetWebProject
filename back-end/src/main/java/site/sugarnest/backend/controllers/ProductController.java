@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import site.sugarnest.backend.dto.ProductDto;
 import site.sugarnest.backend.service.product.IProductService;
 
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin("*")
@@ -41,6 +42,11 @@ public class ProductController {
         return ResponseEntity.ok(Map.of("content", listProductDto.getContent(), "totalPages", totalPages));
     }
 
+    @GetMapping("/category/{id}/limit/{limit}")
+    public ResponseEntity<List<ProductDto>> findProductByCategoryId(@PathVariable("id") Long categoryId, @PathVariable("limit") int limit) {
+        List<ProductDto> productDtos = iProductService.findProductByCategoryId(categoryId, limit);
+        return ResponseEntity.ok(productDtos);
+    }
     @PutMapping("/{id}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") Long id, @RequestBody ProductDto updateProduct) {
         ProductDto productDto = iProductService.updateProduct(id, updateProduct);
@@ -48,7 +54,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable("id") Long id){
+    public ResponseEntity<String> deleteProduct(@PathVariable("id") Long id) {
         iProductService.deleteProduct(id);
         return ResponseEntity.ok("Product deleted successfully!");
     }
