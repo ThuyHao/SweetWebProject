@@ -11,6 +11,8 @@ import site.sugarnest.backend.exception.ErrorCode;
 import site.sugarnest.backend.mapper.IAccountMapper;
 import site.sugarnest.backend.reponsitoties.IAccountRepository;
 
+import java.util.UUID;
+
 
 @Service
 @AllArgsConstructor
@@ -18,13 +20,15 @@ public class AccountService implements IAccountService {
 
     private IAccountRepository iAccountRepository;
     private IAccountMapper iAccountMapper;
+    private EmailService emailService;
 
-    public AccountDto createAccount(AccountDto accountDto) {
+    public void createAccount(AccountDto accountDto) {
          if(iAccountRepository.findByEmail(accountDto.getEmail()).isPresent()){
              throw new AppException(ErrorCode.ACCOUNT_EXITED);
-         }if(iAccountRepository.findByPhone(accountDto.getPhone()).isPresent()){
+         }
+         if(iAccountRepository.findByPhone(accountDto.getPhone()).isPresent()){
              throw new AppException(ErrorCode.PHONE_EXISTED);
-        }
+         }
 
         AccountEntity accountEntity = iAccountMapper.mapToAccountEntity(accountDto);
 
@@ -37,10 +41,22 @@ public class AccountService implements IAccountService {
         accountEntity.setCreateAt();
         accountEntity.setUpdateAt();
         accountEntity.setNumber_login_fail(0);
+        accountEntity.setEnabled("false");
+
+        String verificationCode = UUID.randomUUID().toString();
+        accountEntity.setVerificationCode(passwordEncoder.encode(verificationCode));
+        emailService.sendMail(accountDto.getEmail(), "Xác thực email", verificationCode);
 
         iAccountRepository.save(accountEntity);
 
-        return iAccountMapper.mapToAccountDto(accountEntity);
+        iAccountMapper.mapToAccountDto(accountEntity);
+    }
+
+    public void updateAccount(AccountDto accountDto) {
+
+
+        AccountEntity accountEntity = iAccountRepository.findByEmail(accountDto.getEmail())
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_EXITED));
     }
 
 }
