@@ -2,17 +2,18 @@ package site.sugarnest.backend.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
-@Entity
 @Table(name = "accounts")
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Entity
 public class AccountEntity {
 
     @Id
@@ -64,8 +65,8 @@ public class AccountEntity {
     @Column(columnDefinition = "int default '0'")
     private Integer number_login_fail;
 
-    @OneToMany(mappedBy = "accountEntity")
-    private Collection<AccountRoleEntity> accountRoleEntity;
+    @ManyToMany
+    private Set<RoleEntity> roles;
 
     public void setCreateAt() {
         this.createAt = LocalDateTime.now();

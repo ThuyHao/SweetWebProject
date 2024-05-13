@@ -1,14 +1,20 @@
-package site.sugarnest.backend.dto;
+package site.sugarnest.backend.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import site.sugarnest.backend.dto.response.RoleResponse;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class AccountDto {
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class AccountRequest {
     private Long id;
 
     private String accountName;
@@ -47,5 +53,5 @@ public class AccountDto {
 
     private Integer number_login_fail;
 
-
+    private List<String> roles;
 }
