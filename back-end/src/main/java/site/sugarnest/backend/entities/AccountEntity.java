@@ -14,6 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -77,5 +78,6 @@ public class AccountEntity {
     /**
      * Verified email
      */
-    private boolean enabled;
+    public String verificationCode;
+    private String enabled;
 }

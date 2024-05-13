@@ -17,9 +17,9 @@ public class AccountController {
 
     private IAccountService iAccountService;
 
-    @PostMapping
-    public ResponseEntity<AccountDto> createAccount(@RequestBody AccountDto accountDto) {
-        AccountDto saveAccount = iAccountService.createAccount(accountDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saveAccount);
+    @PostMapping("register")
+    public ResponseEntity<String> createAccount(@RequestBody AccountDto accountDto) {
+        iAccountService.createAccount(accountDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Please enter your verification code");
     }
 }

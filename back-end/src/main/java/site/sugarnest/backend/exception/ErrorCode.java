@@ -15,6 +15,8 @@ public enum ErrorCode {
     PASSWORD_NOT_MATCHED(1004, "Password Not Matched"),
     SIGNER_NOT_MATCHED(1005, "Signer Not Matched"),
     SEND_MAIL_FAILED(1006, "Send Mail Failed"),
+    EMAIL_NOT_EXITED(1007, "Email Not Exited"),
+    VERIFICATION_ACCOUNT_INCORRECT_CODE(1008, "Verification Account Incorrect Code"),
     ;
 
     private int code;
