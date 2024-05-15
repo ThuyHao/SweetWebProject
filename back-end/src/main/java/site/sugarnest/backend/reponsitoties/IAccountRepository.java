@@ -7,7 +7,7 @@ import site.sugarnest.backend.entities.AccountEntity;
 import java.util.Optional;
 
 @Repository
-public interface IAccountRepository extends JpaRepository<AccountEntity, Integer> {
+public interface IAccountRepository extends JpaRepository<AccountEntity, Long> {
 
     Optional<AccountEntity> findByEmail(String email);
 

@@ -1,10 +1,12 @@
 import React from 'react'
 import { useEffect, useState, useRef } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { listCategories } from '../services/ProductService'
 
 const SidebarComponent = () => {
 
   const [categories, setCategories] = useState([])
+  const navigator = useNavigate();
 
   useEffect(() => {
     listCategories().then((response) => {
@@ -13,6 +15,9 @@ const SidebarComponent = () => {
       console.log(error)
     })
   }, [])
+  function getListProduct() {
+    navigator(`/products`)
+  }
   return (
     <div>
       <div className="subheader">
@@ -30,7 +35,7 @@ const SidebarComponent = () => {
         <nav className="h-100">
           <ul className="navigation list-group list-group-flush scroll">
             <li className="menu-item list-group-item">
-              <a href="/collections/all" className="menu-item__link" title="Tổng hơp khuyến mãi">
+              <a onClick={getListProduct} className="menu-item__link" title="Tổng hơp khuyến mãi">
                 <img loading="lazy" width='24' height='24'
                   src="https://bizweb.dktcdn.net/100/419/628/themes/897067/assets/menu_icon_1.png?1704435927037"
                   alt="Tổng hơp khuyến mãi" />
