@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.sugarnest.backend.dto.dto.ApiResponse;
 import site.sugarnest.backend.service.product.ICategoryService;
 
 @CrossOrigin("*")
@@ -16,8 +17,11 @@ public class CategoryController {
     private ICategoryService iCategoryService;
 
     @GetMapping
-    public ResponseEntity<?> getAllCategory() {
-        return ResponseEntity.ok(iCategoryService.getAllCategory());
+    public ApiResponse<?> getAllCategory() {
+        return ApiResponse.<Object>builder()
+                .message("Success")
+                .result(iCategoryService.getAllCategory())
+                .build();
     }
 
 }

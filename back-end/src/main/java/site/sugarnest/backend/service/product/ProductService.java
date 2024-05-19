@@ -7,7 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import site.sugarnest.backend.dto.ProductDto;
+import site.sugarnest.backend.dto.dto.ProductDto;
 import site.sugarnest.backend.entities.ImageProductEntity;
 
 import site.sugarnest.backend.entities.*;
@@ -31,6 +31,7 @@ public class ProductService implements IProductService {
 
         // Khởi tạo ProductPrice và gán Product
         ProductPriceEntity productPrice = new ProductPriceEntity();
+        System.out.println(productDto);
         productPrice.setProductEntity(productEntity);
         productPrice.setListPrice(productEntity.getProductPriceEntity().getListPrice());
         productPrice.setDiscount(productEntity.getProductPriceEntity().getDiscount());

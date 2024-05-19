@@ -1,21 +1,23 @@
-import HomeComponent from './components/HomeComponent'
-import HeaderComponent from './components/HeaderComponent'
-import FooterComponent from './components/FooterComponent'
-import ListProductComponent from './components/ListProductComponent'
+import HomePage from './client/pages/HomePage.jsx'
+import Header from './client/layout/Header.jsx'
+import Footer from './client/layout/Footer.jsx'
+import ListProductComponent from './client/pages/ProductsPage.jsx'
+import ProductComponent from './client/pages/ProductDetailPage.jsx'
+import LoginComponent from './client/pages/LoginPage.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import ProductComponent from './components/ProductComponent'
 function App() {
 
   return (
     <>
       <BrowserRouter>
-        <HeaderComponent />
+        <Header />
         <Routes>
-          <Route path="/" element={<HomeComponent />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginComponent />} />
           <Route path="/products" element={<ListProductComponent />} />
           <Route path="/products/:id" element={<ProductComponent/>} />
         </Routes>
-        <FooterComponent />
+        <Footer />
       </BrowserRouter>
     </>
   )

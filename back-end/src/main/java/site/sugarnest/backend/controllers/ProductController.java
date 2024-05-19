@@ -8,7 +8,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import site.sugarnest.backend.dto.ProductDto;
+import site.sugarnest.backend.dto.dto.ApiResponse;
+import site.sugarnest.backend.dto.dto.ProductDto;
 import site.sugarnest.backend.service.product.IProductService;
 
 import java.util.List;
@@ -22,41 +23,58 @@ public class ProductController {
     private IProductService iProductService;
 
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
+    public ApiResponse<ProductDto> createProduct(@RequestBody ProductDto productDto) {
         ProductDto saveProduct = iProductService.createProduct(productDto);
-        return new ResponseEntity<>(saveProduct, HttpStatus.CREATED);
+        return ApiResponse.<ProductDto>builder()
+                .message("Product created!")
+                .result(saveProduct)
+                .build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> getProductById(@PathVariable("id") Long id) {
+    public ApiResponse<ProductDto> getProductById(@PathVariable("id") Long id) {
         ProductDto productDto = iProductService.getProductById(id);
-        return ResponseEntity.ok(productDto);
+        return ApiResponse.<ProductDto>builder()
+                .message("Success")
+                .result(productDto)
+                .build();
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllProduct(@PageableDefault(size = 12) Pageable pageable) {
+    public ApiResponse<?> getAllProduct(@PageableDefault(size = 12) Pageable pageable) {
         int page = pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber() - 1;
         Pageable customPageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
         Page<ProductDto> listProductDto = iProductService.getAllProduct(customPageable);
         int totalPages = listProductDto.getTotalPages();
-        return ResponseEntity.ok(Map.of("content", listProductDto.getContent(), "totalPages", totalPages));
+        return ApiResponse.<Object>builder()
+                .message("Success")
+                .result(Map.of("content", listProductDto.getContent(), "totalPages", totalPages))
+                .build();
     }
 
     @GetMapping("/category/{id}/limit/{limit}")
-    public ResponseEntity<List<ProductDto>> findProductByCategoryId(@PathVariable("id") Long categoryId, @PathVariable("limit") int limit) {
+    public ApiResponse<List<ProductDto>> findProductByCategoryId(@PathVariable("id") Long categoryId, @PathVariable("limit") int limit) {
         List<ProductDto> productDtos = iProductService.findProductByCategoryId(categoryId, limit);
-        return ResponseEntity.ok(productDtos);
+        return ApiResponse.<List<ProductDto>>builder()
+                .message("Success")
+                .result(productDtos)
+                .build();
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") Long id, @RequestBody ProductDto updateProduct) {
+    public ApiResponse<ProductDto> updateProduct(@PathVariable("id") Long id, @RequestBody ProductDto updateProduct) {
         ProductDto productDto = iProductService.updateProduct(id, updateProduct);
-        return ResponseEntity.ok(productDto);
+        return ApiResponse.<ProductDto>builder()
+                .message("Product updated!")
+                .result(productDto)
+                .build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable("id") Long id) {
+    public ApiResponse<String> deleteProduct(@PathVariable("id") Long id) {
         iProductService.deleteProduct(id);
-        return ResponseEntity.ok("Product deleted successfully!");
+        return ApiResponse.<String>builder()
+                .message("Product deleted!")
+                .build();
     }
 
 }

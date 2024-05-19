@@ -1,0 +1,36 @@
+.account-wrapper {
+    position: relative;
+    /* Tạo vị trí tương đối cho phần tử cha */
+}
+
+.logout-button {
+    display: none;
+    position: absolute;
+    /* Đặt nút "Đăng xuất" tuyệt đối trong phần tử cha */
+    top: 100%;
+    /* Đặt nút "Đăng xuất" dưới biểu tượng tài khoản */
+    left: 50%;
+    /* Đặt nút "Đăng xuất" giữa phần tử cha */
+    transform: translateX(-50%);
+    /* Dịch chuyển nút "Đăng xuất" về trái 50% của chiều rộng của phần tử cha */
+    background-color: white;
+    border: none;
+    color: black;
+    padding: 0px 25px;
+    text-align: center;
+    font-size: 14px;
+    font-family: 'Arial', sans-serif;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.account-wrapper:hover .logout-button {
+    display: inline-block;
+    /* Hiển thị nút "Đăng xuất" khi hover vào phần tử cha */
+}
+
+.logout-button:hover {
+    color: #fabd0d;
+}

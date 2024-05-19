@@ -1,14 +1,13 @@
 package site.sugarnest.backend.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import site.sugarnest.backend.dto.EmailRequestDto;
-import site.sugarnest.backend.dto.SendEmailDto;
+import site.sugarnest.backend.dto.dto.ApiResponse;
+import site.sugarnest.backend.dto.dto.EmailRequestDto;
+import site.sugarnest.backend.dto.dto.SendEmailDto;
 import site.sugarnest.backend.service.account.EmailService;
 
 @Controller
@@ -19,14 +18,18 @@ public class EmailController {
     private EmailService emailService;
 
     @PostMapping("/send_email")
-    public ResponseEntity<String> sendEmail(@RequestBody EmailRequestDto emailRequest) {
+    public ApiResponse<String> sendEmail(@RequestBody EmailRequestDto emailRequest) {
         emailService.sendMail(emailRequest.getAccountEmail(), emailRequest.getSubject(), emailRequest.getBody());
-        return new ResponseEntity<>("Email sent successfully", HttpStatus.OK);
+        return ApiResponse.<String>builder()
+                .message("Email sent successfully")
+                .build();
     }
 
     @PostMapping("/verify_code")
-    public ResponseEntity<String> verifyCode(@RequestBody SendEmailDto sendEmailDto) {
+    public ApiResponse<String> verifyCode(@RequestBody SendEmailDto sendEmailDto) {
         emailService.verifyMail(sendEmailDto);
-        return new ResponseEntity<>("Correct the verification code", HttpStatus.OK);
+        return ApiResponse.<String>builder()
+                .message("Correct the verification code")
+                .build();
     }
 }

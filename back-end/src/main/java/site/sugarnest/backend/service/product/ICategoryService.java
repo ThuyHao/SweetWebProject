@@ -1,6 +1,6 @@
 package site.sugarnest.backend.service.product;
 
-import site.sugarnest.backend.dto.CategoryDto;
+import site.sugarnest.backend.dto.dto.CategoryDto;
 
 import java.util.List;
 

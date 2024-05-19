@@ -2,12 +2,10 @@ package site.sugarnest.backend.controllers;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import site.sugarnest.backend.dto.ApiDto;
-import site.sugarnest.backend.dto.request.PermissionRequest;
+import site.sugarnest.backend.dto.dto.ApiResponse;
 import site.sugarnest.backend.dto.request.RoleRequest;
-import site.sugarnest.backend.dto.response.PermissionResponse;
 import site.sugarnest.backend.dto.response.RoleResponse;
-import site.sugarnest.backend.service.account.RoleService;
+import site.sugarnest.backend.service.Athorization.RoleService;
 
 import java.util.List;
 
@@ -18,25 +16,25 @@ public class RoleController {
     RoleService roleService;
 
     @PostMapping
-    ApiDto<RoleResponse> createRole(@RequestBody RoleRequest request) {
-        return ApiDto.<RoleResponse>builder()
+    ApiResponse<RoleResponse> createRole(@RequestBody RoleRequest request) {
+        return ApiResponse.<RoleResponse>builder()
                 .message("Permission created!")
                 .result(roleService.create(request))
                 .build();
     }
 
     @GetMapping
-    ApiDto<List<RoleResponse>> getAllRole() {
-        return ApiDto.<List<RoleResponse>>builder()
+    ApiResponse<List<RoleResponse>> getAllRole() {
+        return ApiResponse.<List<RoleResponse>>builder()
                 .message("All permissions!")
                 .result(roleService.getAll())
                 .build();
     }
 
     @DeleteMapping("/{name}")
-    ApiDto<Void> deletePermission(@PathVariable String name) {
+    ApiResponse<Void> deletePermission(@PathVariable String name) {
         roleService.delete(name);
-        return ApiDto.<Void>builder()
+        return ApiResponse.<Void>builder()
                 .message("Permission deleted!")
                 .build();
     }

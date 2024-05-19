@@ -2,7 +2,7 @@ package site.sugarnest.backend.service.product;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.sugarnest.backend.dto.CategoryDto;
+import site.sugarnest.backend.dto.dto.CategoryDto;
 import site.sugarnest.backend.entities.CategoryEntity;
 import site.sugarnest.backend.mapper.ICategoryMapper;
 import site.sugarnest.backend.reponsitoties.ICategoryRepository;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 @AllArgsConstructor
 @Service
-public class CategoryService implements ICategoryService{
+public class CategoryService implements ICategoryService {
     ICategoryRepository iCategoryRepository;
     ICategoryMapper iCategoryMapper;
     @Override
