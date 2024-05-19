@@ -14,8 +14,6 @@ public class AccountResponse {
 
     private String accountName;
 
-    private String password;
-
     private String fullName;
 
     private Date birthday;

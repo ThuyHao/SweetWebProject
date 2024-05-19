@@ -2,8 +2,6 @@ package site.sugarnest.backend.service.account;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,7 +9,6 @@ import org.springframework.stereotype.Service;
 import site.sugarnest.backend.dto.request.AccountRequest;
 import site.sugarnest.backend.dto.response.AccountResponse;
 import site.sugarnest.backend.entities.AccountEntity;
-import site.sugarnest.backend.enums.Role;
 import site.sugarnest.backend.exception.AppException;
 import site.sugarnest.backend.exception.ErrorCode;
 import site.sugarnest.backend.mapper.IAccountMapper;
