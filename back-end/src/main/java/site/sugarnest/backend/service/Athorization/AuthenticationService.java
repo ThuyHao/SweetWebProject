@@ -58,7 +58,7 @@ public class AuthenticationService {
     }
 
     public AuthResponseDto authenticate(AuthRequestDto authRequestDto) {
-        var user = iAccountRepository.findByEmail(authRequestDto.getEmail())
+        var user = iAccountRepository.findByAccountName(authRequestDto.getAccountName())
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean matchesPass = passwordEncoder.matches(authRequestDto.getPassword(), user.getPassword());
