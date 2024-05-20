@@ -25,7 +25,7 @@ public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {"/account/register", "/auth/login", "/auth/introspect",
             "/products/**", "/products/category/**",
-            "categories"};
+            "categories", "/auth/logout"};
 
     @Value("${SIGNER_KEY}")
     private String signerKer;
