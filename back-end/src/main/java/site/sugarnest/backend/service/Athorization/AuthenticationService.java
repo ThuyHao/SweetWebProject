@@ -46,9 +46,14 @@ public class AuthenticationService {
 
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
-        verifyToken(token);
+        boolean isValid = true;
+        try {
+            verifyToken(token);
+        }catch (AppException e){
+            isValid = false;
+        }
         return IntrospectResponse.builder()
-                .valid(true)
+                .valid(isValid)
                 .build();
     }
 
@@ -74,10 +79,8 @@ public class AuthenticationService {
     private String generateToken(AccountEntity account) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(passwordEncoder.encode(account.getEmail()))
+                .subject(account.getAccountName())
                 .issuer("SugarNest.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
@@ -138,6 +141,8 @@ public class AuthenticationService {
         if(!(verified && expiryTime.after(new Date()))){
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
+        if(invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
 
         return signedJWT;
     }

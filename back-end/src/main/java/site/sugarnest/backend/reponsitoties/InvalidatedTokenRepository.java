@@ -1,7 +1,10 @@
 package site.sugarnest.backend.reponsitoties;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import site.sugarnest.backend.entities.InvalidatedTokenEntity;
 
-public interface InvalidatedTokenRepository extends JpaRepository<InvalidatedTokenRepository, String> {
+@Repository
+public interface InvalidatedTokenRepository extends JpaRepository<InvalidatedTokenEntity, String> {
 
 }
