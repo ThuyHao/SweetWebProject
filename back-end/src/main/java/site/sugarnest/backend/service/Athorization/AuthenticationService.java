@@ -15,17 +15,21 @@ import org.springframework.util.CollectionUtils;
 import site.sugarnest.backend.dto.dto.AuthRequestDto;
 import site.sugarnest.backend.dto.dto.AuthResponseDto;
 import site.sugarnest.backend.dto.request.IntrospectRequest;
+import site.sugarnest.backend.dto.request.LogoutRequest;
 import site.sugarnest.backend.dto.response.IntrospectResponse;
 import site.sugarnest.backend.entities.AccountEntity;
+import site.sugarnest.backend.entities.InvalidatedTokenEntity;
 import site.sugarnest.backend.exception.AppException;
 import site.sugarnest.backend.exception.ErrorCode;
 import site.sugarnest.backend.reponsitoties.IAccountRepository;
+import site.sugarnest.backend.reponsitoties.InvalidatedTokenRepository;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
+import java.util.UUID;
 
 @CommonsLog
 @Service
@@ -34,20 +38,17 @@ public class AuthenticationService {
     @Autowired
     private IAccountRepository iAccountRepository;
 
+    @Autowired
+    private InvalidatedTokenRepository invalidatedTokenRepository;
+
     @Value("${SIGNER_KEY}")
     protected String SIGNER_KEY;
 
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
-        JWSVerifier jwsVerifier = new MACVerifier(SIGNER_KEY.getBytes());
-        SignedJWT signedJWT = SignedJWT.parse(token);
-
-        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-
-        var verified = signedJWT.verify(jwsVerifier);
-
+        verifyToken(token);
         return IntrospectResponse.builder()
-                .valid(verified && expiryTime.after(new Date()))
+                .valid(true)
                 .build();
     }
 
@@ -76,7 +77,7 @@ public class AuthenticationService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(account.getEmail())
+                .subject(passwordEncoder.encode(account.getEmail()))
                 .issuer("SugarNest.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
@@ -84,7 +85,7 @@ public class AuthenticationService {
                 ))
                 .claim("id", account.getId())
                 .claim("scope", buildScope(account))
-                .jwtID(passwordEncoder.encode(account.getEmail()))
+                .jwtID(UUID.randomUUID().toString())
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -100,16 +101,44 @@ public class AuthenticationService {
     }
 
     private String buildScope(AccountEntity account) {
-    StringJoiner stringJoiner = new StringJoiner(" ");
-    if (!CollectionUtils.isEmpty(account.getRoles())) {
-        account.getRoles().forEach(role -> {
-            stringJoiner.add("ROLE_" + role.getName());
-            if (!CollectionUtils.isEmpty(role.getPermissions())) {
-                role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
-            }
-        });
+        StringJoiner stringJoiner = new StringJoiner(" ");
+        if (!CollectionUtils.isEmpty(account.getRoles())) {
+            account.getRoles().forEach(role -> {
+                stringJoiner.add("ROLE_" + role.getName());
+                if (!CollectionUtils.isEmpty(role.getPermissions())) {
+                    role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
+                }
+            });
+        }
+        return stringJoiner.toString();
     }
-    return stringJoiner.toString();
-}
 
+    public void logout(LogoutRequest request) throws ParseException, JOSEException {
+        var signToken = verifyToken(request.getToken());
+        String jit = signToken.getJWTClaimsSet().getJWTID();
+        Date expirationTime = signToken.getJWTClaimsSet().getExpirationTime();
+
+        InvalidatedTokenEntity invalidatedTokenEntity = InvalidatedTokenEntity
+                .builder()
+                .id(jit)
+                .expiryTime(expirationTime)
+                .build();
+
+        invalidatedTokenRepository.save(invalidatedTokenEntity);
+    }
+
+    private SignedJWT verifyToken (String token) throws JOSEException, ParseException {
+        JWSVerifier jwsVerifier = new MACVerifier(SIGNER_KEY.getBytes());
+        SignedJWT signedJWT = SignedJWT.parse(token);
+
+        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+
+        var verified = signedJWT.verify(jwsVerifier);
+
+        if(!(verified && expiryTime.after(new Date()))){
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+
+        return signedJWT;
+    }
 }

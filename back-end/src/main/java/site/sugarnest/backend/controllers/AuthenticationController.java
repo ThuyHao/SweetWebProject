@@ -7,6 +7,7 @@ import site.sugarnest.backend.dto.dto.ApiResponse;
 import site.sugarnest.backend.dto.dto.AuthRequestDto;
 import site.sugarnest.backend.dto.dto.AuthResponseDto;
 import site.sugarnest.backend.dto.request.IntrospectRequest;
+import site.sugarnest.backend.dto.request.LogoutRequest;
 import site.sugarnest.backend.dto.response.IntrospectResponse;
 import site.sugarnest.backend.service.Athorization.AuthenticationService;
 
@@ -36,6 +37,12 @@ public class AuthenticationController {
                 .message("Introspect successful!")
                 .result(result)
                 .build();
+
+    }
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+        authenticationService.logout(request);
+        return ApiResponse.<Void>builder().build();
 
     }
 

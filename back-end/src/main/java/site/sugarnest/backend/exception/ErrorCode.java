@@ -1,8 +1,6 @@
 package site.sugarnest.backend.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
@@ -20,6 +18,7 @@ public enum ErrorCode {
     ROLE_NOT_EXITED(1008, "Role Not Found", HttpStatus.NOT_FOUND),
     INVALID_KEY(1009, "Invalid Key", HttpStatus.BAD_REQUEST),
     VERIFICATION_ACCOUNT_INCORRECT_CODE(1010, "Incorrect Verification Code", HttpStatus.BAD_REQUEST),
+    UNAUTHENTICATED(1011, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
@@ -28,8 +27,8 @@ public enum ErrorCode {
         this.statusCode = statusCode;
     }
 
-    private int code;
-    private String message;
+    private final int code;
+    private final String message;
     private final HttpStatusCode statusCode;
 
 }
