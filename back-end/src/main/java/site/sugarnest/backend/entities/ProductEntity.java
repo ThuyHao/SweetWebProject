@@ -45,11 +45,9 @@ public class ProductEntity {
     private String status;
 
     @OneToOne(mappedBy = "productEntity", cascade = CascadeType.ALL)
-    @JsonIgnore
     private ProductPriceEntity productPriceEntity;
 
     @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<ImageProductEntity> imageProducts;
 
     @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL)

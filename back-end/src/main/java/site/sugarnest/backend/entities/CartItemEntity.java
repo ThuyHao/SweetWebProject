@@ -20,7 +20,6 @@ public class CartItemEntity {
     private CartEntity cartEntity;
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "id_product", nullable = false)
     private ProductEntity productEntity;
 
