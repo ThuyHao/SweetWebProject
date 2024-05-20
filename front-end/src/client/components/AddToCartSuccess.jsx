@@ -1,7 +1,15 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getCartByAccountId } from '../services/ProductService';
+import { useNavigate } from 'react-router-dom'
+
 const AddToCartSuccess = ({ handleClose, product, cartItem }) => {
     const [cart, setCart] = useState([]);
+    const navigate = useNavigate();
+
+    function getMyCart() {
+        navigate('/cart');
+    }
+
     useEffect(() => {
         getCartByAccountId(cartItem.accountId)
             .then(response => {
@@ -32,7 +40,7 @@ const AddToCartSuccess = ({ handleClose, product, cartItem }) => {
                                 <div className="media">
                                     <div className="media-left thumb_img">
                                         <div className="thumb-1x1">
-                                            <img loading="lazy" src="https://bizweb.dktcdn.net/thumb/small/100/419/628/products/img-cake-12-458x493-5cd01bb9-8ae6-4ea7-9e35-16332d88c2c3-3fc2ce10-eb5c-477f-9d03-11d254efaae0.jpg" alt="Bánh cupcake queen" />
+                                            <img loading="lazy" src={product.imageProducts[0].image} alt="Bánh cupcake queen" />
                                         </div>
                                     </div>
                                     <div className="media-body body_content">
@@ -56,7 +64,7 @@ const AddToCartSuccess = ({ handleClose, product, cartItem }) => {
                             </div>
                             <div className="cart-action">
                                 <a href="/checkout" className="btn btn-main btn-full">Thanh toán</a>
-                                <a href="/cart" className="btn btn-main checkout_button btn-full">Xem giỏ hàng</a>
+                                <a onClick={getMyCart} className="btn btn-main checkout_button btn-full">Xem giỏ hàng</a>
                             </div>
                         </div>
                     </div>

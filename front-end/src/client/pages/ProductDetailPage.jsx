@@ -10,7 +10,6 @@ const ProductDetailComponent = () => {
 
     window.scrollTo(0, 0); // Di chuyển vị trí cuộn trang về đầu trang
 
-    // ProductSlider Detail
     const initialState = () => ({
         id: null,
         nameProduct: "",
@@ -67,7 +66,6 @@ const ProductDetailComponent = () => {
 
     }, [id])
 
-    // More Content
     useEffect(() => {
         const handleSeeMoreClick = (event) => {
             const seeMore = event.currentTarget;

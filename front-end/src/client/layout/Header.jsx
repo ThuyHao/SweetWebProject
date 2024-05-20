@@ -1,13 +1,17 @@
-import React, { useEffect, useState, useRef } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import './layout.css'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios';
 import { useAuth } from '../context/AuthContext.jsx';
-import { useCart} from '../context/CartContext.jsx';
+import { useCart } from '../context/CartContext.jsx';
 import { getTotalItemsInCart } from '../services/ProductService.js';
+import './layout.css'
+
 
 const Header = () => {
+  const [cart, setCart] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
   const navigator = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
   const { updateCart } = useCart();
   const [cartTotal, setCartTotal] = useState(0);
   useEffect(() => {
@@ -17,16 +21,48 @@ const Header = () => {
           setCartTotal(response.data);
           updateCart(response.data);
         })
-        .catch(error => {
-          setCartTotal(0);
-        });
+    } else {
+      setCartTotal(0);
     }
   }, [user, updateCart]);
 
+  useEffect(() => {
+    if (!token) {
+      return;
+    }
+    axios.get('http://localhost:8080/sugarnest/v0.1/carts/my-cart', {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    })
+      .then(response => {
+        setCart(response.data.result);
+        let reversedCartItems = response.data.result.cartItems.reverse();
+        setCartItems(reversedCartItems);
+      })
+      .catch(error => {
+        console.error("There was an error with the Axios operation:", error);
+      });
+  }, [token, updateCart]);
 
-
+  const deleteCartItem = (cartItemId) => {
+    axios.delete(`http://localhost:8080/sugarnest/v0.1/carts/remove-item/${cartItemId}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    })
+      .then(response => {
+        updateCart(response.data.result);
+      })
+      .catch(error => {
+        console.error("There was an error removing the cart item:", error);
+      });
+  };
   function getHomePage() {
     navigator(`/`);
+  }
+  function getCart() {
+    navigator(`/cart`);
   }
   const handleClick = () => {
     if (user) {
@@ -35,6 +71,9 @@ const Header = () => {
       navigator(`/login`);
     }
   };
+  function getProduct(id) {
+    navigator(`/products/${id}`);
+  }
 
   return (
     <div>
@@ -121,13 +160,11 @@ Nhập tên sản phẩm.."/>
                             </button>
                           )}
                         </div>
-
-
                       </li>
                       <li className="cartgroup">
                         <div className="mini-cart text-xs-center">
                           <a className="img_hover_cart d-block d-xl-flex flex-column align-items-center"
-                            href="/cart" title="Giỏ hàng">
+                            onClick={getCart} title="Giỏ hàng">
                             <div className="cart-icon">
                               <img loading="lazy"
                                 src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/cart-icon.png?1704435927037"
@@ -137,12 +174,40 @@ Nhập tên sản phẩm.."/>
                             <span className='d-xl-block d-none mt-1'>Giỏ hàng</span>
                           </a>
                           <div className="top-cart-content card ">
-                            <ul id="cart-sidebar" className="mini-products-list count_li list-unstyled">
-                              <li className="list-item">
-                                <ul></ul>
-                              </li>
-                              <li className="action"></li>
-                            </ul>
+                            {cartItems.length > 0 ? (
+                              <ul id="cart-sidebar" className="mini-products-list count_li list-unstyled">
+                                <ul className="list-item-cart">
+                                  {cartItems.map((item, index) => (
+                                    <li key={index}>
+                                      <div className="border_list">
+                                        <div className="image_drop">
+                                          <a className="product-image pos-relative embed-responsive embed-responsive-1by1" onClick={() => getProduct(item.productEntity.id)} title={item.productEntity.nameProduct}>
+                                            <img alt="Heavy Duty Paper Car" src={item.productEntity.imageProducts[0].image} width="100" />
+                                          </a>
+                                        </div>
+                                        <div className="detail-item">
+                                          <div className="product-details">
+                                            <span title="Xóa" onClick={() => deleteCartItem(item.id)} className="remove-item-cart fa fa-times"></span>
+                                            <p className="product-name"> <a href="/heavy-duty-paper-car" title="Heavy Duty Paper Car">{item.productEntity.nameProduct}</a></p>
+                                          </div>
+                                          <span className="variant-title">{item.productSize} / {item.productColor}</span>
+                                          <div className="product-details-bottom">
+                                            <span className="price">{parseInt(item.productEntity.productPriceEntity.discountPrice).toLocaleString('it-IT')}₫</span>
+                                            <span className="quanlity"> x {item.quantity}</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </li>
+                                  ))}
+                                </ul>
+                                <div className="pd">
+                                  <div className="top-subtotal">Tổng tiền tạm tính: <span className="price price_big">{parseInt(cart.totalPrice).toLocaleString('it-IT')}₫</span></div>
+                                </div>
+                                <div className="pd right_ct"><a onClick={getCart} className="btn btn-white"><span>Tiến hành thanh toán</span></a></div>
+                              </ul>
+                            ) : (
+                              <div className="no-item"><p>Không có sản phẩm nào.</p></div>
+                            )}
                           </div>
                         </div>
                       </li>
@@ -161,7 +226,7 @@ Nhập tên sản phẩm.."/>
               <nav>
                 <ul className="navigation-horizontal list-group list-group-flush scroll">
                   <li className="menu-item list-group-item">
-                    <a href="/public" className="menu-item__link" title="Trang chủ">
+                    <a onClick={getHomePage} className="menu-item__link" title="Trang chủ">
                       <span> Trang chủ</span>
                     </a>
                   </li>

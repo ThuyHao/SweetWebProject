@@ -35,8 +35,7 @@ const QuantityInput = ({ initialQuantity = 1 }) => {
             </button>
             <input
                 required
-                type="text"
-                id="qtym"
+                type="text" 
                 name="quantity"
                 value={quantity}
                 maxLength="3"

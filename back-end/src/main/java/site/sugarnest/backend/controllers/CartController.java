@@ -18,6 +18,14 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
+    @GetMapping({"/", "/all", ""})
+    public ApiResponse<List<CartEntity>> getAllCarts() {
+        return ApiResponse.<List<CartEntity>>builder()
+                .code(200)
+                .result(cartService.getAllCarts())
+                .build();
+    }
+
     @PostMapping("/add-item")
     public ApiResponse<CartItemResponse> addItemToCart(@RequestBody CartItemRequest cartItemDto) {
         return ApiResponse.<CartItemResponse>builder()
@@ -26,27 +34,27 @@ public class CartController {
                 .build();
     }
 
-    @DeleteMapping("/remove-item")
-    public ApiResponse<Void> removeItemFromCart(@RequestParam Long accountId, @RequestParam Integer cartItemId) {
-        cartService.removeItemFromCart(accountId, cartItemId);
+    @DeleteMapping("/remove-item/{cartItemId}")
+    public ApiResponse<Void> removeItemFromCart(@PathVariable("cartItemId") Integer cartItemId) {
+        cartService.removeItemFromCart(cartItemId);
         return ApiResponse.<Void>builder()
                 .code(200)
                 .message("Item removed from cart!")
                 .build();
     }
 
-    @PutMapping("/increase-quantity")
-    public ApiResponse<Void> increaseQuantity(@RequestParam Long accountId, @RequestParam Integer cartItemId, @RequestParam int amount) {
-        cartService.increaseQuantity(accountId, cartItemId, amount);
+    @PutMapping("/increase-quantity/{cartItemId}")
+    public ApiResponse<Void> increaseQuantity(@PathVariable("cartItemId") Integer cartItemId) {
+        cartService.increaseQuantity(cartItemId);
         return ApiResponse.<Void>builder()
                 .code(200)
                 .message("Quantity increased!")
                 .build();
     }
 
-    @PutMapping("/decrease-quantity")
-    public ApiResponse<Void> decreaseQuantity(@RequestParam Long accountId, @RequestParam Integer cartItemId, @RequestParam int amount) {
-        cartService.decreaseQuantity(accountId, cartItemId, amount);
+        @PutMapping("/decrease-quantity/{cartItemId}")
+    public ApiResponse<Void> decreaseQuantity(@PathVariable("cartItemId") Integer cartItemId) {
+        cartService.decreaseQuantity(cartItemId);
         return ApiResponse.<Void>builder()
                 .code(200)
                 .message("Quantity decreased!")
@@ -73,5 +81,12 @@ public class CartController {
                 .code(200)
                 .result(Double.valueOf(cartService.getTotalItemsInCart(accountId)))
                 .build().getResult();
+    }
+    @GetMapping("/my-cart")
+    public ApiResponse<CartEntity> getMyCart() {
+        return ApiResponse.<CartEntity>builder()
+                .code(200)
+                .result(cartService.getMyCart())
+                .build();
     }
 }
