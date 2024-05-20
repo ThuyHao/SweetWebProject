@@ -113,7 +113,7 @@ const ProductDetailComponent = () => {
                             </div>
                             <div id="ega-uti-editable-content" data-platform='sapo' data-id="24574538"
                                 className="rte js-product-getcontent product_getcontent pos-relative"
-                                style={{ '--content-height': '693px' }}>
+                                style={{ '--content-height': '693px', 'maxHeight': '500px' }}>
                                 <div id="content" className='content js-content'>
                                     <p>{product.description}</p>
                                     <p>&nbsp;</p>

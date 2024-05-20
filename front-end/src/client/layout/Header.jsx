@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { getTotalItemsInCart } from '../services/ProductService.js';
 import './layout.css'
+import Navigation from './Navigation.jsx';
 
 
 const Header = () => {
@@ -91,6 +92,9 @@ const Header = () => {
                     </div>
                   </div>
                   <div className='col-lg-3 col-4 logo-col'>
+                    <div class="header-left">
+                      <Navigation />
+                    </div>
                     <a onClick={getHomePage} className="logo-wrapper" title='EGA Cake'>
                       <img loading="lazy" className="img-fluid"
                         src="https://bizweb.dktcdn.net/100/419/628/themes/897067/assets/logo.png?1704435927037"

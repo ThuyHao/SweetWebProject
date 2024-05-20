@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 
 
-const CartComponents = () => {
+const CartPage = () => {
    const [cart, setCart] = useState([]);
    const [cartItems, setCartItems] = useState([]);
    const { token } = useAuth();
@@ -203,7 +203,7 @@ const CartComponents = () => {
                                  Phương thức thanh toán
                               </span>
                               <div className="trustbadge">
-                                 <a href="/" target="_blank" title="Phương thức thanh toán">
+                                 <a href="/public" target="_blank" title="Phương thức thanh toán">
                                     <img className=" img-fluid" src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/footer_trustbadge.jpg?1704435927037" alt="" width="246" height="53" />
                                  </a>
                               </div>
@@ -240,7 +240,7 @@ const CartComponents = () => {
                         Hổng có gì trong giỏ hết
                      </h3>
                      <p>	Về trang cửa hàng để chọn mua sản phẩm bạn nhé!!</p>
-                     <a href="/" title="Mua sắm ngay" className="btn btn-main">Mua sắm ngay</a>
+                     <a href="/public" title="Mua sắm ngay" className="btn btn-main">Mua sắm ngay</a>
                   </div>
                </div>
             </div>
@@ -248,4 +248,4 @@ const CartComponents = () => {
       </section>
    )
 }
-export default CartComponents
+export default CartPage
