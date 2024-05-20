@@ -82,8 +82,8 @@ public class AccountService implements IAccountService {
     @Override
     public AccountResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
-        String email = context.getAuthentication().getName();
-        AccountEntity accountEntity = iAccountRepository.findByEmail(email)
+        String accountName = context.getAuthentication().getName();
+        AccountEntity accountEntity = iAccountRepository.findByAccountName(accountName)
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
         return iAccountMapper.mapToAccountDto(accountEntity);
     }
