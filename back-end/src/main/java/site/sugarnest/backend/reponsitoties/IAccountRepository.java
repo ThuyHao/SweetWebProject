@@ -15,5 +15,5 @@ public interface IAccountRepository extends JpaRepository<AccountEntity, Long> {
 
     Optional<AccountEntity> findByVerificationCode(String verificationCode);
 
-    Optional<AccountEntity> findByAccountName(String account);
+    Optional<AccountEntity> findByAccountName(String accountName);
 }

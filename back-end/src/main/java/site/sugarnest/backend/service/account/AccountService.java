@@ -83,6 +83,7 @@ public class AccountService implements IAccountService {
     public AccountResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
         String accountName = context.getAuthentication().getName();
+        System.out.println(accountName);
         AccountEntity accountEntity = iAccountRepository.findByAccountName(accountName)
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
         return iAccountMapper.mapToAccountDto(accountEntity);
