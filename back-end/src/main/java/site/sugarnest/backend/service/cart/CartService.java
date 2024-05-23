@@ -1,7 +1,5 @@
 package site.sugarnest.backend.service.cart;
 
-import io.jsonwebtoken.Claims;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,20 +21,23 @@ import java.util.Optional;
 
 @Service
 public class CartService {
-    @Autowired
-    private ICartRepository cartRepository;
+    private final ICartRepository cartRepository;
 
-    @Autowired
-    private IProductRepository productRepository;
+    private final IProductRepository productRepository;
 
-    @Autowired
-    private ICartItemRepository cartItemRepository;
+    private final ICartItemRepository cartItemRepository;
 
-    @Autowired
-    private IAccountRepository accountRepository;
+    private final IAccountRepository accountRepository;
 
-    @Autowired
-    private ICartMapper cartMapper;
+    private final ICartMapper cartMapper;
+
+    public CartService(ICartRepository cartRepository, IProductRepository productRepository, ICartItemRepository cartItemRepository, IAccountRepository accountRepository, ICartMapper cartMapper) {
+        this.cartRepository = cartRepository;
+        this.productRepository = productRepository;
+        this.cartItemRepository = cartItemRepository;
+        this.accountRepository = accountRepository;
+        this.cartMapper = cartMapper;
+    }
 
     @Transactional
     public CartItemResponse addItemToCart(CartItemRequest cartItemRequest) {
@@ -104,8 +105,8 @@ public class CartService {
     @Transactional
     public void removeItemFromCart(Integer cartItemId) {
         var context = SecurityContextHolder.getContext();
-        String email = context.getAuthentication().getName();
-        AccountEntity account = accountRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Account not found"));
+        String accountName = context.getAuthentication().getName();
+        AccountEntity account = accountRepository.findByAccountName(accountName).orElseThrow(() -> new RuntimeException("Account not found"));
         CartEntity cart = cartRepository.findByAccountEntity(account).orElseThrow(() -> new RuntimeException("Cart not found"));
         CartItemEntity cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() -> new RuntimeException("CartItem not found"));
         cart.getCartItems().remove(cartItem);
@@ -121,8 +122,8 @@ public class CartService {
     @Transactional
     public void increaseQuantity(Integer cartItemId) {
         var context = SecurityContextHolder.getContext();
-        String email = context.getAuthentication().getName();
-        AccountEntity account = accountRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Account not found"));
+        String accountName = context.getAuthentication().getName();
+        AccountEntity account = accountRepository.findByAccountName(accountName).orElseThrow(() -> new RuntimeException("Account not found"));
         CartEntity cart = cartRepository.findByAccountEntity(account).orElseThrow(() -> new RuntimeException("Cart not found"));
         CartItemEntity cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() -> new RuntimeException("CartItem not found"));
 
@@ -141,8 +142,8 @@ public class CartService {
     @Transactional
     public void decreaseQuantity(Integer cartItemId) {
         var context = SecurityContextHolder.getContext();
-        String email = context.getAuthentication().getName();
-        AccountEntity account = accountRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Account not found"));
+        String accountName = context.getAuthentication().getName();
+        AccountEntity account = accountRepository.findByAccountName(accountName).orElseThrow(() -> new RuntimeException("Account not found"));
         CartEntity cart = cartRepository.findByAccountEntity(account).orElseThrow(() -> new RuntimeException("Cart not found"));
         CartItemEntity cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() -> new RuntimeException("CartItem not found"));
 
