@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { addCartItems, getCartByAccountId } from '../services/ProductService.js'
 import { useNavigate } from 'react-router-dom';
+import LikeButtonComponent from './LikeButtonComponent.jsx';
 
 const AddtoCart = ({ product }) => {
     const navigate = useNavigate();
@@ -57,12 +58,14 @@ const AddtoCart = ({ product }) => {
                 });
         }
     };
- 
+
+    // facebook like button
+    const dataHref = window.location.href;
+
     return (
         <div className="col-xs-12 col-lg-6 details-pro bg-white py-3 mt-3 mt-lg-0 px-3">
 
             {/* Hiển thị thông báo thêm vào giỏ hàng thành công */}
-
             {showSuccessModal && (
                 <AddToCartSuccess handleClose={handleCloseModal} product={product} cartItem ={cartItem} />
             )}
@@ -109,7 +112,7 @@ const AddtoCart = ({ product }) => {
                         </div>
                     </div>
                 </div>
-
+                <LikeButtonComponent dataHref={dataHref}/>
                 <div className="form-product pt-sm-2">
                     <div className='product-promotion rounded-sm' id='ega-salebox'>
                         <h3 className='product-promotion__heading rounded-sm d-inline-flex align-items-center'

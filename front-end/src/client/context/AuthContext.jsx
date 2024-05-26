@@ -39,9 +39,9 @@ export function AuthProvider({ children }) {
         checkTokenValidity();
     }, [token]);
 
-    const login = async (email, password) => {
+    const login = async (accountName, password) => {
         try {
-            const response = await loginToken(email, password);
+            const response = await loginToken(accountName, password);
             if (response.status === 200) {
                 const newToken = response.data.result.token;
                 localStorage.setItem('token', newToken);

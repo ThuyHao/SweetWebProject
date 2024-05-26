@@ -4,6 +4,8 @@ import { getProduct } from '../services/ProductService.js'
 import ProductSlider from '../components/ProductSlider.jsx';
 import Breadcrumb from '../components/Breadcrumb.jsx';
 import Blog from '../components/Blog.jsx';
+import CommentComponent from '../components/CommentComponent.jsx';
+import { initFacebookSDK } from '../util/uitl.js';
 
 
 const ProductDetailComponent = () => {
@@ -97,6 +99,14 @@ const ProductDetailComponent = () => {
             });
         };
     }, []);
+
+
+    // facebook comment
+    const dataHref = window.location.href;
+    useEffect(() => {
+        initFacebookSDK();
+    }
+        , [])
     return (
         <div>
             <Breadcrumb />
@@ -140,22 +150,12 @@ const ProductDetailComponent = () => {
                             </div>
                         </div>
                         <div className="col-12 col-md-4 pl-0 pl-md-3 product-right pr-0">
-                           <Blog/>
+                            <Blog />
                         </div>
                     </div>
                 </div>
             </section>
-            <section className="section" id="section-comments">
-                <div className="container">
-                    <div className="card">
-                        <div className="title_module mb-3 heading-bar d-flex justify-content-between align-items-center p-0">
-                            <h2 className="bf_flower heading-bar__title">
-                                HỎI ĐÁP - BÌNH LUẬN
-                            </h2>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <CommentComponent dataHref={dataHref} />
         </div>
     )
 }

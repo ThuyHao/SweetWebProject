@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { getTotalItemsInCart } from '../services/ProductService.js';
 import './layout.css'
-import Navigation from './Navigation.jsx';
-
+import Sidebar from './Sidebar.jsx'
 
 const Header = () => {
   const [cart, setCart] = useState([]);
@@ -78,6 +77,20 @@ const Header = () => {
 
   return (
     <div>
+      <div className="top-banner position-relative" style={{ background: '#a50a06' }}>
+        <div className="container text-center px-0">
+          <a className="position-relative  d-sm-none d-block" style={{ maxHeight: '78px', height: 'calc( 78 * 100vw /828 )' }} href="/collections/all" title="Khuyến mãi">
+            <img className="img-fluid position-absolute " src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/top_banner_mb.jpg?1704435927037" style={{ left: 0 }} alt="Khuyến mãi" width="828" height="78" />
+          </a>
+          <a className="position-relative d-sm-block d-none " style={{ maxHeight: '44px', height: 'calc(44 * 100vw /1200)' }} href="/collections/all" title="Khuyến mãi">
+            <picture>
+              <source media="(max-width: 480px)" srcSet="//bizweb.dktcdn.net/thumb/large/100/419/628/themes/897067/assets/top_banner.jpg?1704435927037" />
+              <img className="img-fluid position-absolute" src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/top_banner.jpg?1704435927037" style={{ left: 0 }} alt="Khuyến mãi" width="1200" height="44" />
+            </picture>
+          </a>
+          <button type="button" className="close " aria-label="Close">✕</button>
+        </div>
+      </div>
       <header className="header header_menu">
         <div className="mid-header wid_100 d-flex align-items-center">
           <div className="container">
@@ -92,9 +105,24 @@ const Header = () => {
                     </div>
                   </div>
                   <div className='col-lg-3 col-4 logo-col'>
-                    <div class="header-left">
-                      <Navigation />
-                    </div>
+                    {location.pathname !== '/' && (
+                      <div className="header-left">
+                        <div className="subheader">
+                          <div className="toogle-nav-wrapper">
+                            <div className="icon-bar btn menu-bar mr-2 p-0 d-inline-flex">
+                              <span className="bar" />
+                              <span className="bar" />
+                              <span className="bar" />
+                            </div>
+                            <div className="toogle-nav-focus-area"></div>
+                            <div className="menu-wrapper" style={{top: 'calc(100%)'}}>
+                              <Sidebar />
+                            </div>
+                          </div>
+                          <div className="sticky-overlay" />
+                        </div>
+                      </div>
+                    )}
                     <a onClick={getHomePage} className="logo-wrapper" title='EGA Cake'>
                       <img loading="lazy" className="img-fluid"
                         src="https://bizweb.dktcdn.net/100/419/628/themes/897067/assets/logo.png?1704435927037"
@@ -106,8 +134,7 @@ const Header = () => {
                       role="search">
                       <input type="text" name="query" autoComplete="off"
                         className="input-group-field auto-search form-control " required=""
-                        data-placeholder="Bạn cần tìm gì..;
-Nhập tên sản phẩm.."/>
+                        data-placeholder="Bạn cần tìm gì..; Nhập tên sản phẩm.." />
                       <input type="hidden" name="type" />
                       <span className="input-group-btn btn-action">
                         <button type="submit" aria-label="search"

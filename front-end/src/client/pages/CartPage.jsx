@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext.jsx';
-import { useCart } from '../context/CartContext.jsx';
-
+import { useCart } from '../context/CartContext.jsx'; 
+import MyPayPalButton from '../util/MyPayPalButton.jsx';
 
 const CartPage = () => {
    const [cart, setCart] = useState([]);
@@ -159,13 +159,27 @@ const CartPage = () => {
                                              Ngày nhận hàng
                                              <input id="datepicker" className="ega-delivery__date ega-form__control" type="date" />
                                           </label>
-                                          Thời gian nhận hàng
-                                          <select className="ega-delivery__date ega-form__control">
-                                             <option value="">Chọn thời gian</option>
-                                             <option value="08h00 - 12h00">08h00 - 12h00</option>
-                                             <option value="14h00 - 18h00">14h00 - 18h00</option>
-                                             <option value="19h00 - 21h00">19h00 - 21h00</option>
-                                          </select>
+                                          <label>
+                                             Thời gian nhận hàng
+                                             <select className="ega-delivery__date ega-form__control">
+                                                <option value="">Chọn thời gian</option>
+                                                <option value="08h00 - 12h00">08h00 - 12h00</option>
+                                                <option value="14h00 - 18h00">14h00 - 18h00</option>
+                                                <option value="19h00 - 21h00">19h00 - 21h00</option>
+                                             </select>
+                                          </label>
+                                          <label>
+                                             Họ và tên
+                                             <input id="nameOrder" className="ega-delivery__date ega-form__control" type="text" />
+                                          </label>
+                                          <label>
+                                             Số điện thoại
+                                             <input id="phoneNumber" className="ega-delivery__date ega-form__control" type="tel" />
+                                          </label>
+                                          <label>
+                                             Địa chỉ nhận hàng
+                                             <input id="address" className="ega-delivery__date ega-form__control" type="text" />
+                                          </label>
                                        </div>
                                        <div className="ega-delivery__note"></div>
                                     </div>
@@ -176,7 +190,24 @@ const CartPage = () => {
                                     </button>
                                  </div>
                               </div>
-                              <div className="timedeli-overaly">
+                              <div className="total-line-table__tbody">
+                                 <div className="total-line total-line--subtotal d-sm-flex justify-content-between">
+                                    <div className="total-line__name">
+                                       <strong>Tạm tính</strong>
+                                    </div>
+                                    <div className="total-line__price">
+                                       {parseInt(cart.totalPrice).toLocaleString('it-IT')}₫
+                                    </div>
+                                 </div>
+                                 <div className="total-line total-line--shipping-fee d-sm-flex justify-content-between">
+                                    <div className="total-line__name">
+                                       <strong>Phí vận chuyển</strong>
+                                    </div>
+                                    <div className="total-line__price">
+                                       <span className="origin-price" data-bind="getTextShippingPriceOriginal()"></span>
+                                       <span data-bind="getTextShippingPriceFinal()">40.000₫</span>
+                                    </div>
+                                 </div>
                               </div>
                            </div>
                            <div className="title-cart d-none d-sm-flex ">
@@ -208,6 +239,7 @@ const CartPage = () => {
                                  </a>
                               </div>
                            </div>
+                           <MyPayPalButton total="10.00" currency="USD" description="Your description" />
                         </div>
                      </div>
                   </form>
@@ -217,7 +249,7 @@ const CartPage = () => {
                         <div className="title-cart text-center">
                            <h1 className="d-none">Giỏ hàng</h1>
                            <div>
-                              <img src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/cart_empty_background.png?1704435927037" className="img-fluid" width="298" height="152"/>
+                              <img src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/cart_empty_background.png?1704435927037" className="img-fluid" width="298" height="152" />
                            </div>
                            <h3>
                               "Hổng” có gì trong giỏ hết

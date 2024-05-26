@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react'
 import Slider from "react-slick";
 import Coupon from '../components/Coupon.jsx'
 import { getProductByCategory } from '../services/ProductService.js'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import ItemProductComponent from '../components/ItemProduct.jsx';
 import Sidebar from '../layout/Sidebar.jsx';
 
@@ -48,7 +48,17 @@ const HomePage = () => {
       <div className='container'>
         <div className='row'>
           <div className="col-lg-3 d-lg-block d-none">
-            <Sidebar />
+            <div className="subheader">
+              <div className="toogle-nav-wrapper nav-index ">
+                <div className="icon-bar btn menu-bar mr-2 p-0 d-inline-flex">
+                  <span className="bar"></span>
+                  <span className="bar"></span>
+                  <span className="bar"></span>
+                </div>
+                <strong>DANH MỤC SẢN PHẨM</strong>
+              </div>
+              <Sidebar />
+            </div>
           </div>
           <div className="col-lg-9 col-12 pl-xl-0">
             <section className="section section_slider awe-section-1 mt-2">

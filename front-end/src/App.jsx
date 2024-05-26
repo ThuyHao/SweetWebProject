@@ -17,7 +17,7 @@ function App() {
           <Route path="/login" element={<LoginComponent />} />
           <Route path="/products" element={<ListProductComponent />} />
           <Route path="/products/:id" element={<ProductComponent/>} />
-          <Route path="cart" element={<CartPage />} />
+          <Route path="/cart" element={<CartPage />} />
         </Routes>
         <Footer />
       </BrowserRouter>

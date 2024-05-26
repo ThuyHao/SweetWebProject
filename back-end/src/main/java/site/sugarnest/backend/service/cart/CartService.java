@@ -187,8 +187,8 @@ public class CartService {
 
     public CartEntity getMyCart() {
         var context = SecurityContextHolder.getContext();
-        String email = context.getAuthentication().getName();
-        AccountEntity account = accountRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Account not found"));
+        String accountName = context.getAuthentication().getName();
+        AccountEntity account = accountRepository.findByAccountName(accountName).orElseThrow(() -> new RuntimeException("Account not found"));
         return cartRepository.findByAccountEntity(account).orElseThrow(() -> new RuntimeException("Cart not found"));
     }
 }

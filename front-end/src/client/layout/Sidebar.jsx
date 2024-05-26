@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect, useState, useRef } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
 import { listCategories } from '../services/ProductService.js'
 
 const Sidebar = () => {
@@ -20,17 +20,6 @@ const Sidebar = () => {
   }
   return (
     <div>
-      <div className="subheader">
-        <div className="toogle-nav-wrapper nav-index ">
-          <div className="icon-bar btn menu-bar mr-2 p-0 d-inline-flex">
-            <span className="bar"></span>
-            <span className="bar"></span>
-            <span className="bar"></span>
-          </div>
-          <strong>DANH MỤC SẢN PHẨM</strong>
-        </div>
-        <div className="sticky-overlay"></div>
-      </div>
       <div className="navigation-wrapper">
         <nav className="h-100">
           <ul className="navigation list-group list-group-flush scroll">
