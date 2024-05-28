@@ -8,6 +8,6 @@ export const getProductByCategory = (category, limit) => axios.get(`${REST_API_B
 export const listCategories = () => axios.get(`${REST_API_BASE_URL}/categories`);
 export const addCartItems = (cartItems) => axios.post(`${REST_API_BASE_URL}/carts/add-item`, cartItems);
 export const getCartByAccountId = (accountId) => axios.get(`${REST_API_BASE_URL}/carts/${accountId}`);
-export const loginToken = (email, password) => axios.post(`${REST_API_BASE_URL}/auth/login`, { email, password });
+export const loginToken = (accountName, password) => axios.post(`${REST_API_BASE_URL}/auth/login`, { accountName, password });
 export const getTotalItemsInCart = (accountId) => axios.get(`${REST_API_BASE_URL}/carts/total-items/${accountId}`);
 export const removeCartItem = (accountId,cartItemId) => axios.delete(`${REST_API_BASE_URL}/carts/remove-item/?${accountId}&${cartItemId}`);

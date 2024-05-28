@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
     const { login } = useAuth();
-    const [email, setEmail] = useState('');
+    const [accountName, setAccountName] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -12,7 +12,7 @@ const LoginPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const loginSuccess = await login(email, password);
+            const loginSuccess = await login(accountName, password);
             if (!loginSuccess) {
                 setError('Đăng nhập thất bại. Vui lòng thử lại.');
             }else{
@@ -30,7 +30,7 @@ const LoginPage = () => {
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Email:</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                    <input type="text" value={accountName} onChange={(e) => setAccountName(e.target.value)} required />
                 </div>
                 <div>
                     <label>Mật khẩu:</label>

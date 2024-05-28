@@ -6,13 +6,9 @@
 .logout-button {
     display: none;
     position: absolute;
-    /* Đặt nút "Đăng xuất" tuyệt đối trong phần tử cha */
     top: 100%;
-    /* Đặt nút "Đăng xuất" dưới biểu tượng tài khoản */
     left: 50%;
-    /* Đặt nút "Đăng xuất" giữa phần tử cha */
     transform: translateX(-50%);
-    /* Dịch chuyển nút "Đăng xuất" về trái 50% của chiều rộng của phần tử cha */
     background-color: white;
     border: none;
     color: black;
@@ -28,7 +24,6 @@
 
 .account-wrapper:hover .logout-button {
     display: inline-block;
-    /* Hiển thị nút "Đăng xuất" khi hover vào phần tử cha */
 }
 
 .logout-button:hover {
