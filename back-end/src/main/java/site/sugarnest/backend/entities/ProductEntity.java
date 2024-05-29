@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,24 +35,16 @@ public class ProductEntity {
     @JoinColumn(name = "id_categorie", nullable = false)
     private CategoryEntity categoryEntity;
 
-    @ManyToOne
-    @JoinColumn(name = "id_sub_categorie", nullable = false)
-    private SubCategoryEntity subCategoryEntity;
-
     private String isActive;
 
     private String isDelete;
 
     private String status;
 
-    @OneToOne(mappedBy = "productEntity", cascade = CascadeType.ALL)
-    private ProductPriceEntity productPriceEntity;
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL)
+    private List<ImageProductEntity> imageProductEntity;
 
     @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL)
-    private List<ImageProductEntity> imageProducts;
-
-    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<SizeColorProductEntity> sizeColorProductsEntity;
 
     @OneToMany(mappedBy = "productEntity")

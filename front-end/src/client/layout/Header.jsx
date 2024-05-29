@@ -213,7 +213,7 @@ const Header = () => {
                                       <div className="border_list">
                                         <div className="image_drop">
                                           <a className="product-image pos-relative embed-responsive embed-responsive-1by1" onClick={() => getProduct(item.productEntity.id)} title={item.productEntity.nameProduct}>
-                                            <img alt="Heavy Duty Paper Car" src={item.productEntity.imageProducts[0].image} width="100" />
+                                            <img alt="Heavy Duty Paper Car" src={item.productEntity.imageProductEntity[0].image} width="100" />
                                           </a>
                                         </div>
                                         <div className="detail-item">
@@ -223,7 +223,7 @@ const Header = () => {
                                           </div>
                                           <span className="variant-title">{item.productSize} / {item.productColor}</span>
                                           <div className="product-details-bottom">
-                                            <span className="price">{parseInt(item.productEntity.productPriceEntity.discountPrice).toLocaleString('it-IT')}₫</span>
+                                            <span className="price">{parseInt(item.productEntity.sizeColorProductsEntity[0].discountPrice).toLocaleString('it-IT')}₫</span>
                                             <span className="quanlity"> x {item.quantity}</span>
                                           </div>
                                         </div>

@@ -108,7 +108,7 @@ const CartPage = () => {
                                     </div>
                                     <div className="item-product-cart-mobile">
                                        <a onClick={() => getProduct(item.productEntity.id)} className="product-images1  pos-relative embed-responsive embed-responsive-1by1" title={item.productEntity.nameProduct}>
-                                          <img className="img-fluid" src={item.productEntity.imageProducts[0].image} alt={item.productEntity.nameProduct} />
+                                          <img className="img-fluid" src={item.productEntity.imageProductEntity[0].image} alt={item.productEntity.nameProduct} />
                                        </a>
                                     </div>
                                     <div className="product-cart-infor">

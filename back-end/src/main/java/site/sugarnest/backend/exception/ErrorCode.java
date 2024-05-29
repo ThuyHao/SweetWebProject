@@ -19,6 +19,7 @@ public enum ErrorCode {
     INVALID_KEY(1009, "Invalid Key", HttpStatus.BAD_REQUEST),
     VERIFICATION_ACCOUNT_INCORRECT_CODE(1010, "Incorrect Verification Code", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED(1011, "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED(1012, "Unauthorized", HttpStatus.FORBIDDEN),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

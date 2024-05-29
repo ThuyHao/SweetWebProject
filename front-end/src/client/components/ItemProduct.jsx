@@ -35,17 +35,17 @@ const ItemProductComponent = ({ product }) => {
                                 <img loading="lazy"
                                     className='product-thumbnail__img product-thumbnail__img--primary'
                                     width="480" height="480" style={{ '--image-scale': '1' }}
-                                    src={product.imageProducts[0].image}
-                                    alt={product.imageProducts[0].image} />
+                                    src={product.imageProductEntity[0].image}
+                                    alt={product.imageProductEntity[0].image} />
                                 <img loading="lazy"
                                     className='product-thumbnail__img product-thumbnail__img--secondary'
                                     width="480" height="480" style={{ '--image-scale': '1' }}
-                                    src={product.imageProducts[1].image}
-                                    alt={product.imageProducts[0].image} />
+                                    src={product.imageProductEntity[1].image}
+                                    alt={product.imageProductEntity[0].image} />
                             </a>
                             <div className="label_product d-none">
                                 <div className="label_wrapper">
-                                    - {product.productPriceEntity.discount}%
+                                    - {product.sizeColorProductsEntity[0].discount}%
                                 </div>
                             </div>
                             <div className="product-action">
@@ -64,11 +64,11 @@ const ItemProductComponent = ({ product }) => {
                                 title="Happy Birthday Chocolate Cream Cake (Meta coupon)">{product.nameProduct}</a></h3>
                             <div className="product-item-cta position-relative">
                                 <div className="price-box">
-                                    <span className="price">{parseInt(product.productPriceEntity.discountPrice).toLocaleString('it-IT')}₫</span>
-                                    <span className="compare-price">{parseInt(product.productPriceEntity.listPrice).toLocaleString('it-IT')}₫</span>
+                                    <span className="price">{parseInt(product.sizeColorProductsEntity[0].discountPrice).toLocaleString('it-IT')}₫</span>
+                                    <span className="compare-price">{parseInt(product.sizeColorProductsEntity[0].listPrice).toLocaleString('it-IT')}₫</span>
                                     <div className="label_product d-inline-block">
                                         <div className="label_wrapper">
-                                            - {product.productPriceEntity.discount}%
+                                            - {product.sizeColorProductsEntity[0].discount}%
                                         </div>
                                     </div>
 

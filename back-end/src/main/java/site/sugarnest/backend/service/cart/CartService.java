@@ -70,7 +70,7 @@ public class CartService {
             cartItem = existingCartItemOpt.get();
             int newQuantity = cartItem.getQuantity() + cartItemRequest.getQuantity();
             cartItem.setQuantity(newQuantity);
-            cartItem.setPrice(product.getProductPriceEntity().getDiscountPrice() * newQuantity);
+            cartItem.setPrice(product.getSizeColorProductsEntity().get(1).getDiscountPrice() * newQuantity);
         } else {
             cartItem = new CartItemEntity();
             cartItem.setCartEntity(cart);
@@ -78,7 +78,7 @@ public class CartService {
             cartItem.setQuantity(cartItemRequest.getQuantity());
             cartItem.setProductSize(cartItemRequest.getProductSize());
             cartItem.setProductColor(cartItemRequest.getProductColor());
-            cartItem.setPrice(product.getProductPriceEntity().getDiscountPrice() * cartItemRequest.getQuantity());
+            cartItem.setPrice(product.getSizeColorProductsEntity().get(1).getDiscountPrice() * cartItemRequest.getQuantity());
             cart.getCartItems().add(cartItem);
         }
 
@@ -128,7 +128,7 @@ public class CartService {
         CartItemEntity cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() -> new RuntimeException("CartItem not found"));
 
         cartItem.setQuantity(cartItem.getQuantity() + 1);
-        cartItem.setPrice(cartItem.getProductEntity().getProductPriceEntity().getDiscountPrice() * cartItem.getQuantity());
+        cartItem.setPrice(cartItem.getProductEntity().getSizeColorProductsEntity().get(1).getDiscountPrice() * cartItem.getQuantity());
 
         cartItemRepository.save(cartItem);
         cart.setUpdatedAt(new Date());
@@ -153,7 +153,7 @@ public class CartService {
             cartItemRepository.delete(cartItem);
         } else {
             cartItem.setQuantity(newQuantity);
-            cartItem.setPrice(cartItem.getProductEntity().getProductPriceEntity().getDiscountPrice() * cartItem.getQuantity());
+            cartItem.setPrice(cartItem.getProductEntity().getSizeColorProductsEntity().get(1).getDiscountPrice() * cartItem.getQuantity());
             cartItemRepository.save(cartItem);
         }
 
