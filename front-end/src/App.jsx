@@ -4,6 +4,7 @@ import Footer from './client/layout/Footer.jsx'
 import ListProductComponent from './client/pages/ProductsPage.jsx'
 import ProductComponent from './client/pages/ProductDetailPage.jsx'
 import LoginComponent from './client/pages/LoginPage.jsx'
+import RegisterPage from './client/pages/RegisterPage.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import CartComponents from './client/components/CartComponents.jsx'
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginComponent />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/products" element={<ListProductComponent />} />
           <Route path="/products/:id" element={<ProductComponent/>} />
           <Route path="cart" element={<CartComponents />} />

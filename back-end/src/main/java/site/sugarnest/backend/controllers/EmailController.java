@@ -32,4 +32,5 @@ public class EmailController {
                 .message("Correct the verification code")
                 .build();
     }
+
 }

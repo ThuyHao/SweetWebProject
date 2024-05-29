@@ -10,4 +10,6 @@ public interface IAccountService{
     List<AccountResponse> findAll();
     AccountResponse findById(Long id);
     AccountResponse getMyInfo();
+    String forgetPasswordVerifyByEmail(String email);
+    boolean checkVerifyCodeForgetPass(String email, String verificationCode);
 }

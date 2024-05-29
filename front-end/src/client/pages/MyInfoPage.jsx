@@ -37,7 +37,7 @@ const LoginPage = () => {
                             <p className="mb-0">
                                 Bạn chưa có tài khoản ?
                                 <a
-                                    href="src\client\pages\RegisterPage.jsx"
+                                    href="/account/register"
                                     className="btn-link-style btn-register"
                                     style={{ textDecoration: "underline" }}
                                 >
@@ -69,16 +69,16 @@ const LoginPage = () => {
                                             <div className="form-signup clearfix">
                                                 <fieldset className="form-group">
                                                     <label>
-                                                        Tên tài khoản <span className="required">*</span>
+                                                        Email <span className="required">*</span>
                                                     </label>
                                                     <input
-                                                        type="text"
+                                                        type="email"
                                                         pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$"
                                                         className="form-control "
                                                         defaultValue=""
-                                                        name="account"
-                                                        id="customer_account"
-                                                        placeholder="Tên tài khoản"
+                                                        name="email"
+                                                        id="customer_email"
+                                                        placeholder="Email"
                                                         required=""
                                                         fdprocessedid="jatzu"
                                                     />

@@ -1,4 +1,5 @@
-package site.sugarnest.backend.dto.dto;
+package site.sugarnest.backend.dto.request;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SendEmailDto {
+public class EmailRequest {
     private String email;
-    private String verificationCode;
 }

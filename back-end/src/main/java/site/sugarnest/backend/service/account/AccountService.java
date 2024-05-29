@@ -2,6 +2,7 @@ package site.sugarnest.backend.service.account;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +30,9 @@ public class AccountService implements IAccountService {
     private IAccountRepository iAccountRepository;
     private IAccountMapper iAccountMapper;
     private EmailService emailService;
-    IRoleRepository roleRepository;
+    private IRoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+    private final String verificationCode = UUID.randomUUID().toString();
 
     public void createAccount(AccountRequest accountDto) {
         if (iAccountRepository.findByEmail(accountDto.getEmail()).isPresent()) {
@@ -40,8 +43,6 @@ public class AccountService implements IAccountService {
         }
 
         AccountEntity accountEntity = iAccountMapper.mapToAccountEntity(accountDto);
-
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         accountEntity.setPassword(passwordEncoder.encode(accountDto.getPassword()));
         accountEntity.setCurrentPassword(passwordEncoder.encode(accountDto.getPassword()));
 
@@ -54,7 +55,6 @@ public class AccountService implements IAccountService {
         // Set role
         accountEntity.setRoles(new HashSet<>(Collections.singletonList(roleRepository.findById("USER").orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXITED)))));
 
-        String verificationCode = UUID.randomUUID().toString();
         accountEntity.setVerificationCode(passwordEncoder.encode(verificationCode));
         emailService.sendMail(accountDto.getEmail(), "Xác thực email", verificationCode);
 
@@ -63,15 +63,14 @@ public class AccountService implements IAccountService {
         iAccountMapper.mapToAccountDto(accountEntity);
     }
 
-//    @PreAuthorize("hasAuthority('APPROVE_POST')")
+    //    @PreAuthorize("hasAuthority('APPROVE_POST')")
     @Override
     public List<AccountResponse> findAll() {
         List<AccountEntity> accountEntities = iAccountRepository.findAll();
-        List<AccountResponse> accountDtos = accountEntities.stream().map(iAccountMapper::mapToAccountDto).toList();
-        return accountDtos;
+        return accountEntities.stream().map(iAccountMapper::mapToAccountDto).toList();
     }
 
-//    @PostAuthorize("returnObject.email == authentication.name")
+    //    @PostAuthorize("returnObject.email == authentication.name")
     @Override
     public AccountResponse findById(Long id) {
         AccountEntity accountEntity = iAccountRepository.findById(id)
@@ -89,6 +88,27 @@ public class AccountService implements IAccountService {
         return iAccountMapper.mapToAccountDto(accountEntity);
     }
 
+    @Override
+    public String forgetPasswordVerifyByEmail(String email) {
+        AccountEntity accountEntity = iAccountRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
+        emailService.sendMail(email, "Your New Password", verificationCode);
+        accountEntity.setVerificationCode(passwordEncoder.encode(verificationCode));
+        iAccountRepository.save(accountEntity);
+        return "ok";
+    }
+
+    @Override
+    public boolean checkVerifyCodeForgetPass(String email, String verificationCode) {
+        AccountEntity accountEntity = iAccountRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
+        boolean res = false;
+        if (passwordEncoder.matches(verificationCode, accountEntity.getVerificationCode())) {
+                res = true;
+
+        }
+        return res;
+    }
 
     public void updateAccount(AccountResponse accountDto) {
         AccountEntity accountEntity = iAccountRepository.findByEmail(accountDto.getEmail())

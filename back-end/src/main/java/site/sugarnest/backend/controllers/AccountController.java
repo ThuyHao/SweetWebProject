@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import site.sugarnest.backend.dto.dto.ApiResponse;
+import site.sugarnest.backend.dto.dto.SendEmailDto;
 import site.sugarnest.backend.dto.request.AccountRequest;
+import site.sugarnest.backend.dto.request.EmailRequest;
 import site.sugarnest.backend.dto.response.AccountResponse;
 import site.sugarnest.backend.service.account.IAccountService;
 
@@ -47,13 +49,31 @@ public class AccountController {
                 .build();
     }
 
-    @GetMapping("/myInfo")
+    @GetMapping("/myinfo")
     public ApiResponse<AccountResponse> getMyInfo() {
         return ApiResponse.<AccountResponse>builder()
                 .code(200)
                 .message("Success")
                 .result(iAccountService.getMyInfo())
                 .build();
+    }
+
+    @PostMapping("/forgetpass")
+    public ApiResponse<String> forgetPass(@RequestBody EmailRequest emailRequest) {
+        return ApiResponse.<String>builder()
+                .code(200)
+                .message("Success")
+                .result(iAccountService.forgetPasswordVerifyByEmail(emailRequest.getEmail()))
+                .build();
+    }
+
+    @PostMapping("/checkforgetpass")
+    public ApiResponse<Boolean> checkForgetPass(@RequestBody SendEmailDto sendEmailDto){
+        return ApiResponse.<Boolean>builder()
+                .code(200)
+                .result(iAccountService.checkVerifyCodeForgetPass(sendEmailDto.getEmail(), sendEmailDto.getVerificationCode()))
+                .build();
+
     }
 
 }

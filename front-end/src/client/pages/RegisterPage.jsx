@@ -28,7 +28,7 @@ const LoginPage = () => {
 
     return (
         <div>
-            <Breadcrumb/>
+            <Breadcrumb />
             <section className="section">
                 <div className="container margin-bottom-20 card py-20">
                     <div className="wrap_background_aside margin-bottom-40 page_login">
@@ -37,7 +37,7 @@ const LoginPage = () => {
                             <p className="mb-0">
                                 Bạn chưa có tài khoản ?
                                 <a
-                                    href="src\client\pages\RegisterPage.jsx"
+                                    href="/account/register"
                                     className="btn-link-style btn-register"
                                     style={{ textDecoration: "underline" }}
                                 >
@@ -69,7 +69,7 @@ const LoginPage = () => {
                                             <div className="form-signup clearfix">
                                                 <fieldset className="form-group">
                                                     <label>
-                                                        Tên tài khoản <span className="required">*</span>
+                                                        Account <span className="required">*</span>
                                                     </label>
                                                     <input
                                                         type="text"
@@ -77,8 +77,8 @@ const LoginPage = () => {
                                                         className="form-control "
                                                         defaultValue=""
                                                         name="account"
-                                                        id="customer_account"
-                                                        placeholder="Tên tài khoản"
+                                                        id="account"
+                                                        placeholder="account"
                                                         required=""
                                                         fdprocessedid="jatzu"
                                                     />
