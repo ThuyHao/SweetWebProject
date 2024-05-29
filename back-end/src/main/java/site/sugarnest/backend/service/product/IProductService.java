@@ -12,6 +12,8 @@ public interface IProductService {
 
     Page<ProductDto> getAllProduct(Pageable pageable);
 
+    List<ProductDto> getProductByAdmin();
+
     List<ProductDto> findProductByCategoryId(Long categoryId, int limit);
 
     ProductDto getProductById(Long productId);

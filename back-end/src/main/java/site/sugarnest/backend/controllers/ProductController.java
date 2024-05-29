@@ -51,7 +51,14 @@ public class ProductController {
                 .result(Map.of("content", listProductDto.getContent(), "totalPages", totalPages))
                 .build();
     }
-
+    @GetMapping("/admin")
+    public ApiResponse<List<ProductDto>> getProductByAdmin() {
+        List<ProductDto> productDtos = iProductService.getProductByAdmin();
+        return ApiResponse.<List<ProductDto>>builder()
+                .message("Success")
+                .result(productDtos)
+                .build();
+    }
     @GetMapping("/category/{id}/limit/{limit}")
     public ApiResponse<List<ProductDto>> findProductByCategoryId(@PathVariable("id") Long categoryId, @PathVariable("limit") int limit) {
         List<ProductDto> productDtos = iProductService.findProductByCategoryId(categoryId, limit);

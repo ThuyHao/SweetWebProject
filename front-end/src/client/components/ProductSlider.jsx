@@ -79,7 +79,7 @@ const ProductSlider = ({ product }) => {
                             <div className="product-detail-left product-images bg-white py-3 col-12 col-lg-6 overflow-hidden">
                                 <div className="section slickthumb_relative_product_1">
                                     <Slider {...settingsForThumbnails} id="gallery_02">
-                                        {product.imageProducts.map((imageProduct, index) => (
+                                        {product.imageProductEntity.map((imageProduct, index) => (
                                             <div className={`item ${shiftIndex === index ? 'selected' : ''}`} key={index}>
                                                 <a onClick={() => handleButtonClickShift(index)} data-zoom-image={imageProduct.image}>
                                                     <img className="img-fluid" data-img={imageProduct.image} src={imageProduct.image} alt={`Image ${index}`} loading="lazy" />
@@ -90,7 +90,7 @@ const ProductSlider = ({ product }) => {
                                 </div>
                                 <div className="pt-0 col_large_default large-image">
                                     <Slider {...settingsForMainCarousel} id="gallery_1" afterChange={handleProductInit}>
-                                        {product.imageProducts.map((imageProduct, index) => (
+                                        {product.imageProductEntity.map((imageProduct, index) => (
                                             <div className="item"
                                                 data-src={imageProduct.image} key={index}>
                                                 <a onClick={() => handleImageClick(index)} className="d-block pos-relative embed-responsive embed-responsive-1by1">
@@ -107,7 +107,7 @@ const ProductSlider = ({ product }) => {
                                             </div>
                                         ))}
                                     </Slider>
-                                    <ModalZoom images={product.imageProducts} isOpen={modalIsOpen} onClose={closeModal} selectedImageIndex={selectedImageIndex} />
+                                    <ModalZoom images={product.imageProductEntity} isOpen={modalIsOpen} onClose={closeModal} selectedImageIndex={selectedImageIndex} />
                                     <div className='share-group d-flex justify-content-center align-items-center mt-5'>
                                         <strong className='share-group__heading mr-3'>Chia sẻ</strong>
                                         <div className='share-group__list'>

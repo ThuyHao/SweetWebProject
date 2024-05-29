@@ -87,17 +87,17 @@ const AddtoCart = ({ product }) => {
                     </span>
                 </div>
                 <div className="price-box">
-                    <span className="special-price"><span className="price product-price">{parseInt(product.productPriceEntity.discountPrice).toLocaleString('it-IT')}₫</span>
+                    <span className="special-price"><span className="price product-price">{parseInt(product.sizeColorProductsEntity[0].discountPrice).toLocaleString('it-IT')}₫</span>
                     </span>
                     <span className="old-price">
-                        <del className=" product-price-old sale">{parseInt(product.productPriceEntity.listPrice).toLocaleString('it-IT')}₫</del>
+                        <del className=" product-price-old sale">{parseInt(product.sizeColorProductsEntity[0].listPrice).toLocaleString('it-IT')}₫</del>
                     </span>
 
                     <div className="label_product">
-                        - {product.productPriceEntity.discount}%
+                        - {product.sizeColorProductsEntity[0].discount}%
                     </div>
                     <div className="save-price">
-                        (Tiết kiệm: <span>{parseInt(product.productPriceEntity.listPrice - product.productPriceEntity.discountPrice).toLocaleString('it-IT')}₫</span>)
+                        (Tiết kiệm: <span>{parseInt(product.sizeColorProductsEntity[0].listPrice - product.sizeColorProductsEntity[0].discountPrice).toLocaleString('it-IT')}₫</span>)
                     </div>
                 </div>
                 <span className="product-promo-tag product-promo-tag--2 product-promo-tag--image"
