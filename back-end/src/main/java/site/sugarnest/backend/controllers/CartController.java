@@ -2,7 +2,7 @@ package site.sugarnest.backend.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import site.sugarnest.backend.dto.dto.ApiResponse;
+import site.sugarnest.backend.dto.response.ApiResponse;
 import site.sugarnest.backend.dto.request.CartItemRequest;
 import site.sugarnest.backend.dto.response.CartItemResponse;
 import site.sugarnest.backend.entities.CartEntity;

@@ -2,7 +2,7 @@ package site.sugarnest.backend.controllers;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import site.sugarnest.backend.dto.dto.ApiResponse;
+import site.sugarnest.backend.dto.response.ApiResponse;
 import site.sugarnest.backend.dto.request.RoleRequest;
 import site.sugarnest.backend.dto.response.RoleResponse;
 import site.sugarnest.backend.service.Athorization.RoleService;
