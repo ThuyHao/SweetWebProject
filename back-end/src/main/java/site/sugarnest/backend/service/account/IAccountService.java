@@ -10,4 +10,5 @@ public interface IAccountService{
     List<AccountResponse> findAll();
     AccountResponse findById(Long id);
     AccountResponse getMyInfo();
+    boolean checkExistedEmail(String email);
 }

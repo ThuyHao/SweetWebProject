@@ -9,6 +9,8 @@ import site.sugarnest.backend.entities.CartEntity;
 import site.sugarnest.backend.entities.CartItemEntity;
 import site.sugarnest.backend.entities.ProductEntity;
 import site.sugarnest.backend.entities.AccountEntity;
+import site.sugarnest.backend.exception.AppException;
+import site.sugarnest.backend.exception.ErrorCode;
 import site.sugarnest.backend.mapper.ICartMapper;
 import site.sugarnest.backend.reponsitoties.IAccountRepository;
 import site.sugarnest.backend.reponsitoties.ICartItemRepository;
@@ -167,7 +169,7 @@ public class CartService {
 
     public CartEntity getCartByAccountId(Long accountId) {
         AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
-        return cartRepository.findByAccountEntity(account).orElseThrow(() -> new RuntimeException("Cart not found"));
+        return cartRepository.findByAccountEntity(account).orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
     }
 
     public List<CartItemEntity> getCartItemsByCartId(Integer cartId) {
@@ -176,7 +178,7 @@ public class CartService {
 
     public Integer getTotalItemsInCart(Long accountId) {
         AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
-        CartEntity cart = cartRepository.findByAccountEntity(account).orElseThrow(() -> new RuntimeException("Cart not found"));
+        CartEntity cart = cartRepository.findByAccountEntity(account).orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
         List<CartItemEntity> cartItems = getCartItemsByCartId(cart.getId());
         return cartItems.stream().mapToInt(CartItemEntity::getQuantity).sum();
     }
@@ -189,6 +191,6 @@ public class CartService {
         var context = SecurityContextHolder.getContext();
         String accountName = context.getAuthentication().getName();
         AccountEntity account = accountRepository.findByAccountName(accountName).orElseThrow(() -> new RuntimeException("Account not found"));
-        return cartRepository.findByAccountEntity(account).orElseThrow(() -> new RuntimeException("Cart not found"));
+        return cartRepository.findByAccountEntity(account).orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
     }
 }
