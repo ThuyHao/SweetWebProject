@@ -1,4 +1,4 @@
-package site.sugarnest.backend.dto.dto;
+package site.sugarnest.backend.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

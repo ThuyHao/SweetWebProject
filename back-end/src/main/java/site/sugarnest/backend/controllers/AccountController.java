@@ -1,11 +1,9 @@
 package site.sugarnest.backend.controllers;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import site.sugarnest.backend.dto.dto.ApiResponse;
+import site.sugarnest.backend.dto.request.EmailExistResquest;
+import site.sugarnest.backend.dto.response.ApiResponse;
 import site.sugarnest.backend.dto.request.AccountRequest;
 import site.sugarnest.backend.dto.response.AccountResponse;
 import site.sugarnest.backend.service.account.IAccountService;
@@ -54,6 +52,22 @@ public class AccountController {
                 .message("Success")
                 .result(iAccountService.getMyInfo())
                 .build();
+    }
+
+    @PostMapping("/checkEmail")
+    public ApiResponse<String> checkExistedEmail(@RequestBody EmailExistResquest emailExistRequest) {
+        if (iAccountService.checkExistedEmail(emailExistRequest.getEmail())) {
+            return ApiResponse.<String>builder()
+                    .code(200)
+                    .result("true")
+                    .build();
+        }else {
+            return ApiResponse.<String>builder()
+                    .code(404)
+                    .result("false")
+                    .build();
+        }
+
     }
 
 }

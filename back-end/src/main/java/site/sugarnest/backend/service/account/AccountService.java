@@ -15,10 +15,7 @@ import site.sugarnest.backend.mapper.IAccountMapper;
 import site.sugarnest.backend.reponsitoties.IAccountRepository;
 import site.sugarnest.backend.reponsitoties.IRoleRepository;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Slf4j
@@ -32,11 +29,9 @@ public class AccountService implements IAccountService {
     IRoleRepository roleRepository;
 
     public void createAccount(AccountRequest accountDto) {
+        System.out.println(accountDto);
         if (iAccountRepository.findByEmail(accountDto.getEmail()).isPresent()) {
             throw new AppException(ErrorCode.ACCOUNT_EXITED);
-        }
-        if (iAccountRepository.findByPhone(accountDto.getPhone()).isPresent()) {
-            throw new AppException(ErrorCode.PHONE_EXISTED);
         }
 
         AccountEntity accountEntity = iAccountMapper.mapToAccountEntity(accountDto);
@@ -63,7 +58,7 @@ public class AccountService implements IAccountService {
         iAccountMapper.mapToAccountDto(accountEntity);
     }
 
-//    @PreAuthorize("hasAuthority('APPROVE_POST')")
+    //    @PreAuthorize("hasAuthority('APPROVE_POST')")
     @Override
     public List<AccountResponse> findAll() {
         List<AccountEntity> accountEntities = iAccountRepository.findAll();
@@ -71,7 +66,7 @@ public class AccountService implements IAccountService {
         return accountDtos;
     }
 
-//    @PostAuthorize("returnObject.email == authentication.name")
+    //    @PostAuthorize("returnObject.email == authentication.name")
     @Override
     public AccountResponse findById(Long id) {
         AccountEntity accountEntity = iAccountRepository.findById(id)
@@ -88,9 +83,17 @@ public class AccountService implements IAccountService {
         return iAccountMapper.mapToAccountDto(accountEntity);
     }
 
-
     public void updateAccount(AccountResponse accountDto) {
         AccountEntity accountEntity = iAccountRepository.findByEmail(accountDto.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_EXITED));
+    }
+
+    @Override
+    public boolean checkExistedEmail(String email) {
+        if (iAccountRepository.findByEmail(email).isPresent()) {
+            return true;
+        }else {
+            return false;
+        }
     }
 }

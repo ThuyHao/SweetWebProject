@@ -20,6 +20,7 @@ public enum ErrorCode {
     VERIFICATION_ACCOUNT_INCORRECT_CODE(1010, "Incorrect Verification Code", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED(1011, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1012, "Unauthorized", HttpStatus.FORBIDDEN),
+    CART_NOT_FOUND(1013, "Cart Not Found", HttpStatus.NOT_FOUND),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
