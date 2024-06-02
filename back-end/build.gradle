@@ -42,5 +42,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'com.paypal.sdk:rest-api-sdk:1.14.0'
     implementation 'com.paypal.sdk:paypal-core:1.7.2'
+    implementation 'com.twelvemonkeys.imageio:imageio-webp:3.8.1'
 }
 

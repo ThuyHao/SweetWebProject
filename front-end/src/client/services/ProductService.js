@@ -11,3 +11,5 @@ export const getCartByAccountId = (accountId) => axios.get(`${REST_API_BASE_URL}
 export const loginToken = (accountName, password) => axios.post(`${REST_API_BASE_URL}/auth/login`, { accountName, password });
 export const getTotalItemsInCart = (accountId) => axios.get(`${REST_API_BASE_URL}/carts/total-items/${accountId}`);
 export const removeCartItem = (accountId,cartItemId) => axios.delete(`${REST_API_BASE_URL}/carts/remove-item/?${accountId}&${cartItemId}`);
+
+export const urlImage = "http://localhost:8080/sugarnest/v0.1/images/";

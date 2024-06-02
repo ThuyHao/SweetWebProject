@@ -8,16 +8,15 @@ import ReusableTableComponent from './ReusableTableComponent';
 import EmlementButtonComponent from './EmlementButtonComponent';
 import AppTitleComponent from './AppTitleComponent';
 import { render } from 'react-dom';
+import { urlImage } from '../../client/services/ProductService';
 
 const AdminProductComponent = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
-
   useEffect(() => {
     axios.get('http://localhost:8080/sugarnest/v0.1/products/admin')
       .then(response => {
         if (response.data.code === 0) {
-          console.log(response.data.result);
           setData(response.data.result.map(item => ({
             key: item.id,
             productCode: item.id,
@@ -81,7 +80,7 @@ const AdminProductComponent = () => {
       title: 'Ảnh',
       dataIndex: 'image',
       key: 'image',
-      render: (text) => <img className="img-card-person" src={text} alt="" />,
+      render: (text) => <img className="img-card-person" src={urlImage+text} alt="" />,
     },
     {
       title: 'Tình trạng',

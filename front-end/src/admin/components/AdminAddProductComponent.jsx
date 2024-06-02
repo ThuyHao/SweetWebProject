@@ -6,69 +6,20 @@ import axios from 'axios';
 
 const AdminAddProductComponent = () => {
     const navigate = useNavigate()
+    const [producers, setProducers] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [suppliers, setSuppliers] = useState([]);
+    const [products, setProducts] = useState([{ size: '', color: '', quantity: '', listPrice: '', discount: '' }]);
+    const [mainImage, setMainImage] = useState(null);
+    const [descriptionImages, setDescriptionImages] = useState([]);
+    const [productName, setProductName] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [selectedProducer, setSelectedProducer] = useState('');
+    const [selectedSupplier, setSelectedSupplier] = useState('');
+    const [productDescription, setProductDescription] = useState('');
     function getProductManager() {
         navigate('/admin/product-manager')
     }
-
-    const [categories, setCategories] = useState([]);
-    const fetchCategories = () => {
-        axios.get('http://localhost:8080/sugarnest/v0.1/categories/all')
-            .then(response => {
-                if (response.status === 200) {
-                    setCategories(response.data.result);
-                } else {
-                    console.error('Lỗi khi lấy danh sách danh mục:', error);
-                }
-            })
-            .catch(error => {
-                console.error('Lỗi khi lấy danh sách danh mục:', error);
-            });
-    };
-
-    useEffect(() => {
-        fetchCategories();
-    }, []);
-
-    const [producers, setProducers] = useState([]);
-    const fetchProducers = () => {
-        axios.get('http://localhost:8080/sugarnest/v0.1/producers/all')
-            .then(response => {
-                if (response.status === 200) {
-                    setProducers(response.data.result);
-                } else {
-                    console.error('Lỗi khi lấy danh sách nhà sản xuất:', error);
-                }
-            })
-            .catch(error => {
-                console.error('Lỗi khi lấy danh sách nhà sản xuất:', error);
-            });
-    };
-
-    useEffect(() => {
-        fetchProducers();
-    }, []);
-
-    const [suppliers, setSuppliers] = useState([]);
-
-    const fetchSuppliers = () => {
-        axios.get('http://localhost:8080/sugarnest/v0.1/suppliers/all')
-            .then(response => {
-                if (response.status === 200) {
-                    setSuppliers(response.data.result);
-                } else {
-                    console.error('Lỗi khi lấy danh sách nhà cung cấp:', error);
-                }
-            })
-            .catch(error => {
-                console.error('Lỗi khi lấy danh sách nhà cung cấp:', error);
-            });
-    };
-
-    useEffect(() => {
-        fetchSuppliers();
-    }, []);
-
-
     const handleAddCategory = () => {
         Swal.fire({
             title: 'Nhập tên danh mục',
@@ -110,7 +61,6 @@ const AdminAddProductComponent = () => {
             }
         });
     };
-
     const handleAddProducer = () => {
         Swal.fire({
             title: 'Nhập tên nhà sản xuất',
@@ -193,6 +143,216 @@ const AdminAddProductComponent = () => {
             }
         });
     };
+    const fetchCategories = () => {
+        axios.get('http://localhost:8080/sugarnest/v0.1/categories/all')
+            .then(response => {
+                if (response.status === 200) {
+                    setCategories(response.data.result);
+                } else {
+                    console.error('Lỗi khi lấy danh sách danh mục:', error);
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi khi lấy danh sách danh mục:', error);
+            });
+    };
+    const fetchProducers = () => {
+        axios.get('http://localhost:8080/sugarnest/v0.1/producers/all')
+            .then(response => {
+                if (response.status === 200) {
+                    setProducers(response.data.result);
+                } else {
+                    console.error('Lỗi khi lấy danh sách nhà sản xuất:', error);
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi khi lấy danh sách nhà sản xuất:', error);
+            });
+    };
+    const fetchSuppliers = () => {
+        axios.get('http://localhost:8080/sugarnest/v0.1/suppliers/all')
+            .then(response => {
+                if (response.status === 200) {
+                    setSuppliers(response.data.result);
+                } else {
+                    console.error('Lỗi khi lấy danh sách nhà cung cấp:', error);
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi khi lấy danh sách nhà cung cấp:', error);
+            });
+    };
+    useEffect(() => {
+        fetchCategories();
+        fetchProducers();
+        fetchSuppliers();
+    }, []);
+
+    const handleInputChange = (index, event) => {
+        const { name, value } = event.target;
+        const newProducts = [...products];
+        newProducts[index][name] = value;
+        setProducts(newProducts);
+    };
+
+    const addProduct = () => {
+        setProducts([...products, { size: '', color: '', quantity: '', listPrice: '', discount: '' }]);
+    };
+
+    const removeProduct = (index) => {
+        if (products.length > 1) {
+            const newProducts = products.filter((_, i) => i !== index);
+            setProducts(newProducts);
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Không thể xóa',
+                text: 'Phải có ít nhất một hàng trong bảng sản phẩm.',
+            });
+        }
+    };
+    const handleMainImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setMainImage(file);
+        }
+    };
+
+    const handleDescriptionImagesChange = (event) => {
+        const files = Array.from(event.target.files);
+        if (files.length + descriptionImages.length > 4) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Không thể tải lên',
+                text: 'Chỉ có thể chọn tối đa 4 ảnh mô tả.',
+            });
+        } else {
+            setDescriptionImages(prevImages => [
+                ...prevImages,
+                ...files
+            ]);
+        }
+    };
+
+    const removeMainImage = () => {
+        setMainImage(null);
+    };
+
+    const removeDescriptionImage = (index) => {
+        setDescriptionImages(descriptionImages.filter((_, i) => i !== index));
+    };
+
+    const handleUploadImages = async () => {
+        try {
+            let mainImageUrl = '';
+            const descriptionImageUrls = [];
+
+            if (mainImage) {
+                console.log(mainImage);
+                const formData = new FormData();
+                formData.append('file', mainImage);
+
+                const response = await axios.post('http://localhost:8080/sugarnest/v0.1/uploadFile', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                });
+
+                mainImageUrl = response.data.result;
+            }
+
+            for (const file of descriptionImages) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const response = await axios.post('http://localhost:8080/sugarnest/v0.1/uploadFile', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                });
+
+                descriptionImageUrls.push(response.data.result);
+            }
+
+            return { mainImageUrl, descriptionImageUrls };
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi khi tải lên hình ảnh',
+                text: error.message,
+            });
+            throw error;
+        }
+    };
+
+
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        if (mainImage == null) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Vui lòng chọn hình ảnh chính của sản phẩm!',
+                text: 'Để sản phẩm hiển thị đẹp hơn, vui lòng chọn hình ảnh chính của sản phẩm.',
+            });
+            return;
+        }
+
+        try {
+            const { mainImageUrl, descriptionImageUrls } = await handleUploadImages();
+
+            const payloadJSON = {
+                "nameProduct": productName,
+                "description": productDescription,
+                "isActive": true,
+                "isDelete": false,
+                "status": "Còn hàng",
+                "supplierEntity": {
+                    "id": selectedSupplier
+                },
+                "producerEntity": {
+                    "id": selectedProducer
+                },
+                "categoryEntity": {
+                    "id": selectedCategory
+                },
+                "sizeColorProductsEntity": products.map(product => {
+                    return {
+                        "size": product.size,
+                        "color": product.color,
+                        "listPrice": product.listPrice,
+                        "discount": product.discount,
+                        "inventoryEntity": {
+                            "quantity": product.quantity
+                        }
+                    };
+                }),
+                "imageProductEntity": [
+                    {
+                        "image": mainImageUrl
+                    },
+                    ...descriptionImageUrls.map(url => {
+                        return {
+                            "image": url
+                        };
+                    })
+                ]
+            };
+            const response = await axios.post('http://localhost:8080/sugarnest/v0.1/products', payloadJSON);
+
+            if (response.status === 200) {
+                Swal.fire('Thành công!', 'Sản phẩm đã được thêm thành công', 'success').then(() => {
+                    navigate('/admin/product-manager');
+                });
+            } else {
+                throw new Error('Lỗi khi thêm sản phẩm');
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi khi thêm sản phẩm',
+                text: error.message,
+            });
+        }
+    };
+
     return (
         <main className="app-content">
             <AppTitleComponent />
@@ -218,16 +378,24 @@ const AdminAddProductComponent = () => {
                                     </a>
                                 </div>
                             </div>
-                            <form className="row">
+                            <form className="row" onSubmit={handleSubmit}>
                                 <div className="form-group col-md-3">
                                     <label className="control-label">Tên sản phẩm</label>
-                                    <input className="form-control" type="text" />
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="productName"
+                                        value={productName}
+                                        onChange={(e) => setProductName(e.target.value)}
+                                        required
+                                    />
                                 </div>
                                 <div className="form-group col-md-3">
-                                    <label htmlFor="exampleSelect2" className="control-label">
+                                    <label htmlFor="category" className="control-label">
                                         Danh mục
                                     </label>
-                                    <select className="form-control" id="exampleSelect2">
+                                    <select className="form-control" value={selectedCategory}
+                                        onChange={(e) => setSelectedCategory(e.target.value)} required name="category" id="category">
                                         <option>-- Chọn danh mục --</option>
                                         {categories.map(category => (
                                             <option key={category.id} value={category.id}>
@@ -237,10 +405,16 @@ const AdminAddProductComponent = () => {
                                     </select>
                                 </div>
                                 <div className="form-group col-md-3">
-                                    <label htmlFor="exampleSelect1" className="control-label">
+                                    <label htmlFor="producer" className="control-label">
                                         Nhà sản xuất
                                     </label>
-                                    <select className="form-control" id="exampleSelect1">
+                                    <select
+                                        className="form-control"
+                                        id="producer"
+                                        value={selectedProducer}
+                                        onChange={(e) => setSelectedProducer(e.target.value)}
+                                        required
+                                    >
                                         <option>--  Nhà sản xuất --</option>
                                         {producers.map(producer => (
                                             <option key={producer.id} value={producer.id}>
@@ -251,10 +425,16 @@ const AdminAddProductComponent = () => {
                                 </div>
 
                                 <div className="form-group col-md-3">
-                                    <label htmlFor="exampleSelect3" className="control-label">
+                                    <label htmlFor="supplier" className="control-label">
                                         Nhà cung cấp
                                     </label>
-                                    <select className="form-control" id="exampleSelect3">
+                                    <select
+                                        className="form-control"
+                                        id="supplier"
+                                        value={selectedSupplier}
+                                        onChange={(e) => setSelectedSupplier(e.target.value)}
+                                        required
+                                    >
                                         <option>-- Chọn nhà cung cấp --</option>
                                         {suppliers.map(supplier => (
                                             <option key={supplier.id} value={supplier.id}>
@@ -273,103 +453,166 @@ const AdminAddProductComponent = () => {
                                             <th>Giảm giá</th>
                                             <th>Xóa</th>
                                         </tr>
-                                        <tr>
-                                            <td>
-                                                <input style={{ width: '100%' }} required="" type="text" name="size-1" />
-                                            </td>
-                                            <td>
-                                                <input style={{ width: '100%' }} required="" type="text" name="color-1" />
-                                            </td>
-                                            <td>
-                                                <input style={{ width: '100%' }} required="" type="text" name="quantity-1" />
-                                            </td>
-                                            <td>
-                                                <input style={{ width: '100%' }} required="" type="text" name="discount-1" />
-                                            </td>
-                                            <td>
-                                                <input style={{ width: '100%' }} required="" type="text" name="price-1" />
-                                            </td>
-                                            
-                                            <td>
-                                                <button className="btn btn-delete">
-                                                    Xóa
-                                                </button>
-                                            </td>
-                                        </tr>
+                                        {products.map((product, index) => (
+                                            <tr key={index}>
+                                                <td>
+                                                    <input
+                                                        style={{ width: '100%' }}
+                                                        required
+                                                        type="text"
+                                                        name="size"
+                                                        value={product.size}
+                                                        onChange={(e) => handleInputChange(index, e)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        style={{ width: '100%' }}
+                                                        required
+                                                        type="text"
+                                                        name="color"
+                                                        value={product.color}
+                                                        onChange={(e) => handleInputChange(index, e)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        style={{ width: '100%' }}
+                                                        required
+                                                        type="number"
+                                                        name="quantity"
+                                                        value={product.quantity}
+                                                        onChange={(e) => handleInputChange(index, e)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        style={{ width: '100%' }}
+                                                        required
+                                                        type="number"
+                                                        name="listPrice"
+                                                        value={product.listPrice}
+                                                        onChange={(e) => handleInputChange(index, e)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        style={{ width: '100%' }}
+                                                        required
+                                                        type="number"
+                                                        name="discount"
+                                                        max={100}
+                                                        value={product.discount}
+                                                        onChange={(e) => handleInputChange(index, e)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <button className="btn btn-delete trash" onClick={() => removeProduct(index)}>
+                                                        Xóa
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
-                                <button style={{ margin: '0 0 30px 10px' }} className="btn btn-add" type="button" >Thêm hàng</button>
+                                <button
+                                    style={{ margin: '0 0 30px 10px' }}
+                                    className="btn btn-add"
+                                    type="button"
+                                    onClick={addProduct}
+                                >
+                                    Thêm hàng
+                                </button>
 
                                 <div className="form-group col-md-12">
                                     <label className="control-label">Ảnh đại diện sản phẩm</label>
                                     <div id="myfileupload">
+                                        <label htmlFor="uploadfile-main" className="Choicefile" style={{ color: 'white', cursor: 'pointer' }}>
+                                            <i className="fas fa-cloud-upload-alt" /> Chọn ảnh
+                                        </label>
                                         <input
                                             type="file"
-                                            id="uploadfile"
+                                            id="uploadfile-main"
                                             name="ImageUpload"
+                                            onChange={handleMainImageChange}
+                                            style={{ display: 'none' }}
                                         />
                                     </div>
                                     <div id="thumbbox">
-                                        <img
-                                            height={450}
-                                            width={400}
-                                            alt="Thumb image"
-                                            id="thumbimage"
-                                            style={{ display: "none" }}
-                                        />
-                                        <a className="removeimg" />
-                                    </div>
-                                    <div id="boxchoice">
-                                        <a className="Choicefile" style={{ color: 'white' }}>
-                                            <i className="fas fa-cloud-upload-alt" /> Chọn ảnh
-                                        </a>
-                                        <p style={{ clear: "both" }} />
+                                        {mainImage && (
+                                            <div className="thumbimage-container">
+                                                <img
+                                                    height={450}
+                                                    width={400}
+                                                    alt="Thumb image"
+                                                    id="thumbimage"
+                                                    src={URL.createObjectURL(mainImage)}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="removeimg"
+                                                    onClick={removeMainImage}
+                                                >
+                                                    Xóa
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="form-group col-md-12">
                                     <label className="control-label">Ảnh mô tả sản phẩm</label>
                                     <div id="myfileupload">
+                                        <label htmlFor="uploadfile-description" className="Choicefile" style={{ color: 'white', cursor: 'pointer' }}>
+                                            <i className="fas fa-cloud-upload-alt" /> Chọn ảnh
+                                        </label>
                                         <input
                                             type="file"
-                                            id="uploadfile"
+                                            id="uploadfile-description"
                                             name="ImageUpload"
                                             multiple
+                                            onChange={handleDescriptionImagesChange}
+                                            style={{ display: 'none' }}
                                         />
                                     </div>
                                     <div id="thumbbox">
-                                        <img
-                                            height={450}
-                                            width={400}
-                                            alt="Thumb image"
-                                            id="thumbimage"
-                                            style={{ display: "none" }}
-                                        />
-                                        <a className="removeimg" />
-                                    </div>
-                                    <div id="boxchoice" style={{ color: 'white' }}>
-                                        <a className="Choicefile">
-                                            <i className="fas fa-cloud-upload-alt" /> Chọn ảnh
-                                        </a>
-                                        <p style={{ clear: "both" }} />
+                                        {descriptionImages.map((image, index) => (
+                                            <div key={index} className="thumbimage-container">
+                                                <img
+                                                    height={100}
+                                                    width={100}
+                                                    alt="Thumb image"
+                                                    src={URL.createObjectURL(image)}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="removeimg"
+                                                    onClick={() => removeDescriptionImage(index)}
+                                                >
+                                                    Xóa
+                                                </button>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                                 <div className="form-group col-md-12">
-                                    <label className="control-label">Mô tả sản phẩm</label>
+                                    <label htmlFor="productDescription">Mô tả sản phẩm</label>
                                     <textarea
                                         className="form-control"
-                                        name="mota"
-                                        id="mota"
-                                        defaultValue={""}
+                                        id="productDescription"
+                                        value={productDescription}
+                                        onChange={(e) => setProductDescription(e.target.value)}
+                                        required
                                     />
                                 </div>
+                                <button className="btn btn-save" type="sumit">
+                                    Lưu lại
+                                </button>
+                                <a style={{ marginLeft: 5 }} className="btn btn-cancel" onClick={getProductManager}>
+                                    Hủy bỏ
+                                </a>
                             </form>
                         </div>
-                        <button className="btn btn-save" type="button">
-                            Lưu lại
-                        </button>
-                        <a style={{ marginLeft: 5 }} className="btn btn-cancel" onClick={getProductManager}>
-                            Hủy bỏ
-                        </a>
+
                     </div>
                 </div>
             </div>
