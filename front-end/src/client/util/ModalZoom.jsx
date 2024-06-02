@@ -49,7 +49,7 @@ const ModalZoom = ({ images, isOpen, onClose, selectedImageIndex }) => {
       style={{
         overlay: {
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          zIndex: 9999
+          zIndex: 99999
         },
         content: {
           top: '50%',

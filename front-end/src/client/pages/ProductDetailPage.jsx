@@ -22,37 +22,25 @@ const ProductDetailComponent = () => {
         }
     }, [id]);
 
-    useEffect(() => {
-        const handleSeeMoreClick = (event) => {
-            const seeMore = event.currentTarget;
-            const contentWrapper = seeMore.closest('.js-content-wrapper');
-            const proContent = contentWrapper.querySelector('.js-content');
-            const proGetContent = contentWrapper.querySelector('.js-product-getcontent');
-            seeMore.classList.toggle("show");
-            if (seeMore.classList.contains('show')) {
-                proGetContent.style.maxHeight = "none";
-                seeMore.querySelector('button').innerHTML = 'Thu gọn';
-            } else {
-                proGetContent.style.maxHeight = "400px";
-                seeMore.querySelector('button').innerHTML = 'Xem thêm';
-                window.scrollTo({
-                    top: window.pageYOffset - 600,
-                    behavior: 'smooth'
-                });
-            }
-        };
+    const handleSeeMoreClick = (event) => {
+        const seeMore = event.currentTarget;
+        const contentWrapper = seeMore.closest('.js-content-wrapper');
+        const proContent = contentWrapper.querySelector('.js-content');
+        const proGetContent = contentWrapper.querySelector('.js-product-getcontent');
 
-        const seeMoreButtons = document.querySelectorAll('.js-seemore');
-        seeMoreButtons.forEach(button => {
-            button.addEventListener('click', handleSeeMoreClick);
-        });
-
-        return () => {
-            seeMoreButtons.forEach(button => {
-                button.removeEventListener('click', handleSeeMoreClick);
+        seeMore.classList.toggle("show");
+        if (seeMore.classList.contains('show')) {
+            proGetContent.style.maxHeight = "none";
+            seeMore.innerHTML = 'Thu gọn';
+        } else {
+            proGetContent.style.maxHeight = "400px";
+            seeMore.innerHTML = 'Xem thêm';
+            window.scrollTo({
+                top: window.pageYOffset - 600,
+                behavior: 'smooth'
             });
-        };
-    }, []);
+        }
+    };
 
     // facebook comment
     const dataHref = window.location.href;
@@ -101,8 +89,13 @@ const ProductDetailComponent = () => {
                                     </p>
                                 </div>
                             </div>
-                            <div className="js-seemore ega-pro__seemore text-center pos-relative mt-3">
-                                <button title="Xem thêm" className="btn btn-main btn-pill mx-auto">Xem thêm</button>
+                            <div className="ega-pro__seemore text-center pos-relative mt-3">
+                                <button
+                                    title="Xem thêm"
+                                    className="btn btn-main btn-pill mx-auto"
+                                    onClick={handleSeeMoreClick} >
+                                    Xem thêm
+                                </button>
                             </div>
                         </div>
                         <div className="col-12 col-md-4 pl-0 pl-md-3 product-right pr-0">

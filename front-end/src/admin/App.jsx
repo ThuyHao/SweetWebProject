@@ -13,6 +13,7 @@ import AdminAddProductComponent from './components/AdminAddProductComponent.jsx'
 import AdminRoleComponent from './components/AdminRoleComponent.jsx';
 import AdminDiscountComponent from './components/AdminDiscountComponent.jsx';
 import AdminLogCompopent from './components/AdminLogCompopent.jsx';
+import AdminUpdateProductComponent from './components/AdminUpdateProductComponent.jsx';
 
 function AppContent() {
   const location = useLocation();
@@ -30,6 +31,7 @@ function AppContent() {
         <Route path="/admin/account-role-manager" element={<AdminRoleComponent />} />
         <Route path="/admin/product-manager" element={<AdminProductComponent />} />
         <Route path="/admin/add-product" element={<AdminAddProductComponent />} />
+        <Route path="/admin/edit-product/:id" element={<AdminUpdateProductComponent />} />
         <Route path="/admin/order-manager" element={<AdminOrderComponent />} />
         <Route path="/admin/discount-manager" element={<AdminDiscountComponent />} />
         <Route path="/admin/report" element={<AdminReportComponent />} />

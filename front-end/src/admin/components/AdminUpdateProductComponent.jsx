@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'
-import AppTitleComponent from './AppTitleComponent'
+import { useNavigate, useParams } from 'react-router-dom';
+import AppTitleComponent from './AppTitleComponent';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 
-const AdminAddProductComponent = () => {
-    const navigate = useNavigate()
+const AdminUpdateProductComponent = () => {
+    const navigate = useNavigate();
+    const { id } = useParams();
     const [producers, setProducers] = useState([]);
     const [categories, setCategories] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
@@ -17,8 +18,9 @@ const AdminAddProductComponent = () => {
     const [selectedProducer, setSelectedProducer] = useState('');
     const [selectedSupplier, setSelectedSupplier] = useState('');
     const [productDescription, setProductDescription] = useState('');
+
     function getProductManager() {
-        navigate('/admin/product-manager')
+        navigate('/admin/product-manager');
     }
     const handleAddCategory = () => {
         Swal.fire({
@@ -143,50 +145,86 @@ const AdminAddProductComponent = () => {
             }
         });
     };
+    const fetchProduct = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/sugarnest/v0.1/products/${id}`);
+            if (response.status === 200) {
+                const product = response.data.result;
+                setProductName(product.nameProduct);
+                setProductDescription(product.description);
+                setSelectedCategory(product.categoryEntity.id);
+                setSelectedProducer(product.producerEntity.id);
+                setSelectedSupplier(product.supplierEntity.id);
+                setProducts(product.sizeColorProductsEntity.map(item => ({
+                    size: item.size,
+                    color: item.color,
+                    quantity: item.inventoryEntity.quantity,
+                    listPrice: item.listPrice,
+                    discount: item.discount
+                })));
+                setMainImage(product.imageProductEntity[0].image);
+                setDescriptionImages(product.imageProductEntity.slice(1).map(image => image.image));
+            } else {
+                throw new Error('Lỗi khi lấy thông tin sản phẩm');
+            }
+        } catch (error) {
+            console.error('Lỗi khi lấy thông tin sản phẩm:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi khi lấy thông tin sản phẩm',
+                text: error.message,
+            });
+        }
+    };
+
     const fetchCategories = () => {
         axios.get('http://localhost:8080/sugarnest/v0.1/categories/all')
             .then(response => {
                 if (response.status === 200) {
                     setCategories(response.data.result);
                 } else {
-                    console.error('Lỗi khi lấy danh sách danh mục:', error);
+                    console.error('Lỗi khi lấy danh sách danh mục:', response.statusText);
                 }
             })
             .catch(error => {
                 console.error('Lỗi khi lấy danh sách danh mục:', error);
             });
     };
+
     const fetchProducers = () => {
         axios.get('http://localhost:8080/sugarnest/v0.1/producers/all')
             .then(response => {
                 if (response.status === 200) {
                     setProducers(response.data.result);
                 } else {
-                    console.error('Lỗi khi lấy danh sách nhà sản xuất:', error);
+                    console.error('Lỗi khi lấy danh sách nhà sản xuất:', response.statusText);
                 }
             })
             .catch(error => {
                 console.error('Lỗi khi lấy danh sách nhà sản xuất:', error);
             });
     };
+
     const fetchSuppliers = () => {
         axios.get('http://localhost:8080/sugarnest/v0.1/suppliers/all')
             .then(response => {
                 if (response.status === 200) {
                     setSuppliers(response.data.result);
                 } else {
-                    console.error('Lỗi khi lấy danh sách nhà cung cấp:', error);
+                    console.error('Lỗi khi lấy danh sách nhà cung cấp:', response.statusText);
                 }
             })
             .catch(error => {
                 console.error('Lỗi khi lấy danh sách nhà cung cấp:', error);
             });
     };
+
     useEffect(() => {
+        fetchProduct();
         fetchCategories();
         fetchProducers();
         fetchSuppliers();
-    }, []);
+    }, [id]);
 
     const handleInputChange = (index, event) => {
         const { name, value } = event.target;
@@ -211,6 +249,7 @@ const AdminAddProductComponent = () => {
             });
         }
     };
+
     const handleMainImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -247,8 +286,7 @@ const AdminAddProductComponent = () => {
             let mainImageUrl = '';
             const descriptionImageUrls = [];
 
-            if (mainImage) {
-                console.log(mainImage);
+            if (mainImage instanceof File) {
                 const formData = new FormData();
                 formData.append('file', mainImage);
 
@@ -257,17 +295,23 @@ const AdminAddProductComponent = () => {
                 });
 
                 mainImageUrl = response.data.result;
+            } else {
+                mainImageUrl = mainImage;
             }
 
             for (const file of descriptionImages) {
-                const formData = new FormData();
-                formData.append('file', file);
+                if (file instanceof File) {
+                    const formData = new FormData();
+                    formData.append('file', file);
 
-                const response = await axios.post('http://localhost:8080/sugarnest/v0.1/uploadFile', formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                });
+                    const response = await axios.post('http://localhost:8080/sugarnest/v0.1/uploadFile', formData, {
+                        headers: { 'Content-Type': 'multipart/form-data' },
+                    });
 
-                descriptionImageUrls.push(response.data.result);
+                    descriptionImageUrls.push(response.data.result);
+                } else {
+                    descriptionImageUrls.push(file);
+                }
             }
 
             return { mainImageUrl, descriptionImageUrls };
@@ -281,24 +325,14 @@ const AdminAddProductComponent = () => {
         }
     };
 
-
-
     const handleSubmit = async (event) => {
         event.preventDefault();
-
-        if (mainImage == null) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Vui lòng chọn hình ảnh chính của sản phẩm!',
-                text: 'Để sản phẩm hiển thị đẹp hơn, vui lòng chọn hình ảnh chính của sản phẩm.',
-            });
-            return;
-        }
 
         try {
             const { mainImageUrl, descriptionImageUrls } = await handleUploadImages();
 
             const payloadJSON = {
+                "id": id,
                 "nameProduct": productName,
                 "description": productDescription,
                 "isActive": true,
@@ -335,19 +369,20 @@ const AdminAddProductComponent = () => {
                     })
                 ]
             };
-            const response = await axios.post('http://localhost:8080/sugarnest/v0.1/products', payloadJSON);
+
+            const response = await axios.put(`http://localhost:8080/sugarnest/v0.1/products/${id}`, payloadJSON);
 
             if (response.status === 200) {
-                Swal.fire('Thành công!', 'Sản phẩm đã được thêm thành công', 'success').then(() => {
+                Swal.fire('Thành công!', 'Sản phẩm đã được cập nhật thành công', 'success').then(() => {
                     navigate('/admin/product-manager');
                 });
             } else {
-                throw new Error('Lỗi khi thêm sản phẩm');
+                throw new Error('Lỗi khi cập nhật sản phẩm');
             }
         } catch (error) {
             Swal.fire({
                 icon: 'error',
-                title: 'Lỗi khi thêm sản phẩm',
+                title: 'Lỗi khi cập nhật sản phẩm',
                 text: error.message,
             });
         }
@@ -621,7 +656,7 @@ const AdminAddProductComponent = () => {
             </div>
 
         </main>
-    )
-}
+    );
+};
 
-export default AdminAddProductComponent
+export default AdminUpdateProductComponent;

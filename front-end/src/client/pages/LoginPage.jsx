@@ -62,9 +62,8 @@ const LoginPage = () => {
                                             <input
                                                 name="FormType"
                                                 type="hidden"
-                                                defaultValue="customer_login"
                                             />
-                                            <input name="utf8" type="hidden" defaultValue="true" />
+                                            <input name="utf8" type="hidden"/>
                                             <div
                                                 className="form-signup margin-bottom-15"
                                                 style={{ color: "red" }}
@@ -77,7 +76,6 @@ const LoginPage = () => {
                                                     <input
                                                         type="text"
                                                         className="form-control "
-                                                        defaultValue=""
                                                         name="email"
                                                         id="customer_email"
                                                         placeholder="Tài khoản"
@@ -94,7 +92,6 @@ const LoginPage = () => {
                                                     <input
                                                         type="password"
                                                         className="form-control "
-                                                        defaultValue=""
                                                         name="password"
                                                         id="customer_password"
                                                         placeholder="Mật khẩu"
@@ -108,7 +105,6 @@ const LoginPage = () => {
                                                         <a
                                                             href="#"
                                                             className="btn-link-style text-primary"
-                                                            onclick="showRecoverPasswordForm();return false;"
                                                         >
                                                             {" "}
                                                             đây{" "}
@@ -148,9 +144,8 @@ const LoginPage = () => {
                                             <input
                                                 name="FormType"
                                                 type="hidden"
-                                                defaultValue="recover_customer_password"
                                             />
-                                            <input name="utf8" type="hidden" defaultValue="true" />
+                                            <input name="utf8" type="hidden" />
                                             <div className="form-signup" style={{ color: "red" }}></div>
                                             <div className="form-signup clearfix">
                                                 <fieldset className="form-group">
@@ -158,7 +153,6 @@ const LoginPage = () => {
                                                         type="email"
                                                         pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$"
                                                         className="form-control form-control-lg"
-                                                        defaultValue=""
                                                         name="Email"
                                                         id="recover-email"
                                                         placeholder="Email"
@@ -170,7 +164,6 @@ const LoginPage = () => {
                                                 <input
                                                     className="btn btn-style btn-recover btn-block"
                                                     type="submit"
-                                                    defaultValue="Lấy lại mật khẩu"
                                                 />
                                                 <a
                                                     href="#"
@@ -186,7 +179,6 @@ const LoginPage = () => {
                                     <p className="a-center text-secondary">Hoặc đăng nhập bằng</p>
                                     <a
                                         className="social-login--facebook"
-                                        onclick="loginFacebook()"
                                     >
                                         <img
                                             style={{ marginRight: '5px', borderRadius: '5px' }}
@@ -198,7 +190,6 @@ const LoginPage = () => {
                                     </a>
                                     <a
                                         className="social-login--google"
-                                        onclick="loginGoogle()"
                                     >
                                         <img
                                             style={{ marginLeft: '5px', borderRadius: '5px' }}

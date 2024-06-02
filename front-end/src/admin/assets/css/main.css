@@ -16923,3 +16923,38 @@ th {
     /* Canh trái cho nhãn */
   }
 }
+#thumbbox {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.thumbimage-container {
+  position: relative;
+  display: inline-block;
+}
+
+.thumbimage-container img {
+  display: block;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.thumbimage-container .removeimg {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: red;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  font-size: 14px; /* Đảm bảo kích thước chữ phù hợp */
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
