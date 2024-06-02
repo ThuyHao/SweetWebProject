@@ -365,9 +365,7 @@ const RegisterPage = () => {
                                         <div className="block social-login--facebooks text-center">
                                             <p className="a-center text-secondary">Hoặc đăng nhập bằng</p>
                                             <a
-                                                href="javascript:void(0)"
                                                 className="social-login--facebook"
-                                                onclick="loginFacebook()"
                                             >
                                                 <img
                                                     style={{ marginRight: '5px', borderRadius: '5px' }}
@@ -378,9 +376,7 @@ const RegisterPage = () => {
                                                 />
                                             </a>
                                             <a
-                                                href="javascript:void(0)"
                                                 className="social-login--google"
-                                                onclick="loginGoogle()"
                                             >
                                                 <img
                                                     style={{ marginLeft: '5px', borderRadius: '5px' }}

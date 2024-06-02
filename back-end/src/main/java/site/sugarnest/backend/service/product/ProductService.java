@@ -1,5 +1,6 @@
 package site.sugarnest.backend.service.product;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,6 +20,7 @@ import site.sugarnest.backend.reponsitoties.IProductRepository;
 import site.sugarnest.backend.reponsitoties.ISizeColorProductRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -29,6 +31,8 @@ public class ProductService implements IProductService {
     private ISizeColorProductRepository sizeColorProductRepository;
     private IInventoryRepository inventoryRepository;
     private IImageProductRepository imageProductRepository;
+    private ISizeColorProductRepository iSizeColorProductRepository;
+    private IImageProductRepository iImageProductRepository;
 
     @Override
     public ProductDto createProduct(ProductDto productDto) {
@@ -62,7 +66,6 @@ public class ProductService implements IProductService {
     }
 
 
-
     @Override
     public Page<ProductDto> getAllProduct(Pageable pageable) {
         Page<ProductEntity> products = iProductRepository.findAll(pageable);
@@ -72,7 +75,7 @@ public class ProductService implements IProductService {
 
     @Override
     public List<ProductDto> getProductByAdmin() {
-        List<ProductEntity> products = iProductRepository.findAll();
+        List<ProductEntity> products = iProductRepository.getProductByAdmin("false");
         return products.stream().map(product -> iProductMapper.mapToProductDto(product)).collect(Collectors.toList());
     }
 
@@ -82,6 +85,7 @@ public class ProductService implements IProductService {
         List<ProductEntity> products = iProductRepository.findProductByCategoryId(categoryId, pageable);
         return products.stream().map(product -> iProductMapper.mapToProductDto(product)).collect(Collectors.toList());
     }
+
     @Override
     public ProductDto getProductById(Long productId) {
         ProductEntity product = iProductRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product is not exist with given id: " + productId));
@@ -89,56 +93,56 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductDto updateProduct(Long productId, ProductDto updateProductDto) {
-//        // Kiểm tra xem sản phẩm có tồn tại trong cơ sở dữ liệu không
-//        ProductEntity existingProduct = iProductRepository.findById(productId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Product is not exist with given id: " + productId));
-//
-//        // Ánh xạ thông tin từ updateProductDto sang existingProduct
-//        existingProduct.setNameProduct(updateProductDto.getNameProduct());
-//        existingProduct.setDescription(updateProductDto.getDescription());
-//        existingProduct.setSupplierEntity(updateProductDto.getSupplierEntity());
-//        existingProduct.setProducerEntity(updateProductDto.getProducerEntity());
-//        existingProduct.setCategoryEntity(updateProductDto.getCategoryEntity());
-//        existingProduct.setSubCategoryEntity(updateProductDto.getSubCategoryEntity());
-//        existingProduct.setIsActive(updateProductDto.getIsActive());
-//        existingProduct.setIsDelete(updateProductDto.getIsDelete());
-//        existingProduct.setStatus(updateProductDto.getStatus());
-//
-//        // Cập nhật ProductPrice
-//        ProductPriceEntity productPrice = existingProduct.getProductPriceEntity();
-//        productPrice.setListPrice(updateProductDto.getProductPriceEntity().getListPrice());
-//        productPrice.setDiscount(updateProductDto.getProductPriceEntity().getDiscount());
-//
-//        // Cập nhật danh sách ImageProduct
-//        List<ImageProductEntity> imageProductEntities = updateProductDto.getImageProducts().stream()
-//                .map(imageDto -> {
-//                    ImageProductEntity imageProductEntity = iProductMapper.mapToImageProduct(imageDto);
-//                    imageProductEntity.setProductEntity(existingProduct);
-//                    return imageProductEntity;
-//                }).collect(Collectors.toList());
-//        existingProduct.setImageProducts(imageProductEntities);
-//
-//        // Cập nhật danh sách SizeColorProduct
-//        List<SizeColorProductEntity> sizeColorProductEntities = updateProductDto.getSizeColorProductsEntity().stream()
-//                .map(sizeColorProductDto -> {
-//                    SizeColorProductEntity sizeColorProductEntity = iProductMapper.mapToSizeColorProduct(sizeColorProductDto);
-//                    sizeColorProductEntity.setProductEntity(existingProduct);
-//                    return sizeColorProductEntity;
-//                }).collect(Collectors.toList());
-//        existingProduct.setSizeColorProductsEntity(sizeColorProductEntities);
-//
-//        // Lưu cập nhật vào cơ sở dữ liệu
-//        ProductEntity updatedProduct = iProductRepository.save(existingProduct);
-//
-//        // Trả về ProductDto tương ứng với Product đã cập nhật
-//        return iProductMapper.mapToProductDto(updatedProduct);
-        return null;
+    @Transactional
+    public ProductDto updateProduct(Long productId, ProductDto productDto) {
+        Optional<ProductEntity> productEntityOptional = iProductRepository.findById(productId);
+
+        if (productEntityOptional.isEmpty()) {
+            throw new ResourceNotFoundException("Product not found with id " + productId);
+        }
+
+        ProductEntity productEntity = productEntityOptional.get();
+
+        productEntity.setNameProduct(productDto.getNameProduct());
+        productEntity.setDescription(productDto.getDescription());
+        productEntity.setCategoryEntity(productDto.getCategoryEntity());
+        productEntity.setProducerEntity(productDto.getProducerEntity());
+        productEntity.setSupplierEntity(productDto.getSupplierEntity());
+
+        iImageProductRepository.deleteByProductEntity(productEntity);
+
+        iSizeColorProductRepository.deleteByProductEntity(productEntity);
+        List<ImageProductEntity> imageProductEntities = productDto.getImageProductEntity().stream()
+                .map(imageDto -> {
+                    ImageProductEntity imageProductEntity = iProductMapper.mapToImageProduct(imageDto);
+                    imageProductEntity.setProductEntity(productEntity);
+                    return imageProductEntity;
+                }).collect(Collectors.toList());
+
+        List<SizeColorProductEntity> sizeColorProducts = productDto.getSizeColorProductsEntity().stream()
+                .map(sizeColorProductDto -> {
+                    SizeColorProductEntity sizeColorProductEntity = iProductMapper.mapToSizeColorProduct(sizeColorProductDto);
+                    sizeColorProductEntity.setProductEntity(productEntity);
+
+                    InventoryEntity inventoryEntity = new InventoryEntity();
+                    inventoryEntity.setSizeColorProductEntity(sizeColorProductEntity);
+                    inventoryEntity.setQuantity(sizeColorProductDto.getInventoryEntity().getQuantity());
+                    inventoryEntity.setDateAdd();
+                    inventoryEntity.setLastUpdatedDate();
+                    sizeColorProductEntity.setInventoryEntity(inventoryEntity);
+                    return sizeColorProductEntity;
+                }).collect(Collectors.toList());
+
+        productEntity.setImageProductEntity(imageProductEntities);
+        productEntity.setSizeColorProductsEntity(sizeColorProducts);
+        ProductEntity updatedProductEntity = iProductRepository.save(productEntity);
+
+        return iProductMapper.mapToProductDto(updatedProductEntity);
     }
+
 
     @Override
     public void deleteProduct(Long productId) {
-        // Kiểm tra xem sản phẩm có tồn tại trong cơ sở dữ liệu không
         ProductEntity existingProduct = iProductRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product is not exist with given id: " + productId));
         existingProduct.setIsDelete("true");

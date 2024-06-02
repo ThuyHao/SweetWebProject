@@ -17,32 +17,40 @@ const AdminProductComponent = () => {
     axios.get('http://localhost:8080/sugarnest/v0.1/products/admin')
       .then(response => {
         if (response.data.code === 0) {
-          setData(response.data.result.map(item => ({
-            key: item.id,
-            productCode: item.id,
-            productName: item.nameProduct,
-            description: item.description,
-            supplier: item.supplierEntity.nameSupplier,
-            producer: item.producerEntity.nameProducer,
-            category: item.categoryEntity.nameCategory,
-            status: item.status,
-            price: item.sizeColorProductsEntity[0]?.discountPrice || '',
-            discount: item.sizeColorProductsEntity[0]?.discount || '',
-            image: item.imageProductEntity[0]?.image || '',
-          })));
+          setData(response.data.result.map(item => {
+            const sizeColors = item.sizeColorProductsEntity.map(sizeColor => `${sizeColor.color || ''}/${sizeColor.size || ''}`).join(', ');
+            const prices = item.sizeColorProductsEntity.map(sizeColor => sizeColor.discountPrice || '').join(', ');
+            const discounts = item.sizeColorProductsEntity.map(sizeColor => sizeColor.discount || '').join(', ');
+  
+            return {
+              key: item.id,
+              productCode: item.id,
+              productName: item.nameProduct,
+              description: item.description,
+              supplier: item.supplierEntity.nameSupplier,
+              producer: item.producerEntity.nameProducer,
+              category: item.categoryEntity.nameCategory,
+              status: item.status,
+              sizeColor: sizeColors,
+              price: prices,
+              discount: discounts,
+              image: item.imageProductEntity[0]?.image || '',
+            };
+          }));
         }
       })
       .catch(error => {
         console.error("There was an error fetching the data!", error);
       });
   }, []);
+  
 
   const getAddProduct = () => {
     navigate('/admin/add-product');
   };
-  const handleDetail = (key) => {
-    navigate(`/admin/product-detail/${key}`);
-  }
+  function getEditProduct(id){
+    navigate(`/admin/edit-product/${id}`);
+  };
   const handleDelete = (key) => {
     Swal.fire({
       title: 'Bạn có chắc không?',
@@ -54,8 +62,15 @@ const AdminProductComponent = () => {
       confirmButtonText: 'Vâng, xóa nó đi!',
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire('Đã xóa!', 'Tệp của bạn đã bị xóa.', 'success');
-        setData(data.filter(item => item.key !== key));
+        axios.delete(`http://localhost:8080/sugarnest/v0.1/products/${key}`)
+          .then(() => {
+            Swal.fire('Đã xóa!', 'Sản phẩm của bạn đã bị xóa.', 'success');
+            setData(data.filter(item => item.key !== key));
+          })
+          .catch(error => {
+            console.error('Xóa không thành công:', error);
+            Swal.fire('Lỗi!', 'Có lỗi xảy ra khi xóa tệp.', 'error');
+          });
       }
     });
   };
@@ -77,10 +92,17 @@ const AdminProductComponent = () => {
       sortable: true,
     },
     {
+      title: 'Danh mục',
+      dataIndex: 'category',
+      key: 'category',
+      searchable: true,
+      sortable: true,
+    },
+    {
       title: 'Ảnh',
       dataIndex: 'image',
       key: 'image',
-      render: (text) => <img className="img-card-person" src={urlImage+text} alt="" />,
+      render: (text) => <img className="img-card-person" src={urlImage + text} alt="" />,
     },
     {
       title: 'Tình trạng',
@@ -91,23 +113,34 @@ const AdminProductComponent = () => {
       ),
     },
     {
+      title: 'Màu sắc/Kích thước',
+      dataIndex: 'sizeColor',
+      key: 'sizeColor',
+      render: (text) => (
+        <div>{text.split(', ').map((sizeColor, index) => (
+          <div key={index}>{sizeColor}</div>
+        ))}</div>
+      ),
+    },
+    {
       title: 'Giá tiền',
       dataIndex: 'price',
       key: 'price',
-      render: (text) => <p>{text.toLocaleString('it-IT')}đ</p>
+      render: (text) => (
+        <div>{text.split(', ').map((price, index) => (
+          <div key={index}>{parseInt(price).toLocaleString('it-IT')}đ</div>
+        ))}</div>
+      ),
     },
     {
       title: 'Giảm giá',
       dataIndex: 'discount',
       key: 'discount',
-      render: (text) => <p>{text}%</p>
-    },
-    {
-      title: 'Danh mục',
-      dataIndex: 'category',
-      key: 'category',
-      searchable: true,
-      sortable: true,
+      render: (text) => (
+        <div>{text.split(', ').map((discount, index) => (
+          <div key={index}>{discount}%</div>
+        ))}</div>
+      ),
     },
     {
       title: 'Chức năng',
@@ -115,18 +148,10 @@ const AdminProductComponent = () => {
       render: (text, record) => (
         <Space size="middle">
           <Button
-            type="susscess"
-            className='btn btn-primary btn-sm active'
-            icon={<EyeOutlined />}
-            onClick={() => handleDetail(record.key)}
-          >
-            Chi tiết
-          </Button>
-          <Button
             type="primary"
             className='btn btn-primary btn-sm edit'
             icon={<EditOutlined />}
-            onClick={() => console.log('Edit', record.key)}
+            onClick={() => getEditProduct(record.key)}
           >
             Sửa
           </Button>
@@ -142,6 +167,7 @@ const AdminProductComponent = () => {
       ),
     },
   ];
+  
 
   return (
     <main className="app-content">

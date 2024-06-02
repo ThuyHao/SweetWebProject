@@ -456,61 +456,64 @@ const AdminAddProductComponent = () => {
                                         {products.map((product, index) => (
                                             <tr key={index}>
                                                 <td>
-                                                    <input
-                                                        style={{ width: '100%' }}
-                                                        required
-                                                        type="text"
-                                                        name="size"
-                                                        value={product.size}
-                                                        onChange={(e) => handleInputChange(index, e)}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        style={{ width: '100%' }}
-                                                        required
-                                                        type="text"
-                                                        name="color"
-                                                        value={product.color}
-                                                        onChange={(e) => handleInputChange(index, e)}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        style={{ width: '100%' }}
-                                                        required
-                                                        type="number"
-                                                        name="quantity"
-                                                        value={product.quantity}
-                                                        onChange={(e) => handleInputChange(index, e)}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        style={{ width: '100%' }}
-                                                        required
-                                                        type="number"
-                                                        name="listPrice"
-                                                        value={product.listPrice}
-                                                        onChange={(e) => handleInputChange(index, e)}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        style={{ width: '100%' }}
-                                                        required
-                                                        type="number"
-                                                        name="discount"
-                                                        max={100}
-                                                        value={product.discount}
-                                                        onChange={(e) => handleInputChange(index, e)}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <button className="btn btn-delete trash" onClick={() => removeProduct(index)}>
-                                                        Xóa
-                                                    </button>
-                                                </td>
+                                                        <input
+                                                            className="form-control"
+                                                            type="text"
+                                                            name="size"
+                                                            value={product.size}
+                                                            onChange={(e) => handleInputChange(index, e)}
+                                                            placeholder="Nhập kích thước"
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            className="form-control"
+                                                            type="text"
+                                                            name="color"
+                                                            value={product.color}
+                                                            onChange={(e) => handleInputChange(index, e)}
+                                                            placeholder="Nhập màu sắc"
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            className="form-control"
+                                                            type="number"
+                                                            name="quantity"
+                                                            value={product.quantity}
+                                                            onChange={(e) => handleInputChange(index, e)}
+                                                            placeholder="Nhập số lượng"
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            className="form-control"
+                                                            type="number"
+                                                            name="listPrice"
+                                                            value={product.listPrice}
+                                                            onChange={(e) => handleInputChange(index, e)}
+                                                            placeholder="Nhập giá"
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            className="form-control"
+                                                            type="number"
+                                                            name="discount"
+                                                            value={product.discount}
+                                                            onChange={(e) => handleInputChange(index, e)}
+                                                            placeholder="Nhập giảm giá"
+                                                        />
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-danger btn-sm"
+                                                            onClick={() => removeProduct(index)}
+                                                        >
+                                                            <i className="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -546,8 +549,8 @@ const AdminAddProductComponent = () => {
                                                     width={400}
                                                     alt="Thumb image"
                                                     id="thumbimage"
-                                                    src={URL.createObjectURL(mainImage)}
-                                                />
+                                                    src={typeof mainImage === 'string' ? mainImage : URL.createObjectURL(mainImage)}
+                                                    />
                                                 <button
                                                     type="button"
                                                     className="removeimg"
@@ -581,7 +584,7 @@ const AdminAddProductComponent = () => {
                                                     height={100}
                                                     width={100}
                                                     alt="Thumb image"
-                                                    src={URL.createObjectURL(image)}
+                                                    src={typeof image === 'string' ? image : URL.createObjectURL(image)}
                                                 />
                                                 <button
                                                     type="button"
