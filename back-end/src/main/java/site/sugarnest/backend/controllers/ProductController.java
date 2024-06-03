@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+import site.sugarnest.backend.dto.dto.ProductFilterDto;
 import site.sugarnest.backend.dto.response.ApiResponse;
 import site.sugarnest.backend.dto.dto.ProductDto;
 import site.sugarnest.backend.service.product.IProductService;
@@ -39,16 +41,32 @@ public class ProductController {
     }
 
     @GetMapping
-    public ApiResponse<?> getAllProduct(@PageableDefault(size = 12) Pageable pageable) {
-        int page = pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber() - 1;
-        Pageable customPageable = PageRequest.of(page, pageable.getPageSize(), pageable.getSort());
-        Page<ProductDto> listProductDto = iProductService.getAllProduct(customPageable);
-        int totalPages = listProductDto.getTotalPages();
-        return ApiResponse.<Object>builder()
-                .message("Success")
-                .result(Map.of("content", listProductDto.getContent(), "totalPages", totalPages))
-                .build();
+    public Page<ProductDto> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) String productSize,
+            @RequestParam(required = false) String producer,
+            @RequestParam(required = false) String color,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "ASC") String sortDirection) {
+
+        ProductFilterDto filter = new ProductFilterDto();
+        filter.setType(type);
+        filter.setMinPrice(minPrice);
+        filter.setMaxPrice(maxPrice);
+        filter.setSize(productSize);
+        filter.setProducer(producer);
+        filter.setColor(color);
+        filter.setSortBy(sortBy);
+        filter.setSortDirection(sortDirection);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDirection), sortBy));
+        return iProductService.getAllProduct(pageable, filter);
     }
+
     @GetMapping("/admin")
     public ApiResponse<List<ProductDto>> getProductByAdmin() {
         List<ProductDto> productDtos = iProductService.getProductByAdmin();
