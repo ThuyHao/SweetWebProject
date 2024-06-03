@@ -8,7 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import site.sugarnest.backend.Utils.ProductSpecification;
 import site.sugarnest.backend.dto.dto.ProductDto;
+import site.sugarnest.backend.dto.dto.ProductFilterDto;
 import site.sugarnest.backend.entities.ImageProductEntity;
 
 import site.sugarnest.backend.entities.*;
@@ -70,6 +72,14 @@ public class ProductService implements IProductService {
     public Page<ProductDto> getAllProduct(Pageable pageable) {
         Page<ProductEntity> products = iProductRepository.findAll(pageable);
         List<ProductDto> productDtos = products.stream().map(product -> iProductMapper.mapToProductDto(product)).collect(Collectors.toList());
+        return new PageImpl<>(productDtos, pageable, products.getTotalElements());
+    }
+
+    public Page<ProductDto> getAllProduct(Pageable pageable, ProductFilterDto filter) {
+        Page<ProductEntity> products = iProductRepository.findAll(ProductSpecification.getSpecifications(filter), pageable);
+        List<ProductDto> productDtos = products.stream()
+                .map(product -> iProductMapper.mapToProductDto(product))
+                .collect(Collectors.toList());
         return new PageImpl<>(productDtos, pageable, products.getTotalElements());
     }
 
