@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Space, Badge } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import ReusableTableComponent from './ReusableTableComponent';
 import EmlementButtonComponent from './EmlementButtonComponent';
 import AppTitleComponent from './AppTitleComponent';
-import { render } from 'react-dom';
-import { urlImage } from '../../client/services/ProductService';
 import EditModal from '../util/EditModal';
 
 
 const AdminAccountComponent = () => {
     const navigate = useNavigate()
+    const [data, setData] = useState([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [account, setAccount] = useState(null);
     function getRoleManagement() {
         navigate('/admin/account-role-manager')
     }
 
-    const [data, setData] = useState([]);
     useEffect(() => {
         axios.get('http://localhost:8080/sugarnest/v0.1/account/all')
             .then(response => {
@@ -35,14 +35,7 @@ const AdminAccountComponent = () => {
                         isActive: item.isActive,
                         createAt: item.createAt,
                         updateAt: item.updateAt,
-                        roles: item.roles.map(role => ({
-                            name: role.name,
-                            description: role.description,
-                            permissions: role.permissions.map(permission => ({
-                                name: permission.name,
-                                description: permission.description
-                            }))
-                        }))
+                        roles: item.roles.map(role => role.name),
                     })));
                 }
             })
@@ -62,14 +55,18 @@ const AdminAccountComponent = () => {
             confirmButtonText: 'Vâng, xóa nó đi!',
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire('Đã xóa!', 'Tài khoản đã bị xóa.', 'success');
-                setData(data.filter(item => item.key !== key));
+                axios.delete(`http://localhost:8080/sugarnest/v0.1/account/${key}`)
+                    .then(() => {
+                        setData(data.filter(item => item.key !== key));
+                        Swal.fire('Đã xóa!', 'Tài khoản đã bị xóa.', 'success');
+                    })
+                    .catch(error => {
+                        console.error("There was an error deleting the account!", error);
+                        Swal.fire('Lỗi!', 'Không thể xóa tài khoản.', 'error');
+                    });
             }
         });
     };
-
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [account, setAccount] = useState(null);
 
     const showModal = async (id) => {
         try {
@@ -90,6 +87,23 @@ const AdminAccountComponent = () => {
         setAccount(null);
     };
 
+    const handleSave = async (updatedAccount) => {
+        console.log(updatedAccount);
+        try {
+            const response = await axios.put(`http://localhost:8080/sugarnest/v0.1/account/edit/${updatedAccount.id}`, updatedAccount);
+            if (response.data.code === 200) {
+                setData(data.map(item => (item.id === updatedAccount.id ? updatedAccount : item)));
+                setIsModalVisible(false);
+                Swal.fire('Thành công!', 'Tài khoản đã được cập nhật.', 'success');
+            } else {
+                console.error('Failed to update account');
+                Swal.fire('Lỗi!', 'Không thể cập nhật tài khoản.', 'error');
+            }
+        } catch (error) {
+            console.error('Error updating account', error);
+            Swal.fire('Lỗi!', 'Không thể cập nhật tài khoản.', 'error');
+        }
+    };
     const columns = [
         {
             title: 'ID',
@@ -141,22 +155,10 @@ const AdminAccountComponent = () => {
             render: (text) => (text === 'true' ? 'Hoạt động' : 'Không hoạt động'),
         },
         {
-            title: 'Ngày tạo',
-            dataIndex: 'createAt',
-            key: 'createAt',
-            render: (text) => new Date(text).toLocaleString(),
-        },
-        {
-            title: 'Ngày cập nhật',
-            dataIndex: 'updateAt',
-            key: 'updateAt',
-            render: (text) => new Date(text).toLocaleString(),
-        },
-        {
-            title: 'Quyền',
+            title: 'Chức vụ',
             dataIndex: 'roles',
             key: 'roles',
-            render: (roles) => roles.map(role => role.name).join(', '),
+            render: (roles) => roles.map(role => role).join(', '),
         },
         {
             title: 'Chức năng',
@@ -203,7 +205,13 @@ const AdminAccountComponent = () => {
                         </div>
                     </div>
                 </div>
-                {isModalVisible && account && (<EditModal account={account} onCancel={handleCancel} />)}
+                {isModalVisible && account && (
+                    <EditModal
+                        account={account}
+                        onCancel={handleCancel}
+                        onSave={handleSave}
+                    />
+                )}
             </div>
         </main>
     )

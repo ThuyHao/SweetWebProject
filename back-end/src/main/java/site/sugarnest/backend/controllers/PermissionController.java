@@ -9,6 +9,7 @@ import site.sugarnest.backend.service.Athorization.PermissionService;
 
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/permissions")
 @AllArgsConstructor

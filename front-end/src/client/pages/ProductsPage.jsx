@@ -12,8 +12,8 @@ const ProductsPage = () => {
     const [totalPages, setTotalPages] = useState(0);
     useEffect(() => {
         listProducts(currentPage).then((response) => {
-            setProducts(response.data.result.content);
-            setTotalPages(response.data.result.totalPages);
+            setProducts(response.data.content);
+            setTotalPages(response.data.totalPages);
         }).catch((error) => { console.log(error) });
     }, [currentPage]);
     const handlePageChange = (newPage) => {

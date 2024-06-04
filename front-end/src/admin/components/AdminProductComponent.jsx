@@ -19,7 +19,7 @@ const AdminProductComponent = () => {
         if (response.data.code === 0) {
           setData(response.data.result.map(item => {
             const sizeColors = item.sizeColorProductsEntity.map(sizeColor => `${sizeColor.color || ''}/${sizeColor.size || ''}`).join(', ');
-            const prices = item.sizeColorProductsEntity.map(sizeColor => sizeColor.discountPrice || '').join(', ');
+            const prices = item.sizeColorProductsEntity.map(sizeColor => sizeColor.listPrice || '').join(', ');
             const discounts = item.sizeColorProductsEntity.map(sizeColor => sizeColor.discount || '').join(', ');
   
             return {

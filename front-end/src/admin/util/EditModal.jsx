@@ -1,6 +1,61 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const EditModal = ({ account, onCancel }) => {
+const EditModal = ({ account, onCancel, onSave }) => {
+  const [roles, setRoles] = useState([]);
+  const [selectedRoles, setSelectedRoles] = useState([account.roles[0]?.name] || []);
+  const [updatedAccount, setUpdatedAccount] = useState({
+    key: account.id,
+    id: account.id,
+    accountName: account.accountName,
+    fullName: account.fullName,
+    phone: account.phone,
+    email: account.email,
+    birthday: account.birthday.split('T')[0],
+    address: account.address,
+    isActive: account.isActive,
+    roles: account.roles.map(role => role.name),
+  });
+
+  const fetchRoles = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/sugarnest/v0.1/roles');
+      if (response.data.code === 0) {
+        setRoles(response.data.result);
+      } else {
+        console.error('Failed to fetch roles');
+      }
+    } catch (error) {
+      console.error('Error fetching roles', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRoles();
+  }, []);
+
+  const handleRoleChange = (event) => {
+    const selectedOptions = Array.from(event.target.selectedOptions, option => option.value);
+    setSelectedRoles(selectedOptions);
+    setUpdatedAccount((prev) => ({
+      ...prev,
+      roles: selectedOptions
+    }));
+  };
+
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedAccount((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSave = () => {
+    onSave(updatedAccount);
+  };
+
   return (
     <div
       className="modal fade show"
@@ -8,7 +63,7 @@ const EditModal = ({ account, onCancel }) => {
       tabIndex={-1}
       role="dialog"
       aria-hidden="true"
-      style={{ display: 'block' }} // Hiển thị modal
+      style={{ display: 'block' }}
       data-backdrop="static"
       data-keyboard="false"
     >
@@ -16,7 +71,7 @@ const EditModal = ({ account, onCancel }) => {
         <div className="modal-content">
           <div className="modal-body">
             <div className="row">
-              <div className="form-group  col-md-12">
+              <div className="form-group col-md-12">
                 <span className="thong-tin-thanh-toan">
                   <h5>Chỉnh sửa tài khoản</h5>
                 </span>
@@ -24,13 +79,14 @@ const EditModal = ({ account, onCancel }) => {
             </div>
             <div className="row">
               <div className="form-group col-md-6">
-                <label className="control-label">ID nhân viên</label>
+                <label className="control-label">ID</label>
                 <input
                   className="form-control"
                   type="text"
-                  required=""
-                  defaultValue={account.id}
-                  disabled=""
+                  name="id"
+                  value={updatedAccount.id}
+                  disabled
+                  readOnly
                 />
               </div>
               <div className="form-group col-md-6">
@@ -38,9 +94,10 @@ const EditModal = ({ account, onCancel }) => {
                 <input
                   className="form-control"
                   type="text"
-                  required=""
-                  defaultValue={account.accountName}
-                  disabled=""
+                  name="accountName"
+                  value={updatedAccount.accountName}
+                  disabled
+                  readOnly
                 />
               </div>
               <div className="form-group col-md-6">
@@ -48,8 +105,9 @@ const EditModal = ({ account, onCancel }) => {
                 <input
                   className="form-control"
                   type="text"
-                  required=""
-                  defaultValue={account.fullName}
+                  name="fullName"
+                  value={updatedAccount.fullName}
+                  onChange={handleInputChange}
                 />
               </div>
               <div className="form-group col-md-6">
@@ -57,8 +115,10 @@ const EditModal = ({ account, onCancel }) => {
                 <input
                   className="form-control"
                   type="number"
-                  required=""
-                  defaultValue={account.phone}
+                  name="phone"
+                  maxLength={10} 
+                  value={updatedAccount.phone}
+                  onChange={handleInputChange}
                 />
               </div>
               <div className="form-group col-md-6">
@@ -66,16 +126,19 @@ const EditModal = ({ account, onCancel }) => {
                 <input
                   className="form-control"
                   type="text"
-                  required=""
-                  defaultValue={account.email}
-                />
+                  name="email"
+                  value={updatedAccount.email}
+                  disabled
+                  readOnly />
               </div>
               <div className="form-group col-md-6">
                 <label className="control-label">Ngày sinh</label>
                 <input
                   className="form-control"
                   type="date"
-                  defaultValue={account.birthday.split('T')[0]}
+                  name="birthday"
+                  value={updatedAccount.birthday}
+                  onChange={handleInputChange}
                 />
               </div>
               <div className="form-group col-md-6">
@@ -83,16 +146,39 @@ const EditModal = ({ account, onCancel }) => {
                 <input
                   className="form-control"
                   type="text"
-                  required=""
-                  defaultValue={account.address}
+                  name="address"
+                  value={updatedAccount.address}
+                  onChange={handleInputChange}
                 />
               </div>
+              <div className="form-group col-md-6">
+                <label className="control-label">Trạng thái hoạt động</label>
+                <select
+                  className="form-control"
+                  name="isActive"
+                  value={updatedAccount.isActive}
+                  onChange={handleInputChange}
+                >
+                  <option value="true">Hoạt động</option>
+                  <option value="false">Không hoạt động</option>
+                </select>
+              </div>
+
+              <div className="form-group col-md-6">
+                <label className="control-label">Quyền người dùng</label>
+                <select className="form-control" value={selectedRoles} onChange={handleRoleChange} multiple>
+                  {roles.map((role, index) => (
+                    <option key={index} value={role.name}>
+                      {role.description}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-            <br />
-            <a className="btn btn-save" type="button">
+            <a className="btn btn-save" type="button" onClick={handleSave}>
               Lưu lại
             </a>
-            <a style={{marginLeft:'10px'}} className="btn btn-cancel" data-dismiss="modal" onClick={onCancel}>
+            <a style={{ marginLeft: '10px' }} className="btn btn-cancel" onClick={onCancel}>
               Hủy bỏ
             </a>
             <br />
@@ -104,4 +190,4 @@ const EditModal = ({ account, onCancel }) => {
   );
 };
 
-export default EditModal
+export default EditModal;

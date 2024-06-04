@@ -30,7 +30,7 @@ public class AccountEntity {
     private String fullName;
 
     @Column(nullable = false, columnDefinition = "DATE")
-    private LocalDate birthday;
+    private Date birthday;
 
     @Column(nullable = false)
     private String address;
