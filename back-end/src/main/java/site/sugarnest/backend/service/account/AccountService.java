@@ -2,7 +2,6 @@ package site.sugarnest.backend.service.account;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -99,8 +98,8 @@ public class AccountService implements IAccountService {
     @Override
     public List<AccountResponse> findAll() {
         List<AccountEntity> accountEntities = iAccountRepository.findAll();
-        List<AccountResponse> accountDtos = accountEntities.stream().map(iAccountMapper::mapToAccountDto).toList();
-        return accountDtos;
+        accountEntities.removeIf(accountEntity -> accountEntity.getAccountName().equals("admin"));
+        return accountEntities.stream().map(iAccountMapper::mapToAccountDto).toList();
     }
 
 //    @PreAuthorize("hasAuthority('ACCOUNTS_GET')")

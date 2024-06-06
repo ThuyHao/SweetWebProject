@@ -21,6 +21,9 @@ public enum ErrorCode {
     UNAUTHENTICATED(1011, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1012, "Unauthorized", HttpStatus.FORBIDDEN),
     CART_NOT_FOUND(1013, "Cart Not Found", HttpStatus.NOT_FOUND),
+    PRODUCT_NOT_FOUND(1014, "Product Not Found", HttpStatus.NOT_FOUND),
+    PROMOTION_NOT_FOUND(1015, "Promotion Not Found", HttpStatus.NOT_FOUND),
+    INVALID_TIME(1016, "Invalid Time", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

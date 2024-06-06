@@ -44,6 +44,10 @@ dependencies {
     implementation 'com.paypal.sdk:paypal-core:1.7.2'
     implementation 'com.twelvemonkeys.imageio:imageio-webp:3.8.1'
     implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
+    testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.12'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-logging', version: '3.2.4'
+
+
 
 }
 
