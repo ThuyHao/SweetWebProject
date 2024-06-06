@@ -5,10 +5,16 @@ import site.sugarnest.backend.dto.response.AccountResponse;
 
 import java.util.List;
 
-public interface IAccountService{
+public interface IAccountService {
     void createAccount(AccountRequest accountDto);
+
+    void editAccount(Long id, AccountRequest accountDto);
+
     List<AccountResponse> findAll();
+
     AccountResponse findById(Long id);
+
     AccountResponse getMyInfo();
+
     boolean checkExistedEmail(String email);
 }

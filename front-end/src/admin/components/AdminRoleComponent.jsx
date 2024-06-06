@@ -1,66 +1,74 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AppTitleComponent from "./AppTitleComponent";
+import axios from "axios";
+import Swal from 'sweetalert2';
+import RoleItem from "./RoleItem";
 
 const AdminRoleComponent = () => {
+    const [roles, setRoles] = useState([]);
+    const fetchRoles = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/sugarnest/v0.1/roles");
+            setRoles(response.data.result);
+        } catch (error) {
+            console.error("Error fetching roles:", error);
+        }
+    };
+    useEffect(() => {
+        fetchRoles();
+    }, []);
+    const handleAddRole = () => {
+        Swal.fire({
+            title: 'Nhập thông tin vai trò mới',
+            html: `
+                <input id="roleName" class="swal2-input" placeholder="Tên vai trò">
+                <input id="roleDescription" class="swal2-input" placeholder="Mô tả vai trò">
+            `,
+            inputAttributes: {
+                autocapitalize: 'off'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Thêm',
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                const roleName = document.getElementById('roleName').value.toUpperCase();
+                const roleDescription = document.getElementById('roleDescription').value;
+                return axios.post('http://localhost:8080/sugarnest/v0.1/roles', { name: roleName, description: roleDescription })
+                    .then(response => {
+                        console.log(response);
+                        if (response.status !== 200) {
+                            throw new Error(response.statusText);
+                        }
+                        return response.data;
+                    })
+                    .catch(error => {
+                        Swal.showValidationMessage(
+                            `Request failed: ${error}`
+                        );
+                    });
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Thêm vai trò thành công',
+                    icon: 'success'
+                });
+                fetchRoles();
+            }
+        });
+    };
+
     return (
         <main className="app-content">
             <AppTitleComponent />
-            <button style={{ marginBottom: 10 }} className="btn btn-add btn-sm">
+            <button style={{ marginBottom: 10, marginLeft: 10 }} className="btn btn-add btn-sm" onClick={handleAddRole}>
                 <i className="fas fa-plus" />
                 Thêm vai trò
             </button>
-            <div className="row">
-                <div className="col-md-12">
-                    <div className="tile">
-                        <div>
-                            <h3 className="tile-title">Vai trò khách hàng</h3>
-                        </div>
-                        <div className="tile-body">
-                            <div className="row element-button">
-                                <div className="col-sm-2">
-                                    <button className="btn btn-add btn-sm">
-                                        <i className="fas fa-plus" /> Thêm trang truy cập
-                                    </button>
-                                    <button style={{ marginTop: 20 }} className="btn btn-danger btn-sm"  >
-                                        <i className="fas fa-plus" /> Xóa vai trò
-                                    </button>
-                                </div>
-                            </div>
-                            <table className="table table-hover table-bordered" id="sampleTable" >
-                                <thead>
-                                    <tr>
-                                        <th>Trang</th>
-                                        <th>URL</th>
-                                        <th>Mô tả</th>
-                                        <th>Quyền truy cập</th>
-                                        <th width="40px">Tính năng</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="renderRolesAccountCustomer">
-                                    <tr>
-                                        <td>giỏ hàng</td>
-                                        <td>/cart</td>
-                                        <td>Giỏ hàng và các chức năng</td>
-                                        <td>
-                                            <input type="checkbox" name="access[]" defaultValue="read" id="readChecked_1" defaultChecked="" /> Đọc (read)
-                                            <br />
-                                            <input type="checkbox" name="access[]" defaultValue="write" id="writeChecked_1" /> Ghi (write)
-                                            <br />
-                                            <input type="checkbox" name="access[]" defaultValue="remove" id="removeChecked_1" /> Xóa (remove)
-                                            <br />
-                                        </td>
-                                        <td className="table-td-center">
-                                            <button className="btn btn-primary btn-sm trash" type="button" title="Xóa" >
-                                                <i className="fas fa-trash-alt" />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {roles.map((role, index) => (
+                <RoleItem key={index} role={role} fetchRoles={fetchRoles}/>
+            ))}
         </main>
     );
 };

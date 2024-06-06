@@ -3,6 +3,7 @@ package site.sugarnest.backend.service.Athorization;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import site.sugarnest.backend.dto.request.PermissionRequest;
 import site.sugarnest.backend.dto.request.RoleRequest;
 import site.sugarnest.backend.dto.response.RoleResponse;
 import site.sugarnest.backend.mapper.IRoleMapper;
@@ -22,17 +23,45 @@ public class RoleService {
 
     public RoleResponse create(RoleRequest request) {
         var role = iRoleMapper.toRole(request);
-        var permission = iPermissionRepository.findAllById(request.getPermissions());
-        role.setPermissions(new HashSet<>(permission));
+        if (iRoleRepository.existsById(role.getName())) {
+            throw new RuntimeException("Role already exists");
+        }
+        if (request.getPermissions() == null || request.getPermissions().isEmpty()) {
+            role.setPermissions(new HashSet<>());
+
+        } else {
+            var permission = iPermissionRepository.findAllById(request.getPermissions());
+            role.setPermissions(new HashSet<>(permission));
+        }
+        role = iRoleRepository.save(role);
+        return iRoleMapper.toRoleResponse(role);
+    }
+
+    public RoleResponse addPermission(String name, PermissionRequest permissionRequest) {
+        var role = iRoleRepository.findById(name).orElseThrow(() -> new RuntimeException("Role not found"));
+        var permission = iPermissionRepository.findById(permissionRequest.getName()).orElseThrow(() -> new RuntimeException("Permission not found"));
+        role.getPermissions().add(permission);
         role = iRoleRepository.save(role);
         return iRoleMapper.toRoleResponse(role);
     }
 
     public List<RoleResponse> getAll() {
         var roles = iRoleRepository.findAll();
-        return roles.stream().map(iRoleMapper::toRoleResponse).toList();
+        return roles.stream()
+                .filter(role -> !role.getName().equalsIgnoreCase("ADMIN"))
+                .map(iRoleMapper::toRoleResponse)
+                .toList();
     }
+
     public void delete(String name) {
         iRoleRepository.deleteById(name);
+    }
+
+    public RoleResponse deletePermission(String name, String permissionName) {
+        var role = iRoleRepository.findById(name).orElseThrow(() -> new RuntimeException("Role not found"));
+        var permission = iPermissionRepository.findById(permissionName).orElseThrow(() -> new RuntimeException("Permission not found"));
+        role.getPermissions().remove(permission);
+        role = iRoleRepository.save(role);
+        return iRoleMapper.toRoleResponse(role);
     }
 }

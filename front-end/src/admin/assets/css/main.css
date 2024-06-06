@@ -16958,3 +16958,12 @@ th {
   justify-content: center;
   align-items: center;
 }
+.tile-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tile-title {
+    margin-right: auto; /* Đẩy tiêu đề về bên trái */
+}

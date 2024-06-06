@@ -27,6 +27,15 @@ public class AccountController {
                 .build();
     }
 
+    @PutMapping("edit/{id}")
+    public ApiResponse<String> editAccount(@PathVariable Long id, @RequestBody AccountRequest accountDto) {
+        iAccountService.editAccount(id, accountDto);
+        return ApiResponse.<String>builder()
+                .code(200)
+                .message("Success")
+                .build();
+    }
+
     @GetMapping("/all")
     public ApiResponse<List<AccountResponse>> getAllAccount() {
         return ApiResponse.<List<AccountResponse>>builder()
@@ -61,7 +70,7 @@ public class AccountController {
                     .code(200)
                     .result("true")
                     .build();
-        }else {
+        } else {
             return ApiResponse.<String>builder()
                     .code(404)
                     .result("false")
