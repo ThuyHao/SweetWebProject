@@ -26,8 +26,6 @@ const AdminHeader = () => {
             setActiveMenu('order');
         } else if (pathname === '/admin/report') {
             setActiveMenu('report');
-        } else if (pathname === '/admin/log-manager') {
-            setActiveMenu('log');
         } else {
             setActiveMenu(null);
         }
@@ -49,9 +47,6 @@ const AdminHeader = () => {
     }
     function getReport() {
         navigate('/admin/report')
-    }
-    function getLogManager() {
-        navigate('/admin/log-manager')
     }
 
     return (
@@ -122,12 +117,6 @@ const AdminHeader = () => {
                         <a className={`app-menu__item ${activeMenu === 'report' ? 'active' : ''}`} onClick={getReport}>
                             <i className="app-menu__icon bx bx-pie-chart-alt-2" />
                             <span className="app-menu__label">Báo cáo doanh thu</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a className={`app-menu__item ${activeMenu === 'log' ? 'active' : ''}`} onClick={getLogManager}>
-                            <i className="app-menu__icon fas fa-book" />
-                            <span className="app-menu__label">Quản lý logs</span>
                         </a>
                     </li>
                     <li>

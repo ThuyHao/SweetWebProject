@@ -12,7 +12,6 @@ import AdminReportComponent from './components/AdminReportComponent.jsx';
 import AdminAddProductComponent from './components/AdminAddProductComponent.jsx';
 import AdminRoleComponent from './components/AdminRoleComponent.jsx';
 import AdminDiscountComponent from './components/AdminDiscountComponent.jsx';
-import AdminLogCompopent from './components/AdminLogCompopent.jsx';
 import AdminUpdateProductComponent from './components/AdminUpdateProductComponent.jsx';
 
 function AppContent() {
@@ -35,7 +34,6 @@ function AppContent() {
         <Route path="/admin/order-manager" element={<AdminOrderComponent />} />
         <Route path="/admin/discount-manager" element={<AdminDiscountComponent />} />
         <Route path="/admin/report" element={<AdminReportComponent />} />
-        <Route path="/admin/log-manager" element={<AdminLogCompopent />} />
       </Routes>
       {showHeaderFooter && <AdminFooter />}
     </>

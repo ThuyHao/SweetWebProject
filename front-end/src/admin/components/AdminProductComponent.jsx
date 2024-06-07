@@ -171,7 +171,7 @@ const AdminProductComponent = () => {
 
   return (
     <main className="app-content">
-      <AppTitleComponent />
+      <AppTitleComponent name={'Quản lý sản phẩm'} />
       <div className="row">
         <div className="col-md-12">
           <div className="tile">

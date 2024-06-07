@@ -188,7 +188,7 @@ const AdminAccountComponent = () => {
 
     return (
         <main className="app-content">
-            <AppTitleComponent />
+            <AppTitleComponent name={'Quản lý tài khoản'}/>
             <div className="row">
                 <div className="col-md-12">
                     <div className="tile">

@@ -21,5 +21,4 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long>, 
 
     @Query("SELECT p FROM ProductEntity p WHERE p.isDelete = :isDelete")
     List<ProductEntity> getProductByAdmin(@Param("isDelete") String isDelete);
-
 }
