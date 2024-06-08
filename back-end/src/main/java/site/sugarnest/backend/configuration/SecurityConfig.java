@@ -8,6 +8,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -15,6 +19,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import site.sugarnest.backend.enums.Role;
+import site.sugarnest.backend.service.account.CustomOAuth2UserService;
+import site.sugarnest.backend.service.account.JwtService;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -30,13 +36,31 @@ public class SecurityConfig {
     @Value("${SIGNER_KEY}")
     private String signerKer;
 
+    private final JwtService jwtService;
+    private final CustomOAuth2UserService customOAuth2UserService;
+
+    public SecurityConfig(JwtService jwtService, CustomOAuth2UserService customOAuth2UserService) {
+        this.jwtService = jwtService;
+        this.customOAuth2UserService = customOAuth2UserService;
+    }
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception   {
 //        httpSecurity.authorizeHttpRequests(request ->
 //                request.requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
 //                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
 //                        .anyRequest().authenticated());
         httpSecurity.authorizeHttpRequests(request -> request.anyRequest().permitAll()); // Tạm thời cho phép tất cả các request
+
+        httpSecurity.oauth2Login(oauth2 ->
+                oauth2.loginPage("/oauth2/authorization")
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        .successHandler((request, response, authentication) -> {
+                            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+                            String jwtToken = (String) oAuth2User.getAttributes().get("jwtToken");
+                            response.sendRedirect("http://localhost:3000/?token=" + jwtToken);
+                        })
+        );
 
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
@@ -47,7 +71,6 @@ public class SecurityConfig {
         return httpSecurity.build();
     }
 
-    //custom role
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();

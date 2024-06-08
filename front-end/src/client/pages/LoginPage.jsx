@@ -28,6 +28,15 @@ const LoginPage = () => {
     function getRegisterPage() {
         navigate('/register')
     }
+    const handleFacebookLogin = () => {
+        // Redirect the user to your backend OAuth endpoint for Facebook
+        window.location.href = 'http://localhost:8080/sugarnest/v0.1/oauth2/authorization/facebook';
+      };
+
+      const handleGoogleLogin = () => {
+        // Redirect the user to your backend OAuth endpoint
+        window.location.href = 'http://localhost:8080/sugarnest/v0.1/oauth2/authorization/google';
+      };
 
     return (
         <>
@@ -178,6 +187,7 @@ const LoginPage = () => {
                                 <div className="block social-login--facebooks margin-top-20 text-center">
                                     <p className="a-center text-secondary">Hoặc đăng nhập bằng</p>
                                     <a
+                                        onClick={handleFacebookLogin}
                                         className="social-login--facebook"
                                     >
                                         <img
@@ -189,6 +199,7 @@ const LoginPage = () => {
                                         />
                                     </a>
                                     <a
+                                        onClick={handleGoogleLogin}
                                         className="social-login--google"
                                     >
                                         <img

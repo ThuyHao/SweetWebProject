@@ -14,6 +14,7 @@ const Header = () => {
   const { user, logout, token } = useAuth();
   const { updateCart } = useCart();
   const [cartTotal, setCartTotal] = useState(0);
+
   useEffect(() => {
     if (user && user.id) {
       getTotalItemsInCart(user.id)

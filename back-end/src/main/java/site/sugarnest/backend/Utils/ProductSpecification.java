@@ -1,4 +1,4 @@
-package site.sugarnest.backend.Utils;
+package site.sugarnest.backend.utils;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
