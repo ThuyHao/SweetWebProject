@@ -8,7 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import site.sugarnest.backend.Utils.ProductSpecification;
+import site.sugarnest.backend.utils.ProductSpecification;
 import site.sugarnest.backend.dto.dto.ProductDto;
 import site.sugarnest.backend.dto.dto.ProductFilterDto;
 import site.sugarnest.backend.entities.ImageProductEntity;
