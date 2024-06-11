@@ -8,6 +8,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import site.sugarnest.backend.exception.AppException;
+import site.sugarnest.backend.exception.ErrorCode;
 import site.sugarnest.backend.utils.ProductSpecification;
 import site.sugarnest.backend.dto.dto.ProductDto;
 import site.sugarnest.backend.dto.dto.ProductFilterDto;
@@ -98,7 +100,7 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductDto getProductById(Long productId) {
-        ProductEntity product = iProductRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product is not exist with given id: " + productId));
+        ProductEntity product = iProductRepository.findById(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         return iProductMapper.mapToProductDto(product);
     }
 
@@ -154,7 +156,7 @@ public class ProductService implements IProductService {
     @Override
     public void deleteProduct(Long productId) {
         ProductEntity existingProduct = iProductRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product is not exist with given id: " + productId));
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         existingProduct.setIsDelete("true");
         iProductRepository.save(existingProduct);
     }

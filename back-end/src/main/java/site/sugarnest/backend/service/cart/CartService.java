@@ -44,7 +44,7 @@ public class CartService {
     @Transactional
     public CartItemResponse addItemToCart(CartItemRequest cartItemRequest) {
         AccountEntity account = accountRepository.findById(cartItemRequest.getAccountId())
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
 
         CartEntity cart = cartRepository.findByAccountEntity(account).orElse(null);
 
@@ -58,7 +58,7 @@ public class CartService {
         }
 
         ProductEntity product = productRepository.findById(cartItemRequest.getProductId())
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
         Optional<CartItemEntity> existingCartItemOpt = cart.getCartItems().stream()
                 .filter(item -> item.getProductEntity().equals(product) &&
@@ -108,9 +108,9 @@ public class CartService {
     public void removeItemFromCart(Integer cartItemId) {
         var context = SecurityContextHolder.getContext();
         String accountName = context.getAuthentication().getName();
-        AccountEntity account = accountRepository.findByAccountName(accountName).orElseThrow(() -> new RuntimeException("Account not found"));
-        CartEntity cart = cartRepository.findByAccountEntity(account).orElseThrow(() -> new RuntimeException("Cart not found"));
-        CartItemEntity cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() -> new RuntimeException("CartItem not found"));
+        AccountEntity account = accountRepository.findByAccountName(accountName).orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
+        CartEntity cart = cartRepository.findByAccountEntity(account).orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
+        CartItemEntity cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
         cart.getCartItems().remove(cartItem);
         cartItemRepository.delete(cartItem);
         cart.setUpdatedAt(new Date());
@@ -125,9 +125,9 @@ public class CartService {
     public void increaseQuantity(Integer cartItemId) {
         var context = SecurityContextHolder.getContext();
         String accountName = context.getAuthentication().getName();
-        AccountEntity account = accountRepository.findByAccountName(accountName).orElseThrow(() -> new RuntimeException("Account not found"));
-        CartEntity cart = cartRepository.findByAccountEntity(account).orElseThrow(() -> new RuntimeException("Cart not found"));
-        CartItemEntity cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() -> new RuntimeException("CartItem not found"));
+        AccountEntity account = accountRepository.findByAccountName(accountName).orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
+        CartEntity cart = cartRepository.findByAccountEntity(account).orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
+        CartItemEntity cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
 
         cartItem.setQuantity(cartItem.getQuantity() + 1);
         cartItem.setPrice(cartItem.getProductEntity().getSizeColorProductsEntity().get(1).getDiscountPrice() * cartItem.getQuantity());
@@ -145,9 +145,9 @@ public class CartService {
     public void decreaseQuantity(Integer cartItemId) {
         var context = SecurityContextHolder.getContext();
         String accountName = context.getAuthentication().getName();
-        AccountEntity account = accountRepository.findByAccountName(accountName).orElseThrow(() -> new RuntimeException("Account not found"));
-        CartEntity cart = cartRepository.findByAccountEntity(account).orElseThrow(() -> new RuntimeException("Cart not found"));
-        CartItemEntity cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() -> new RuntimeException("CartItem not found"));
+        AccountEntity account = accountRepository.findByAccountName(accountName).orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
+        CartEntity cart = cartRepository.findByAccountEntity(account).orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
+        CartItemEntity cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
 
         int newQuantity = cartItem.getQuantity() - 1;
         if (newQuantity <= 0) {
@@ -168,7 +168,7 @@ public class CartService {
     }
 
     public CartEntity getCartByAccountId(Long accountId) {
-        AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
+        AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
         return cartRepository.findByAccountEntity(account).orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
     }
 
@@ -177,7 +177,7 @@ public class CartService {
     }
 
     public Integer getTotalItemsInCart(Long accountId) {
-        AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
+        AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
         CartEntity cart = cartRepository.findByAccountEntity(account).orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
         List<CartItemEntity> cartItems = getCartItemsByCartId(cart.getId());
         return cartItems.stream().mapToInt(CartItemEntity::getQuantity).sum();
@@ -190,7 +190,7 @@ public class CartService {
     public CartEntity getMyCart() {
         var context = SecurityContextHolder.getContext();
         String accountName = context.getAuthentication().getName();
-        AccountEntity account = accountRepository.findByAccountName(accountName).orElseThrow(() -> new RuntimeException("Account not found"));
+        AccountEntity account = accountRepository.findByAccountName(accountName).orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
         return cartRepository.findByAccountEntity(account).orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
     }
 }

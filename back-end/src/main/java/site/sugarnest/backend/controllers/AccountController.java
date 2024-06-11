@@ -2,6 +2,7 @@ package site.sugarnest.backend.controllers;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import site.sugarnest.backend.dto.dto.PasswordChangeRequest;
 import site.sugarnest.backend.dto.request.EmailExistResquest;
 import site.sugarnest.backend.dto.response.ApiResponse;
 import site.sugarnest.backend.dto.request.AccountRequest;
@@ -30,6 +31,23 @@ public class AccountController {
     @PutMapping("edit/{id}")
     public ApiResponse<String> editAccount(@PathVariable Long id, @RequestBody AccountRequest accountDto) {
         iAccountService.editAccount(id, accountDto);
+        return ApiResponse.<String>builder()
+                .code(200)
+                .message("Success")
+                .build();
+    }
+    @PutMapping("edit")
+    public ApiResponse<String> editMyAccount(@RequestBody AccountRequest accountDto) {
+        iAccountService.editMyAccount(accountDto);
+        return ApiResponse.<String>builder()
+                .code(200)
+                .message("Success")
+                .build();
+    }
+
+    @PutMapping("edit/password")
+    public ApiResponse<String> editMyPassword(@RequestBody PasswordChangeRequest passwordChangeRequest) {
+        iAccountService.editMyPassword(passwordChangeRequest);
         return ApiResponse.<String>builder()
                 .code(200)
                 .message("Success")

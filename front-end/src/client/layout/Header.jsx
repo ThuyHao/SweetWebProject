@@ -67,7 +67,7 @@ const Header = () => {
   }
   const handleClick = () => {
     if (user) {
-      navigator(`/profile/${user.id}`);
+      navigator(`/profile`);
     } else {
       navigator(`/login`);
     }

@@ -65,7 +65,7 @@ const AdminHeader = () => {
                 <div className="app-sidebar__user">
                     <img
                         className="app-sidebar__user-avatar"
-                        src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-1/425504046_2140968452928397_7020557538431123240_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeH2-BFQhORuzFcTYJZzY-5qZg94BacUkQlmD3gFpxSRCcMF0tZoTYWItW45EDmJJKs8Z_lZv6P2nDo-aMOhop4u&_nc_ohc=7zWpDauEJh0Q7kNvgHlvWRV&_nc_ht=scontent.fsgn2-4.fna&oh=00_AYAtCDq2rbM1An_Itflfc48D_4yFDUGDLsyVayR8lA3AfQ&oe=6658DAD4"
+                        src="https://moc247.com/wp-content/uploads/2023/12/loa-mat-voi-101-hinh-anh-avatar-meo-cute-dang-yeu-dep-mat_2.jpg"
                         width="50px"
                         alt="User Image" />
                     <div>
