@@ -1,4 +1,8 @@
 import React from 'react'
+import OrderChart from '../util/OrderChart'
+import RevenueChart from '../util/RevenueChart'
+import VisitorChart from '../util/VisitorChart'
+import PopularProductChart from '../util/PopularProductChart'
 
 const AdminHomePage = () => {
     return (
@@ -175,24 +179,20 @@ const AdminHomePage = () => {
                     </div>
                 </div>
                 <div className="col-md-12 col-lg-6">
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="tile">
-                                <h3 className="tile-title">Dữ liệu 6 tháng đầu vào</h3>
-                                <div className="embed-responsive embed-responsive-16by9">
-                                    <canvas className="embed-responsive-item" id="lineChartDemo" />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-12">
-                            <div className="tile">
-                                <h3 className="tile-title">Thống kê 6 tháng doanh thu</h3>
-                                <div className="embed-responsive embed-responsive-16by9">
-                                    <canvas className="embed-responsive-item" id="barChartDemo" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div className="row">
+                <div className="col-md-12 col-lg-6">
+                    <OrderChart />
+                </div>
+                <div className="col-md-12 col-lg-6">
+                    <RevenueChart />
+                </div>
+                <div className="col-md-12 col-lg-6">
+                    <VisitorChart />
+                </div>
+                <div className="col-md-12 col-lg-6">
+                    <PopularProductChart />
+                </div>
+            </div>
                 </div>
             </div>
         </main>

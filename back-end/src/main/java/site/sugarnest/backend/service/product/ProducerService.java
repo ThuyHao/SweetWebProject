@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.sugarnest.backend.dto.dto.ProducerDto;
 import site.sugarnest.backend.entities.ProducerEntity;
+import site.sugarnest.backend.exception.AppException;
+import site.sugarnest.backend.exception.ErrorCode;
 import site.sugarnest.backend.mapper.IProducerMapper;
 import site.sugarnest.backend.reponsitoties.IProducerRepository;
 
@@ -27,7 +29,7 @@ public class ProducerService {
     }
 
     public ProducerDto getProducerById(Long id) {
-        return producerMapper.mapToProducerDto(producerRepository.findById(id).orElseThrow());
+        return producerMapper.mapToProducerDto(producerRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCER_NOT_EXITED)));
     }
 
     public ProducerDto updateProducer(ProducerDto producerDto) {

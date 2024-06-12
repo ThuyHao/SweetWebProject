@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext.jsx';
 import { addCartItems, getCartByAccountId } from '../services/ProductService.js'
 import { useNavigate } from 'react-router-dom';
 import LikeButtonComponent from './LikeButtonComponent.jsx';
+import ProductRating from './ProductRating.jsx';
 
 const AddtoCart = ({ product }) => {
     const navigate = useNavigate();
@@ -100,6 +101,8 @@ const AddtoCart = ({ product }) => {
                         (Tiết kiệm: <span>{parseInt(product.sizeColorProductsEntity[0].listPrice - product.sizeColorProductsEntity[0].discountPrice).toLocaleString('it-IT')}₫</span>)
                     </div>
                 </div>
+                <ProductRating productId={product.id} accountId={user ? user.id : null} />
+
                 <span className="product-promo-tag product-promo-tag--2 product-promo-tag--image"
                     style={{ '--color': '#a50a06', '--background': 'transparent', '--border-color': 'transparent' }}>
                     <img src='//bizweb.dktcdn.net/100/419/628/themes/897067/assets/promo_tag_2.png?1704435927037'

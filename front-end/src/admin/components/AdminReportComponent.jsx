@@ -1,5 +1,7 @@
 import React from 'react'
 import AppTitleComponent from './AppTitleComponent'
+import MonthlyDataChart from '../util/MonthlyDataChart'
+import SalesStatisticsChart from '../util/SalesStatisticsChart'
 
 
 const AdminReportComponent = () => {
@@ -235,21 +237,11 @@ const AdminReportComponent = () => {
                 </div>
             </div>
             <div className="row">
-                <div className="col-md-6">
-                    <div className="tile">
-                        <h3 className="tile-title">DỮ LIỆU HÀNG THÁNG</h3>
-                        <div className="embed-responsive embed-responsive-16by9">
-                            <canvas className="embed-responsive-item" id="lineChartDemo" />
-                        </div>
-                    </div>
+            <div className="col-md-12 col-lg-6">
+                    <MonthlyDataChart />
                 </div>
-                <div className="col-md-6">
-                    <div className="tile">
-                        <h3 className="tile-title">THỐNG KÊ DOANH SỐ</h3>
-                        <div className="embed-responsive embed-responsive-16by9">
-                            <canvas className="embed-responsive-item" id="barChartDemo" />
-                        </div>
-                    </div>
+                <div className="col-md-12 col-lg-6">
+                    <SalesStatisticsChart />
                 </div>
             </div>
         </main>
