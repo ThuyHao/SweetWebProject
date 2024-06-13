@@ -1,17 +1,24 @@
 import React from 'react'
-import { useEffect, useState} from 'react'
+import { useEffect, useState } from 'react'
 import { listProducts } from '../services/ProductService.js'
 import Coupon from '../components/Coupon.jsx';
 import Breadcrumb from '../components/Breadcrumb.jsx';
 import ItemProductComponent from '../components/ItemProduct.jsx';
+import { Range, getTrackBackground } from 'react-range';
+import axios from 'axios';
+import { REST_API_BASE_URL } from '../services/ProductService.js';
+
 
 
 const ProductsPage = () => {
-    const [products, setProducts] = useState([])
+    const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
+    const [suppliers, setSuppliers] = useState([]);
+    const [categories, setCategories] = useState([]);
+
     useEffect(() => {
-        listProducts(currentPage).then((response) => {
+        listProducts(currentPage - 1).then((response) => {
             setProducts(response.data.content);
             setTotalPages(response.data.totalPages);
         }).catch((error) => { console.log(error) });
@@ -19,6 +26,43 @@ const ProductsPage = () => {
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
     };
+
+    const [values, setValues] = useState([10000, 2000000]);
+
+    const handleSliderChange = (values) => {
+        setValues(values);
+    };
+    const fetchSuppliers = () => {
+        axios.get(`${REST_API_BASE_URL}/suppliers/all`)
+            .then(response => {
+                if (response.status === 200) {
+                    setSuppliers(response.data.result);
+                } else {
+                    console.error('Lỗi khi lấy danh sách nhà cung cấp:', error);
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi khi lấy danh sách nhà cung cấp:', error);
+            });
+    };
+    const fetchCategories = () => {
+        axios.get(`${REST_API_BASE_URL}/categories/all`)
+            .then(response => {
+                if (response.status === 200) {
+                    setCategories(response.data.result);
+                } else {
+                    console.error('Lỗi khi lấy danh sách danh mục:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi khi lấy danh sách danh mục:', error);
+            });
+    };
+
+    useEffect(() => {
+        fetchSuppliers();
+    }, []);
+
     return (
         <div>
             <Breadcrumb />
@@ -81,53 +125,201 @@ const ProductsPage = () => {
                             </div>
                         </div>
                         <div className="row">
-                            <div className='col-lg-3 col-md-12 col-sm-12'>
+                            <div className="col-lg-3 col-md-12 col-sm-12">
                                 <aside className=" scroll card py-2 dqdt-sidebar sidebar left-content">
                                     <div className="wrap_background_aside asidecollection">
                                         <div className="filter-content aside-filter">
                                             <div className="filter-container">
                                                 <button className="btn d-block d-lg-none open-filters p-0">
                                                     <i className="fa fa-arrow-left mr-3 "> </i>
-                                                    <b className="d-inline">
-                                                        Tìm theo
-                                                    </b>
+                                                    <b className="d-inline">Tìm theo</b>
                                                 </button>
-                                                <div className="filter-container__selected-filter" style={{ display: 'none' }}>
-                                                    <div className="filter-container__selected-filter-header clearfix d-none">
-                                                        <span className="filter-container__selected-filter-header-title"><i
-                                                            className="fa fa-arrow-left hidden-sm-up"></i> Bạn chọn</span>
-                                                        <a href=""
-                                                            className="filter-container__clear-all">Bỏ hết <i
-                                                                className="fa fa-angle-right"></i></a>
-                                                    </div>
-                                                </div>
                                                 <aside className="aside-item filter-vendor">
                                                     <div className="aside-title">
-                                                        <h2 className="title-head margin-top-0"><span>Hãng sản xuất</span></h2>
+                                                        <h2 className="title-head margin-top-0">
+                                                            <span>Thương hiệu</span>
+                                                        </h2>
                                                     </div>
                                                     <div className="aside-content filter-group">
                                                         <ul>
-                                                            <li className="filter-item filter-item--check-box filter-item--green">
+                                                            {suppliers.map((supplier, index) => (
+                                                                <li
+                                                                    key={supplier.id} // Assuming each supplier has a unique id
+                                                                    className="filter-item filter-item--check-box filter-item--green"
+                                                                >
+                                                                    <span>
+                                                                        <label className="custom-checkbox" htmlFor={`filter-${index}`}>
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                id={`filter-${index}`}
+                                                                                data-group="PRODUCT_VENDOR"
+                                                                                data-field="vendor.filter_key"
+                                                                                data-text={supplier.nameSupplier}
+                                                                                defaultValue={`("${supplier.nameSupplier}")`}
+                                                                                data-operator="OR"
+                                                                            />
+                                                                            <i className="fa" />
+                                                                            {supplier.nameSupplier}
+                                                                        </label>
+                                                                    </span>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                </aside>
+
+                                                <aside className="aside-item filter-price dq-filterxx">
+                                                    <div className="aside-title">
+                                                        <h2 className="title-head margin-top-0">
+                                                            <span>GIÁ</span>
+                                                        </h2>
+                                                    </div>
+                                                    <div className="aside-content filter-group scroll">
+                                                        <Range
+                                                            values={values}
+                                                            step={100000}
+                                                            min={0}
+                                                            max={2000000}
+                                                            onChange={handleSliderChange}
+                                                            renderTrack={({ props, children }) => (
+                                                                <div
+                                                                    {...props}
+                                                                    style={{
+                                                                        ...props.style,
+                                                                        height: '6px',
+                                                                        width: '100%',
+                                                                        background: getTrackBackground({
+                                                                            values,
+                                                                            colors: ['#ccc', '#548BF4', '#ccc'],
+                                                                            min: 0,
+                                                                            max: 2000000
+                                                                        }),
+                                                                        margin: '20px 0'
+                                                                    }}
+                                                                >
+                                                                    {children}
+                                                                </div>
+                                                            )}
+                                                            renderThumb={({ props, isDragged }) => (
+                                                                <div
+                                                                    {...props}
+                                                                    style={{
+                                                                        ...props.style,
+                                                                        height: '20px',
+                                                                        width: '20px',
+                                                                        borderRadius: '50%',
+                                                                        backgroundColor: '#FFF',
+                                                                        border: '1px solid #CCC',
+                                                                        display: 'flex',
+                                                                        justifyContent: 'center',
+                                                                        alignItems: 'center',
+                                                                        boxShadow: '0px 2px 6px #AAA'
+                                                                    }}
+                                                                >
+                                                                    <div
+                                                                        style={{
+                                                                            height: '10px',
+                                                                            width: '10px',
+                                                                            backgroundColor: isDragged ? '#548BF4' : '#CCC'
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                        />
+                                                        <p>
+                                                            <label htmlFor="amount">Giá:</label>
+                                                            <span id="amount">
+                                                                {values[0].toLocaleString('vi-VN')}₫ - {values[1].toLocaleString('vi-VN')}₫
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                </aside>
+                                                {/* Lọc Loại */}
+                                                <aside className="aside-item aside-itemxx filter-type">
+                                                    <div className="aside-title">
+                                                        <h2 className="title-head margin-top-0">
+                                                            <span>Loại sản phẩm</span>
+                                                        </h2>
+                                                    </div>
+                                                    <div className="aside-content filter-group scroll">
+                                                        <ul>
+                                                            <li className="filter-item filter-item--check-box filter-item--green ">
                                                                 <span>
-                                                                    <label className="custom-checkbox" htmlFor="filter-abc">
-                                                                        <input type="checkbox" id="filter-abc"
-                                                                            data-group="PRODUCT_VENDOR"
-                                                                            data-field="vendor.filter_key" data-text=""
-                                                                            value="(&#34;ABC&#34;)" data-operator="OR" />
-                                                                        <i className="fa"></i>
-                                                                        ABC
+                                                                    <label
+                                                                        className="custom-checkbox"
+                                                                        htmlFor="filter-banh-can-lop"
+                                                                    >
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            id="filter-banh-can-lop"
+                                                                            data-group="PRODUCT_TYPE"
+                                                                            data-field="product_type.filter_key"
+                                                                            data-text=""
+                                                                            defaultValue='("Bánh cán lớp")'
+                                                                            data-operator="OR"
+                                                                        />
+                                                                        <i className="fa" />
+                                                                        Bánh cán lớp
                                                                     </label>
                                                                 </span>
                                                             </li>
-                                                            <li className="filter-item filter-item--check-box filter-item--green">
+                                                            <li className="filter-item filter-item--check-box filter-item--green ">
                                                                 <span>
-                                                                    <label className="custom-checkbox" htmlFor="filter-ega-cake">
-                                                                        <input type="checkbox" id="filter-ega-cake"
-                                                                            data-group="PRODUCT_VENDOR"
-                                                                            data-field="vendor.filter_key" data-text=""
-                                                                            value="(&#34;Ega-Cake&#34;)" data-operator="OR" />
-                                                                        <i className="fa"></i>
-                                                                        Ega-Cake
+                                                                    <label
+                                                                        className="custom-checkbox"
+                                                                        htmlFor="filter-banh-kem"
+                                                                    >
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            id="filter-banh-kem"
+                                                                            data-group="PRODUCT_TYPE"
+                                                                            data-field="product_type.filter_key"
+                                                                            data-text=""
+                                                                            defaultValue='("Bánh kem")'
+                                                                            data-operator="OR"
+                                                                        />
+                                                                        <i className="fa" />
+                                                                        Bánh kem
+                                                                    </label>
+                                                                </span>
+                                                            </li>
+                                                            <li className="filter-item filter-item--check-box filter-item--green ">
+                                                                <span>
+                                                                    <label
+                                                                        className="custom-checkbox"
+                                                                        htmlFor="filter-chocolate"
+                                                                    >
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            id="filter-chocolate"
+                                                                            data-group="PRODUCT_TYPE"
+                                                                            data-field="product_type.filter_key"
+                                                                            data-text=""
+                                                                            defaultValue='("Chocolate")'
+                                                                            data-operator="OR"
+                                                                        />
+                                                                        <i className="fa" />
+                                                                        Chocolate
+                                                                    </label>
+                                                                </span>
+                                                            </li>
+                                                            <li className="filter-item filter-item--check-box filter-item--green ">
+                                                                <span>
+                                                                    <label
+                                                                        className="custom-checkbox"
+                                                                        htmlFor="filter-cupcakes"
+                                                                    >
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            id="filter-cupcakes"
+                                                                            data-group="PRODUCT_TYPE"
+                                                                            data-field="product_type.filter_key"
+                                                                            data-text=""
+                                                                            defaultValue='("Cupcakes")'
+                                                                            data-operator="OR"
+                                                                        />
+                                                                        <i className="fa" />
+                                                                        Cupcakes
                                                                     </label>
                                                                 </span>
                                                             </li>
@@ -135,7 +327,7 @@ const ProductsPage = () => {
                                                     </div>
                                                 </aside>
                                             </div>
-                                        </div>
+                                        </div>{" "}
                                     </div>
                                 </aside>
                             </div>
