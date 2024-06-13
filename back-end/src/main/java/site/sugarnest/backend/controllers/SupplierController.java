@@ -1,6 +1,7 @@
 package site.sugarnest.backend.controllers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import site.sugarnest.backend.dto.response.ApiResponse;
 import site.sugarnest.backend.dto.dto.SupplierDto;
@@ -17,6 +18,7 @@ public class SupplierController {
     SupplierService supplierService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('PRODUCTS_POST')")
     public ApiResponse<SupplierDto> createSupplier(@RequestBody SupplierDto supplierDto) {
         if (supplierService.checkSupplierExistByName(supplierDto.getNameSupplier())) {
             return ApiResponse.<SupplierDto>builder()
@@ -47,6 +49,7 @@ public class SupplierController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasAuthority('PRODUCTS_PUT')")
     public ApiResponse<SupplierDto> updateSupplier(@RequestBody SupplierDto supplierDto) {
         if (supplierService.checkSupplierExistByName(supplierDto.getNameSupplier())) {
             return ApiResponse.<SupplierDto>builder()
@@ -61,6 +64,7 @@ public class SupplierController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('PRODUCTS_DELETE')")
     public ApiResponse<String> deleteSupplier(@PathVariable("id") Long id) {
         supplierService.deleteSupplier(id);
         return ApiResponse.<String>builder()

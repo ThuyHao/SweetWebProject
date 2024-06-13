@@ -70,7 +70,7 @@ public class ApplicationInitConfig {
                 PermissionEntity postCartPermission = permissionRepository.save(new PermissionEntity(PredefinedPermission.CART_POST, "Thêm giỏ hàng"));
                 PermissionEntity deleteCartPermission = permissionRepository.save(new PermissionEntity(PredefinedPermission.CART_DELETE, "Xóa giỏ hàng"));
                 // Account permissions
-
+                PermissionEntity postAccountsPermission = permissionRepository.save(new PermissionEntity(PredefinedPermission.ACCOUNTS_POST, "Thêm tài khoản"));
                 PermissionEntity putAccountsPermission = permissionRepository.save(new PermissionEntity(PredefinedPermission.ACCOUNTS_PUT, "Chỉnh sửa tài khoản"));
                 PermissionEntity getAccountsPermission = permissionRepository.save(new PermissionEntity(PredefinedPermission.ACCOUNTS_GET, "Xem danh sách tài khoản"));
                 PermissionEntity deleteAccountsPermission = permissionRepository.save(new PermissionEntity(PredefinedPermission.ACCOUNTS_DELETE, "Xóa Quản lý tài khoản"));
@@ -81,7 +81,7 @@ public class ApplicationInitConfig {
                         getOrdersPermission, putOrdersPermission, postOrdersPermission, deleteOrdersPermission,
                         getSalesPermission, putSalesPermission, postSalesPermission, deleteSalesPermission,
                         getCartPermission, putCartPermission, postCartPermission, deleteCartPermission,
-                        putAccountsPermission, getAccountsPermission, deleteAccountsPermission
+                        postAccountsPermission, putAccountsPermission, getAccountsPermission, deleteAccountsPermission
                 )));
                 RoleEntity userRole = roleRepository.save(new RoleEntity(PredefinedRole.USER_ROLE, "Người dùng", Set.of(getCartPermission, putCartPermission, postCartPermission, deleteCartPermission)));
                 RoleEntity productManagerRole = roleRepository.save(new RoleEntity(PredefinedRole.PRODUCT_MANAGER_ROLE, "Quản lý sản phẩm", new HashSet<>()));
@@ -99,7 +99,7 @@ public class ApplicationInitConfig {
                         .phone("123456789")
                         .isActive("true")
                         .enabled("true")
-                        .isDelete("true")
+                        .isDelete("false")
                         .number_login_fail(0)
                         .birthday(new Date())
                         .roles(Set.of(adminRole))

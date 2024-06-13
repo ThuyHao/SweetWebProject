@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Breadcrumb from '../components/Breadcrumb.jsx';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { REST_API_BASE_URL } from '../services/ProductService.js';
 
 
 const RegisterPage = () => {
@@ -50,7 +51,7 @@ const RegisterPage = () => {
         const { repassword, ...dataToSubmit } = formData;
         console.log('Data to submit:', dataToSubmit);
     
-        axios.post('http://localhost:8080/sugarnest/v0.1/account/register', dataToSubmit)
+        axios.post(`${REST_API_BASE_URL}/account/register`, dataToSubmit)
             .then(response => {
                 // Hiển thị SweetAlert2 để yêu cầu người dùng nhập mã xác thực
                 Swal.fire({
@@ -71,7 +72,7 @@ const RegisterPage = () => {
                     if (result.isConfirmed) {
                         const verificationCode = result.value;
                         // Gửi mã xác thực đến máy chủ để kiểm tra
-                        axios.post('http://localhost:8080/sugarnest/v0.1/account/checkEmail', { verificationCode })
+                        axios.post(`${REST_API_BASE_URL}/account/checkEmail`, { verificationCode })
                             .then(verifyResponse => {
                                 if (verifyResponse.data.code === 200) {
                                     Swal.fire({

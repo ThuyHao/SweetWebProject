@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useState } from 'react'
 import Slider from "react-slick";
 import ModalZoom from '../util/ModalZoom.jsx';
 import AddtoCart from './AddtoCart.jsx';
@@ -127,7 +127,7 @@ const ProductSlider = ({ product }) => {
                                     </div>
                                 </div>
                             </div>
-                          <AddtoCart product={product} />
+                            <AddtoCart product={product} />
                         </div>
                     </div>
                 </div>

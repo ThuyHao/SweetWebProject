@@ -22,4 +22,6 @@ public interface IAccountService {
     AccountResponse getMyInfo();
 
     boolean checkExistedEmail(String email);
+
+    void deleteAccount(Long id);
 }

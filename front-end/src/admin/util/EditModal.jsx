@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { REST_API_BASE_URL } from '../service/AdminService';
 
 const EditModal = ({ account, onCancel, onSave }) => {
   const [roles, setRoles] = useState([]);
+  const token = localStorage.getItem('token');
   const [selectedRoles, setSelectedRoles] = useState([account.roles[0]?.name] || []);
   const [updatedAccount, setUpdatedAccount] = useState({
     key: account.id,
@@ -19,7 +21,11 @@ const EditModal = ({ account, onCancel, onSave }) => {
 
   const fetchRoles = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/sugarnest/v0.1/roles');
+      const response = await axios.get(`${REST_API_BASE_URL}/roles`, {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    })
       if (response.data.code === 0) {
         setRoles(response.data.result);
       } else {

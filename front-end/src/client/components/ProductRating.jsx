@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Rating from 'react-rating-stars-component';
+import { REST_API_BASE_URL } from '../services/ProductService';
 
 const ProductRating = ({ productId, accountId }) => {
     const [rating, setRating] = useState(0);
@@ -10,7 +11,7 @@ const ProductRating = ({ productId, accountId }) => {
     useEffect(() => {
         if (accountId && productId) {
             // Kiểm tra xem người dùng đã mua sản phẩm này hay chưa
-            // axios.get(`http://localhost:8080/sugarnest/v0.1/purchases/check?accountId=${accountId}&productId=${productId}`)
+            // axios.get(`${REST_API_BASE_URL}/purchases/check?accountId=${accountId}&productId=${productId}`)
             //     .then(response => {
             //         setIsPurchased(response.data.isPurchased);
             //     })
@@ -19,7 +20,7 @@ const ProductRating = ({ productId, accountId }) => {
             //     });
 
             // Lấy đánh giá hiện tại của người dùng (nếu có)
-            axios.get(`http://localhost:8080/sugarnest/v0.1/ratings?accountId=${accountId}&productId=${productId}`)
+            axios.get(`${REST_API_BASE_URL}/ratings?accountId=${accountId}&productId=${productId}`)
                 .then(response => {
                     if (response.data) {
                         setRating(response.data.numberStar);
@@ -47,7 +48,7 @@ const ProductRating = ({ productId, accountId }) => {
 
             if (isRated) {
                 // Sửa đánh giá
-                axios.put('http://localhost:8080/sugarnest/v0.1/ratings', ratingData)
+                axios.put(`${REST_API_BASE_URL}/ratings`, ratingData)
                     .then(response => {
                         setRating(newRating);
                     })
@@ -56,7 +57,7 @@ const ProductRating = ({ productId, accountId }) => {
                     });
             } else {
                 // Tạo mới đánh giá
-                axios.post('http://localhost:8080/sugarnest/v0.1/ratings', ratingData)
+                axios.post(`${REST_API_BASE_URL}/ratings`, ratingData)
                     .then(response => {
                         setRating(newRating);
                         setIsRated(true);

@@ -1,27 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Space, Badge } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import ReusableTableComponent from './ReusableTableComponent';
 import EmlementButtonComponent from './EmlementButtonComponent';
 import AppTitleComponent from './AppTitleComponent';
-import { render } from 'react-dom';
-import { urlImage } from '../../client/services/ProductService';
+import { REST_API_BASE_URL } from '../service/AdminService';
 
 const AdminProductComponent = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const token = localStorage.getItem('token');
+
+
+
   useEffect(() => {
-    axios.get('http://localhost:8080/sugarnest/v0.1/products/admin')
+    axios.get(`${REST_API_BASE_URL}/products/all`)
       .then(response => {
         if (response.data.code === 0) {
           setData(response.data.result.map(item => {
-            const sizeColors = item.sizeColorProductsEntity.map(sizeColor => `${sizeColor.color || ''}/${sizeColor.size || ''}`).join(', ');
-            const prices = item.sizeColorProductsEntity.map(sizeColor => sizeColor.listPrice || '').join(', ');
-            const discounts = item.sizeColorProductsEntity.map(sizeColor => sizeColor.discount || '').join(', ');
-  
+            const sizeColors = item.sizeColorProductsEntity
+              .map(sizeColor => {
+                const color = sizeColor.color ? sizeColor.color : '';
+                const size = sizeColor.size ? sizeColor.size : '';
+                return `${color}/${size}`;
+              })
+              .join(', ');
+
+            const prices = item.sizeColorProductsEntity
+              .map(sizeColor => sizeColor.listPrice ? sizeColor.listPrice : '')
+              .join(', ');
+
+            const discounts = item.sizeColorProductsEntity
+              .map(sizeColor => sizeColor.discount ? sizeColor.discount : '')
+              .join(', ');
+
             return {
               key: item.id,
               productCode: item.id,
@@ -43,12 +58,12 @@ const AdminProductComponent = () => {
         console.error("There was an error fetching the data!", error);
       });
   }, []);
-  
+
 
   const getAddProduct = () => {
     navigate('/admin/add-product');
   };
-  function getEditProduct(id){
+  function getEditProduct(id) {
     navigate(`/admin/edit-product/${id}`);
   };
   const handleDelete = (key) => {
@@ -62,7 +77,11 @@ const AdminProductComponent = () => {
       confirmButtonText: 'Vâng, xóa nó đi!',
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`http://localhost:8080/sugarnest/v0.1/products/${key}`)
+        axios.delete(`${REST_API_BASE_URL}/products/${key}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        })
           .then(() => {
             Swal.fire('Đã xóa!', 'Sản phẩm của bạn đã bị xóa.', 'success');
             setData(data.filter(item => item.key !== key));
@@ -102,7 +121,7 @@ const AdminProductComponent = () => {
       title: 'Ảnh',
       dataIndex: 'image',
       key: 'image',
-      render: (text) => <img className="img-card-person" src={urlImage + text} alt="" />,
+      render: (text) => <img className="img-card-person" src={text} alt="" />,
     },
     {
       title: 'Tình trạng',
@@ -167,7 +186,7 @@ const AdminProductComponent = () => {
       ),
     },
   ];
-  
+
 
   return (
     <main className="app-content">

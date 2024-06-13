@@ -3,12 +3,18 @@ import AppTitleComponent from "./AppTitleComponent";
 import axios from "axios";
 import Swal from 'sweetalert2';
 import RoleItem from "./RoleItem";
+import { REST_API_BASE_URL } from "../service/AdminService";
 
 const AdminRoleComponent = () => {
     const [roles, setRoles] = useState([]);
+    const token = localStorage.getItem('token');
     const fetchRoles = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/sugarnest/v0.1/roles");
+            const response = await axios.get(`${REST_API_BASE_URL}/roles`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
             setRoles(response.data.result);
         } catch (error) {
             console.error("Error fetching roles:", error);
@@ -33,7 +39,11 @@ const AdminRoleComponent = () => {
             preConfirm: () => {
                 const roleName = document.getElementById('roleName').value.toUpperCase();
                 const roleDescription = document.getElementById('roleDescription').value;
-                return axios.post('http://localhost:8080/sugarnest/v0.1/roles', { name: roleName, description: roleDescription })
+                return axios.post(`${REST_API_BASE_URL}/roles`, { name: roleName, description: roleDescription }, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
                     .then(response => {
                         console.log(response);
                         if (response.status !== 200) {
@@ -67,7 +77,7 @@ const AdminRoleComponent = () => {
                 Thêm vai trò
             </button>
             {roles.map((role, index) => (
-                <RoleItem key={index} role={role} fetchRoles={fetchRoles}/>
+                <RoleItem key={index} role={role} fetchRoles={fetchRoles} />
             ))}
         </main>
     );

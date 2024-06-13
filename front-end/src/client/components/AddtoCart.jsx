@@ -1,12 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import QuantityInput from '../util/QuantityInput.jsx';
 import AddToCartSuccess from './AddToCartSuccess.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
-import { addCartItems, getCartByAccountId } from '../services/ProductService.js'
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import LikeButtonComponent from './LikeButtonComponent.jsx';
 import ProductRating from './ProductRating.jsx';
+import { REST_API_BASE_URL } from '../services/ProductService.js';
 
 const AddtoCart = ({ product }) => {
     const navigate = useNavigate();
@@ -33,14 +34,15 @@ const AddtoCart = ({ product }) => {
     const handleCloseModal = () => {
         setShowSuccessModal(false);
     };
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const { updateCart } = useCart();
     const [cartItem, setCartItem] = useState();
     const handleSubmit = (event) => {
+        event.preventDefault();
+
         if (!user) {
             navigate('/login');
         } else {
-            event.preventDefault();
             const cartItem = {
                 accountId: user.id,
                 productId: product.id,
@@ -48,11 +50,16 @@ const AddtoCart = ({ product }) => {
                 productSize: selectedSizeOption,
                 productColor: selectedColorOption
             };
-            addCartItems(cartItem)
+
+            axios.post(`${REST_API_BASE_URL}/carts/add-item`, cartItem, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
                 .then(response => {
                     setShowSuccessModal(true);
                     updateCart(response.data);
-                    setCartItem(response.data.result)
+                    setCartItem(response.data.result);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -68,7 +75,7 @@ const AddtoCart = ({ product }) => {
 
             {/* Hiển thị thông báo thêm vào giỏ hàng thành công */}
             {showSuccessModal && (
-                <AddToCartSuccess handleClose={handleCloseModal} product={product} cartItem ={cartItem} />
+                <AddToCartSuccess handleClose={handleCloseModal} product={product} cartItem={cartItem} />
             )}
 
             <h1 className="title-product">{product.nameProduct}</h1>
@@ -115,7 +122,7 @@ const AddtoCart = ({ product }) => {
                         </div>
                     </div>
                 </div>
-                <LikeButtonComponent dataHref={dataHref}/>
+                <LikeButtonComponent dataHref={dataHref} />
                 <div className="form-product pt-sm-2">
                     <div className='product-promotion rounded-sm' id='ega-salebox'>
                         <h3 className='product-promotion__heading rounded-sm d-inline-flex align-items-center'

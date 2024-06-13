@@ -1,6 +1,6 @@
 import React from 'react'
-import { useEffect, useState, useRef } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import {useState, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import ProductSlider from './ProductSlider.jsx';
 
 const ItemProductComponent = ({ product }) => {

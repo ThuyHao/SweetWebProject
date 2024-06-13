@@ -1,6 +1,7 @@
 package site.sugarnest.backend.controllers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import site.sugarnest.backend.dto.response.ApiResponse;
 import site.sugarnest.backend.dto.dto.CategoryDto;
@@ -32,6 +33,7 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('PRODUCTS_POST')")
     public ApiResponse<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto) {
         if (categoryService.checkCategoryExistByName(categoryDto.getNameCategory())) {
             return ApiResponse.<CategoryDto>builder()
@@ -46,6 +48,7 @@ public class CategoryController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasAuthority('PRODUCTS_PUT')")
     public ApiResponse<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto) {
         if (categoryService.checkCategoryExistByName(categoryDto.getNameCategory())) {
             return ApiResponse.<CategoryDto>builder()
@@ -60,6 +63,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('PRODUCTS_DELETE')")
     public void deleteCategory(@PathVariable("id") Long id) {
         categoryService.deleteCategory(id);
     }

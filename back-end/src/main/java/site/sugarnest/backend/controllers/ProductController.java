@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import site.sugarnest.backend.dto.dto.ProductFilterDto;
 import site.sugarnest.backend.dto.response.ApiResponse;
@@ -21,6 +22,7 @@ public class ProductController {
     private IProductService iProductService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('PRODUCTS_POST')")
     public ApiResponse<ProductDto> createProduct(@RequestBody ProductDto productDto) {
         ProductDto saveProduct = iProductService.createProduct(productDto);
         return ApiResponse.<ProductDto>builder()
@@ -65,7 +67,7 @@ public class ProductController {
         return iProductService.getAllProduct(pageable, filter);
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/all")
     public ApiResponse<List<ProductDto>> getProductByAdmin() {
         List<ProductDto> productDtos = iProductService.getProductByAdmin();
         return ApiResponse.<List<ProductDto>>builder()
@@ -82,6 +84,7 @@ public class ProductController {
                 .build();
     }
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('PRODUCTS_PUT')")
     public ApiResponse<ProductDto> updateProduct(@PathVariable("id") Long id, @RequestBody ProductDto updateProduct) {
         ProductDto productDto = iProductService.updateProduct(id, updateProduct);
         return ApiResponse.<ProductDto>builder()
@@ -91,6 +94,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('PRODUCTS_DELETE')")
     public ApiResponse<String> deleteProduct(@PathVariable("id") Long id) {
         iProductService.deleteProduct(id);
         return ApiResponse.<String>builder()

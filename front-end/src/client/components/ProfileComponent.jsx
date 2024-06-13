@@ -4,10 +4,16 @@ import SidebarAccount from '../layout/SidebarAccount.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { REST_API_BASE_URL } from '../services/ProductService.js';
+import { useNavigate } from 'react-router-dom';
 
 const ProfileComponent = () => {
-  const [activeSection, setActiveSection] = useState('accountInfo');
   const { user, token } = useAuth();
+  const navigate = useNavigate();
+  if (!user) {
+    navigate('/login');
+  }
+  const [activeSection, setActiveSection] = useState('accountInfo');
   const account = user || {};
   const [showForm, setShowForm] = useState(false);
   const [updatedAccount, setUpdatedAccount] = useState({
@@ -30,7 +36,7 @@ const ProfileComponent = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:8080/sugarnest/v0.1/account/edit`,
+        `${REST_API_BASE_URL}/account/edit`,
         updatedAccount,
         {
           headers: {
@@ -50,7 +56,7 @@ const ProfileComponent = () => {
         Swal.fire('Lỗi!', 'Không thể cập nhật tài khoản.', 'error');
       }
     } catch (error) {
-        setShowForm(false);
+      setShowForm(false);
       console.error('Error updating account', error);
       Swal.fire('Lỗi!', 'Không thể cập nhật tài khoản.', 'error');
     }
@@ -85,7 +91,7 @@ const ProfileComponent = () => {
 
     try {
       const response = await axios.put(
-        'http://localhost:8080/sugarnest/v0.1/account/edit/password',
+        `${REST_API_BASE_URL}/account/edit/password`,
         { oldPassword, newPassword },
         {
           headers: {
@@ -107,7 +113,7 @@ const ProfileComponent = () => {
       Swal.fire('Lỗi!', 'Mật khẩu củ không đúng.', 'error');
     }
   };
-  
+
   return (
     <>
       <Breadcrumb page={'Đăng nhập'} />
@@ -297,7 +303,7 @@ const ProfileComponent = () => {
                               onChange={handleChangePassword}
                             />
                           </fieldset>
-                          <button className="button mt-2 btn-edit-addr btn btn-primary btn-more" type="submit"> 
+                          <button className="button mt-2 btn-edit-addr btn btn-primary btn-more" type="submit">
                             <i className="hoverButton" />
                             Đặt lại mật khẩu
                           </button>

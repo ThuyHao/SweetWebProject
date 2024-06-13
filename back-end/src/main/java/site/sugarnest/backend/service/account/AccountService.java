@@ -63,7 +63,6 @@ public class AccountService implements IAccountService {
     }
 
 
-    //    @PreAuthorize("hasAuthority('ACCOUNTS_PUT')")
     @Override
     public void editAccount(Long id, AccountRequest accountDto) {
         AccountEntity accountEntity = iAccountRepository.findById(id)
@@ -132,7 +131,6 @@ public class AccountService implements IAccountService {
     }
 
 
-    //    @PreAuthorize("hasAuthority('ACCOUNTS_GET')")
     @Override
     public List<AccountResponse> findAll() {
         List<AccountEntity> accountEntities = iAccountRepository.findAll();
@@ -140,7 +138,6 @@ public class AccountService implements IAccountService {
         return accountEntities.stream().map(iAccountMapper::mapToAccountDto).toList();
     }
 
-    //    @PreAuthorize("hasAuthority('ACCOUNTS_GET')")
     @Override
     public AccountResponse findById(Long id) {
         AccountEntity accountEntity = iAccountRepository.findById(id)
@@ -160,5 +157,14 @@ public class AccountService implements IAccountService {
     @Override
     public boolean checkExistedEmail(String email) {
         return iAccountRepository.findByEmail(email).isPresent();
+    }
+
+    @Override
+    public void deleteAccount(Long id) {
+        AccountEntity accountEntity = iAccountRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
+        accountEntity.setIsDelete("true");
+        accountEntity.setUpdateAt();
+        iAccountRepository.save(accountEntity);
     }
 }
