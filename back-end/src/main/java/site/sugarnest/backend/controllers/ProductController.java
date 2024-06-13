@@ -44,26 +44,22 @@ public class ProductController {
     public Page<ProductDto> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size,
-            @RequestParam(required = false) String type,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
-            @RequestParam(required = false) String productSize,
-            @RequestParam(required = false) String producer,
-            @RequestParam(required = false) String color,
+            @RequestParam(required = false) List<String> suppliers,
+            @RequestParam(required = false) List<String> categories,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "ASC") String sortDirection) {
 
         ProductFilterDto filter = new ProductFilterDto();
-        filter.setType(type);
         filter.setMinPrice(minPrice);
         filter.setMaxPrice(maxPrice);
-        filter.setSize(productSize);
-        filter.setProducer(producer);
-        filter.setColor(color);
+        filter.setSuppliers(suppliers);
+        filter.setCategories(categories);
         filter.setSortBy(sortBy);
         filter.setSortDirection(sortDirection);
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDirection), sortBy));
+        Pageable pageable = PageRequest.of(page, size);
         return iProductService.getAllProduct(pageable, filter);
     }
 
