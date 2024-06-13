@@ -1,7 +1,9 @@
 import axios from "axios";
 import React from "react";
 import Swal from 'sweetalert2';
+import { REST_API_BASE_URL } from "../service/AdminService";
 const RoleItem = ({ role, fetchRoles }) => {
+    const token = localStorage.getItem('token');
     const groupPermissionsByCategory = (permissions) => {
         const groupedPermissions = {};
 
@@ -18,7 +20,11 @@ const RoleItem = ({ role, fetchRoles }) => {
     const groupedPermissions = groupPermissionsByCategory(role.permissions);
 
     const handleAddPermission = async () => {
-        const permissionsResponse = await axios.get("http://localhost:8080/sugarnest/v0.1/permissions");
+        const permissionsResponse = await axios.get(`${REST_API_BASE_URL}/permissions`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        })
         const permissions = permissionsResponse.data.result;
 
         Swal.fire({
@@ -37,7 +43,11 @@ const RoleItem = ({ role, fetchRoles }) => {
             showLoaderOnConfirm: true,
             preConfirm: () => {
                 const permissionName = document.getElementById('permissionName').value;
-                return axios.post(`http://localhost:8080/sugarnest/v0.1/roles/${role.name}/permissions`, { name: permissionName })
+                return axios.post(`${REST_API_BASE_URL}/roles/${role.name}/permissions`, { name: permissionName }, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
                     .then(response => {
                         if (response.status !== 200) {
                             throw new Error(response.statusText);
@@ -82,7 +92,11 @@ const RoleItem = ({ role, fetchRoles }) => {
             cancelButtonText: 'Hủy bỏ'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`http://localhost:8080/sugarnest/v0.1/roles/${role.name}`)
+                axios.delete(`${REST_API_BASE_URL}/roles/${role.name}`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
                     .then(response => {
                         if (response.status !== 200) {
                             throw new Error(response.statusText);
@@ -119,7 +133,11 @@ const RoleItem = ({ role, fetchRoles }) => {
             cancelButtonText: 'Hủy bỏ'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`http://localhost:8080/sugarnest/v0.1/roles/${role.name}/permissions/${permissionName}`)
+                axios.delete(`${REST_API_BASE_URL}/roles/${role.name}/permissions/${permissionName}`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
                     .then(response => {
                         if (response.status !== 200) {
                             throw new Error(response.statusText);

@@ -1,6 +1,7 @@
 package site.sugarnest.backend.controllers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import site.sugarnest.backend.dto.request.PromotionRequest;
 import site.sugarnest.backend.dto.response.ApiResponse;
@@ -17,11 +18,12 @@ public class PromotionController {
     private PromotionService promotionService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('SALES_POST')")
     public ApiResponse<PromotionResponse> createPromotion(@RequestBody PromotionRequest promotionRequest) {
-        promotionService.createPromotion(promotionRequest);
         return ApiResponse.<PromotionResponse>builder()
                 .code(200)
                 .message("Success")
+                .result(promotionService.createPromotion(promotionRequest))
                 .build();
     }
 
@@ -44,6 +46,7 @@ public class PromotionController {
     }
 
     @PutMapping("/edit/{id}")
+    @PreAuthorize("hasAuthority('SALES_PUT')")
     public ApiResponse<PromotionResponse> updatePromotion(@PathVariable Long id, @RequestBody PromotionRequest promotionRequest) {
         promotionService.updatePromotion(promotionRequest);
         return ApiResponse.<PromotionResponse>builder()
@@ -54,6 +57,7 @@ public class PromotionController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('SALES_DELETE')")
     public ApiResponse<String> deletePromotion(@PathVariable Long id) {
         promotionService.deletePromotion(id);
         return ApiResponse.<String>builder()
@@ -72,6 +76,7 @@ public class PromotionController {
     }
 
     @PutMapping("/add-product/{promotionId}/{productId}")
+    @PreAuthorize("hasAuthority('SALES_PUT')")
     public ApiResponse<String> addProductToPromotion(@PathVariable Long promotionId, @PathVariable Long productId) {
         promotionService.addProductToPromotion(promotionId, productId);
         return ApiResponse.<String>builder()
@@ -81,6 +86,7 @@ public class PromotionController {
     }
 
     @PutMapping("/add-account/{promotionId}/{accountId}")
+    @PreAuthorize("hasAuthority('SALES_PUT')")
     public ApiResponse<String> addAccountToPromotion(@PathVariable Long promotionId, @PathVariable Long accountId) {
         promotionService.addAccountToPromotion(promotionId, accountId);
         return ApiResponse.<String>builder()

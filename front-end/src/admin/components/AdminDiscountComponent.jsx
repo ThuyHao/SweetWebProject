@@ -10,6 +10,7 @@ import AppTitleComponent from './AppTitleComponent';
 import EditModalPromotion from '../util/EditModalPromotion';
 import DetailModalPromotion from '../util/DetailModalPromotion';
 import CreateModalPromotion from '../util/CreateModalPromotion';
+import { REST_API_BASE_URL } from '../service/AdminService';
 
 const AdminDiscountComponent = () => {
     const navigate = useNavigate();
@@ -19,8 +20,9 @@ const AdminDiscountComponent = () => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [discount, setDiscount] = useState(null);
     const [selectedPromotion, setSelectedPromotion] = useState(null);
+    const token = localStorage.getItem('token');
     useEffect(() => {
-        axios.get('http://localhost:8080/sugarnest/v0.1/promotion/all')
+        axios.get(`${REST_API_BASE_URL}/promotion/all`)
             .then(response => {
                 if (response.data.code === 200 && response.data.result.length > 0) {
                     setData(response.data.result.map(item => ({
@@ -52,7 +54,11 @@ const AdminDiscountComponent = () => {
             confirmButtonText: 'Vâng, xóa nó đi!',
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`http://localhost:8080/sugarnest/v0.1/promotion/delete/${key}`)
+                axios.delete(`${REST_API_BASE_URL}/promotion/delete/${key}`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
                     .then(() => {
                         setData(data.filter(item => item.key !== key));
                         Swal.fire('Đã xóa!', 'Khuyến mãi đã bị xóa.', 'success');
@@ -67,7 +73,11 @@ const AdminDiscountComponent = () => {
 
     const showModal = async (id) => {
         try {
-            const response = await axios.get(`http://localhost:8080/sugarnest/v0.1/promotion/${id}`);
+            const response = await axios.get(`${REST_API_BASE_URL}/promotion/${id}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
             if (response.data.code === 200) {
                 setDiscount(response.data.result);
                 setIsModalVisible(true);
@@ -81,7 +91,7 @@ const AdminDiscountComponent = () => {
 
     const showDetailModal = async (id) => {
         try {
-            const response = await axios.get(`http://localhost:8080/sugarnest/v0.1/promotion/${id}`);
+            const response = await axios.get(`${REST_API_BASE_URL}/promotion/${id}`)
             if (response.data.code === 200) {
                 setSelectedPromotion(response.data.result);
                 setIsDetailVisible(true);
@@ -105,7 +115,11 @@ const AdminDiscountComponent = () => {
 
     const handleSave = async (updatedDiscount) => {
         try {
-            const response = await axios.put(`http://localhost:8080/sugarnest/v0.1/promotion/edit/${updatedDiscount.id}`, updatedDiscount);
+            const response = await axios.put(`${REST_API_BASE_URL}/promotion/edit/${updatedDiscount.id}`, updatedDiscount, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
             if (response.data.code === 200) {
                 setData(data.map(item => (item.id === updatedDiscount.id ? {
                     key: updatedDiscount.id,
@@ -131,10 +145,16 @@ const AdminDiscountComponent = () => {
     };
     const handleCreate = async (newPromotion) => {
         try {
-            const response = await axios.post(`http://localhost:8080/sugarnest/v0.1/promotion/create`, newPromotion);
+            const response = await axios.post(`${REST_API_BASE_URL}/promotion/create`, newPromotion, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            console.log('API Response:', response.data); // Log the response
+
             if (response.data.code === 200) {
                 setData([...data, {
-                    key: response.data.result.id.toString(), // Ensure key is a string
+                    key: response.data.result.id, // Ensure key is a string
                     id: response.data.result.id,
                     name: response.data.result.name,
                     code: response.data.result.code,
@@ -245,7 +265,7 @@ const AdminDiscountComponent = () => {
 
     return (
         <main className="app-content">
-            <AppTitleComponent  name={'Quản lý khyến mãi'}/>
+            <AppTitleComponent name={'Quản lý khyến mãi'} />
             <div className="row">
                 <div className="col-md-12">
                     <div className="tile">

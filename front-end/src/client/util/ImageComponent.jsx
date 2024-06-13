@@ -1,7 +1,8 @@
 import React from 'react';
+import { REST_API_BASE_URL } from '../services/ProductService';
 
 const ImageComponent = ({ fileName }) => {
-    const imageUrl = `http://localhost:8080/sugarnest/v0.1/images/${fileName}`;
+    const imageUrl = `${REST_API_BASE_URL}/images/${fileName}`;
     
     return (
         <div>

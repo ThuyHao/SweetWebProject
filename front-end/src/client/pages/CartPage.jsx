@@ -2,15 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext.jsx';
-import { useCart } from '../context/CartContext.jsx'; 
+import { useCart } from '../context/CartContext.jsx';
 import MyPayPalButton from '../util/MyPayPalButton.jsx';
+import { REST_API_BASE_URL } from '../services/ProductService.js';
 
 const CartPage = () => {
    const [cart, setCart] = useState([]);
    const [cartItems, setCartItems] = useState([]);
-   const { token } = useAuth();
+   const { user, token } = useAuth();
    const { updateCart } = useCart();
    const navigate = useNavigate();
+   if (!user) {
+      navigate('/login');
+   }
    function getProduct(id) {
       navigate(`/products/${id}`);
    }
@@ -26,7 +30,7 @@ const CartPage = () => {
          getLoginPage();
          return;
       }
-      axios.get('http://localhost:8080/sugarnest/v0.1/carts/my-cart', {
+      axios.get(`${REST_API_BASE_URL}/carts/my-cart`, {
          headers: {
             "Authorization": `Bearer ${token}`
          }
@@ -41,7 +45,7 @@ const CartPage = () => {
          });
    }, [token, updateCart]);
    const deleteCartItem = (cartItemId) => {
-      axios.delete(`http://localhost:8080/sugarnest/v0.1/carts/remove-item/${cartItemId}`, {
+      axios.delete(`${REST_API_BASE_URL}/carts/remove-item/${cartItemId}`, {
          headers: {
             "Authorization": `Bearer ${token}`
          }
@@ -54,7 +58,7 @@ const CartPage = () => {
          });
    };
    const increaseQuantity = (cartItemId) => {
-      axios.put(`http://localhost:8080/sugarnest/v0.1/carts/increase-quantity/${cartItemId}`, {}, {
+      axios.put(`${REST_API_BASE_URL}/carts/increase-quantity/${cartItemId}`, {}, {
          headers: {
             "Authorization": `Bearer ${token}`
          }
@@ -68,7 +72,7 @@ const CartPage = () => {
    };
 
    const decreaseQuantity = (cartItemId) => {
-      axios.put(`http://localhost:8080/sugarnest/v0.1/carts/decrease-quantity/${cartItemId}`, {}, {
+      axios.put(`${REST_API_BASE_URL}/carts/decrease-quantity/${cartItemId}`, {}, {
          headers: {
             "Authorization": `Bearer ${token}`
          }

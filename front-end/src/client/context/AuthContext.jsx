@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { loginToken } from '../services/ProductService.js';
+import { loginToken } from '../services/AuthService.js';
 import axios from 'axios';
+import { REST_API_BASE_URL } from '../services/ProductService.js';
 // Tạo context
 const AuthContext = createContext();
 
@@ -33,13 +34,14 @@ export function AuthProvider({ children }) {
             if (token) {
                 try {
                     // Gọi API để lấy thông tin người dùng
-                    axios.get("http://localhost:8080/sugarnest/v0.1/account/myInfo", {
+                    axios.get(`${REST_API_BASE_URL}/account/myInfo`, {
                         headers: {
                             "Authorization": `Bearer ${token}`
                         }
                     })
                         .then(response => {
                             setUser(response.data.result);
+                            localStorage.setItem('user', JSON.stringify(response.data.result));
                         })
                         .catch(error => {
                             console.error("There was an error with the Axios operation:", error);
@@ -61,13 +63,14 @@ export function AuthProvider({ children }) {
                 setToken(newToken);
 
                 // Gọi API để lấy thông tin người dùng
-                axios.get("http://localhost:8080/sugarnest/v0.1/account/myInfo", {
+                axios.get(`${REST_API_BASE_URL}/account/myInfo`, {
                     headers: {
                         "Authorization": `Bearer ${newToken}`
                     }
                 })
                     .then(response => {
                         setUser(response.data.result);
+                        localStorage.setItem('user', JSON.stringify(response.data.result));
                     })
                     .catch(error => {
                         console.error("There was an error with the Axios operation:", error);
@@ -86,6 +89,7 @@ export function AuthProvider({ children }) {
 
     const logout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
         setToken(null);
         setUser(null);
     };

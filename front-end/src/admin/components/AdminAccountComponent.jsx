@@ -8,11 +8,13 @@ import ReusableTableComponent from './ReusableTableComponent';
 import EmlementButtonComponent from './EmlementButtonComponent';
 import AppTitleComponent from './AppTitleComponent';
 import EditModal from '../util/EditModal';
+import { REST_API_BASE_URL } from '../service/AdminService';
 
 
 const AdminAccountComponent = () => {
     const navigate = useNavigate()
     const [data, setData] = useState([]);
+    const token = localStorage.getItem('token');
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [account, setAccount] = useState(null);
     function getRoleManagement() {
@@ -20,7 +22,11 @@ const AdminAccountComponent = () => {
     }
 
     useEffect(() => {
-        axios.get('http://localhost:8080/sugarnest/v0.1/account/all')
+        axios.get(`${REST_API_BASE_URL}/account/all`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        })
             .then(response => {
                 if (response.data.code === 200 && response.data.result.length > 0) {
                     setData(response.data.result.map(item => ({
@@ -44,6 +50,7 @@ const AdminAccountComponent = () => {
             });
     }, []);
 
+
     const handleDelete = (key) => {
         Swal.fire({
             title: 'Bạn có chắc không?',
@@ -55,22 +62,30 @@ const AdminAccountComponent = () => {
             confirmButtonText: 'Vâng, xóa nó đi!',
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`http://localhost:8080/sugarnest/v0.1/account/${key}`)
-                    .then(() => {
-                        setData(data.filter(item => item.key !== key));
-                        Swal.fire('Đã xóa!', 'Tài khoản đã bị xóa.', 'success');
-                    })
-                    .catch(error => {
-                        console.error("There was an error deleting the account!", error);
-                        Swal.fire('Lỗi!', 'Không thể xóa tài khoản.', 'error');
-                    });
+                axios.delete(`${REST_API_BASE_URL}/account/${key}`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
+                .then(() => {
+                    setData(data.filter(item => item.key !== key));
+                    Swal.fire('Đã xóa!', 'Tài khoản đã bị xóa.', 'success');
+                })
+                .catch(error => {
+                    console.error("There was an error deleting the account!", error);
+                    Swal.fire('Lỗi!', 'Không thể xóa tài khoản.', 'error');
+                });
             }
         });
     };
 
     const showModal = async (id) => {
         try {
-            const response = await axios.get(`http://localhost:8080/sugarnest/v0.1/account/${id}`);
+            const response = await axios.get(`${REST_API_BASE_URL}/account/${id}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
             if (response.data.code === 200) {
                 setAccount(response.data.result);
                 setIsModalVisible(true);
@@ -90,7 +105,11 @@ const AdminAccountComponent = () => {
     const handleSave = async (updatedAccount) => {
         console.log(updatedAccount);
         try {
-            const response = await axios.put(`http://localhost:8080/sugarnest/v0.1/account/edit/${updatedAccount.id}`, updatedAccount);
+            const response = await axios.put(`${REST_API_BASE_URL}/account/edit/${updatedAccount.id}`, updatedAccount, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
             if (response.data.code === 200) {
                 setData(data.map(item => (item.id === updatedAccount.id ? updatedAccount : item)));
                 setIsModalVisible(false);
@@ -188,7 +207,7 @@ const AdminAccountComponent = () => {
 
     return (
         <main className="app-content">
-            <AppTitleComponent name={'Quản lý tài khoản'}/>
+            <AppTitleComponent name={'Quản lý tài khoản'} />
             <div className="row">
                 <div className="col-md-12">
                     <div className="tile">

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
-import { getTotalItemsInCart } from '../services/ProductService.js';
 import './layout.css'
 import Sidebar from './Sidebar.jsx'
+import { REST_API_BASE_URL } from '../services/ProductService.js';
 
 const Header = () => {
   const [cart, setCart] = useState([]);
@@ -17,21 +17,29 @@ const Header = () => {
 
   useEffect(() => {
     if (user && user.id) {
-      getTotalItemsInCart(user.id)
+      axios.get(`${REST_API_BASE_URL}/carts/total-items/${user.id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
         .then(response => {
           setCartTotal(response.data);
           updateCart(response.data);
         })
+        .catch(error => {
+          console.error('Error:', error);
+        });
     } else {
       setCartTotal(0);
     }
-  }, [user, updateCart]);
+  }, [user, updateCart, token]);
+
 
   useEffect(() => {
     if (!token) {
       return;
     }
-    axios.get('http://localhost:8080/sugarnest/v0.1/carts/my-cart', {
+    axios.get(`${REST_API_BASE_URL}/carts/my-cart`, {
       headers: {
         "Authorization": `Bearer ${token}`
       }
@@ -47,7 +55,7 @@ const Header = () => {
   }, [token, updateCart]);
 
   const deleteCartItem = (cartItemId) => {
-    axios.delete(`http://localhost:8080/sugarnest/v0.1/carts/remove-item/${cartItemId}`, {
+    axios.delete(`${REST_API_BASE_URL}/carts/remove-item/${cartItemId}`, {
       headers: {
         "Authorization": `Bearer ${token}`
       }
@@ -116,7 +124,7 @@ const Header = () => {
                               <span className="bar" />
                             </div>
                             <div className="toogle-nav-focus-area"></div>
-                            <div className="menu-wrapper" style={{top: 'calc(100%)'}}>
+                            <div className="menu-wrapper" style={{ top: 'calc(100%)' }}>
                               <Sidebar />
                             </div>
                           </div>

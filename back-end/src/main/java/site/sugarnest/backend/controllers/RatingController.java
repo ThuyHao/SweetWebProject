@@ -3,6 +3,7 @@ package site.sugarnest.backend.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import site.sugarnest.backend.dto.dto.RateDto;
 import site.sugarnest.backend.dto.response.ApiResponse;
@@ -43,6 +44,7 @@ public class RatingController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('SALES_POST')")
     public ApiResponse<RateDto> createRating(@RequestBody RateDto rate) {
         return ApiResponse.<RateDto>builder()
                 .code(200)
@@ -52,6 +54,7 @@ public class RatingController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('SALES_PUT')")
     public ApiResponse<RateDto> updateRating(@RequestBody RateDto rate) {
         return ApiResponse.<RateDto>builder()
                 .code(200)

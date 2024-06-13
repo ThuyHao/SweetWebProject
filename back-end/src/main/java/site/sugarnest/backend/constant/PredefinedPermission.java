@@ -5,6 +5,7 @@ public class PredefinedPermission {
     public static final String PRODUCTS_PUT = "PRODUCTS_PUT";
     public static final String PRODUCTS_GET = "PRODUCTS_GET";
     public static final String PRODUCTS_DELETE = "PRODUCTS_DELETE";
+    public static final String ACCOUNTS_POST = "ACCOUNTS_POST";
     public static final String ACCOUNTS_PUT = "ACCOUNTS_PUT";
     public static final String ACCOUNTS_GET = "ACCOUNTS_GET";
     public static final String ACCOUNTS_DELETE = "ACCOUNTS_DELETE";

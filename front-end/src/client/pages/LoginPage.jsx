@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb.jsx';
+import { REST_API_BASE_URL } from '../services/ProductService.js';
 
 const LoginPage = () => {
     const { login } = useAuth();
@@ -30,12 +31,12 @@ const LoginPage = () => {
     }
     const handleFacebookLogin = () => {
         // Redirect the user to your backend OAuth endpoint for Facebook
-        window.location.href = 'http://localhost:8080/sugarnest/v0.1/oauth2/authorization/facebook';
+        window.location.href = `${REST_API_BASE_URL}/oauth2/authorization/facebook`;
       };
 
       const handleGoogleLogin = () => {
         // Redirect the user to your backend OAuth endpoint
-        window.location.href = 'http://localhost:8080/sugarnest/v0.1/oauth2/authorization/google';
+        window.location.href = `${REST_API_BASE_URL}/oauth2/authorization/google`;
       };
 
     return (

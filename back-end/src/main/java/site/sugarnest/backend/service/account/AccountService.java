@@ -163,6 +163,15 @@ public class AccountService implements IAccountService {
     }
 
     @Override
+    public void deleteAccount(Long id) {
+        AccountEntity accountEntity = iAccountRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
+        accountEntity.setIsDelete("true");
+        accountEntity.setUpdateAt();
+        iAccountRepository.save(accountEntity);
+    }
+
+    @Override
     public AccountEntity getAccount(){
         var context = SecurityContextHolder.getContext();
         String accountName = context.getAuthentication().getName();

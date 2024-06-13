@@ -1,5 +1,6 @@
 package site.sugarnest.backend.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,28 +30,54 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_ENDPOINTS = {"/account/register", "/auth/login", "/auth/introspect",
-            "/products/**", "/products/category/**",
-            "categories", "/auth/logout"};
+    private final String[] PUBLIC_ENDPOINTS = {
+            "/account/register",
+            "/account/edit",
+            "/account/edit/password",
+            "/account/myInfo",
+            "/account/checkEmail",
+            "/auth/login",
+            "/auth/introspect",
+            "/auth/logout",
+            "/products",
+            "/products/all",
+            "/products/{id}",
+            "/products/category/{id}/limit/{limit}",
+            "/categories/all",
+            "/categories/{id}",
+            "/producers/all",
+            "/producers/{id}",
+            "/suppliers/all",
+            "/suppliers/{id}",
+            "/email/send_email",
+            "/email/verify_code",
+            "/images/{fileName}",
+            "/uploadFile",
+            "/ratings",
+            "/promotion/all",
+            "/promotion/{id}",
+            "/api/paypal/create-payment",
+            "/api/paypal/execute-payment"
+    };
 
     @Value("${SIGNER_KEY}")
     private String signerKer;
 
-    private final JwtService jwtService;
+    @Autowired
     private final CustomOAuth2UserService customOAuth2UserService;
 
-    public SecurityConfig(JwtService jwtService, CustomOAuth2UserService customOAuth2UserService) {
-        this.jwtService = jwtService;
+    public SecurityConfig( CustomOAuth2UserService customOAuth2UserService) {
         this.customOAuth2UserService = customOAuth2UserService;
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception   {
-//        httpSecurity.authorizeHttpRequests(request ->
-//                request.requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
-//                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-//                        .anyRequest().authenticated());
-        httpSecurity.authorizeHttpRequests(request -> request.anyRequest().permitAll()); // Tạm thời cho phép tất cả các request
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.authorizeHttpRequests(request ->
+                request.requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS).permitAll()
+                        .anyRequest().authenticated());
 
         httpSecurity.oauth2Login(oauth2 ->
                 oauth2.loginPage("/oauth2/authorization")

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import AppTitleComponent from './AppTitleComponent';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { REST_API_BASE_URL } from '../service/AdminService';
 
 const AdminUpdateProductComponent = () => {
     const navigate = useNavigate();
@@ -18,6 +19,7 @@ const AdminUpdateProductComponent = () => {
     const [selectedProducer, setSelectedProducer] = useState('');
     const [selectedSupplier, setSelectedSupplier] = useState('');
     const [productDescription, setProductDescription] = useState('');
+    const token = localStorage.getItem('token');
 
     function getProductManager() {
         navigate('/admin/product-manager');
@@ -36,9 +38,13 @@ const AdminUpdateProductComponent = () => {
                 if (!categoryName) {
                     Swal.showValidationMessage('Tên danh mục không được để trống');
                 } else {
-                    return axios.post('http://localhost:8080/sugarnest/v0.1/categories/create', {
+                    return axios.post(`${REST_API_BASE_URL}/categories/create`, {
                         nameCategory: categoryName,
                         isActive: "true"
+                    }, {
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
                     })
                         .then(response => {
                             if (response.status !== 200) {
@@ -77,9 +83,13 @@ const AdminUpdateProductComponent = () => {
                 if (!producerName) {
                     Swal.showValidationMessage('Tên nhà sản xuất không được để trống');
                 } else {
-                    return axios.post('http://localhost:8080/sugarnest/v0.1/producers/create', {
+                    return axios.post(`${REST_API_BASE_URL}/producers/create`, {
                         nameProducer: producerName,
                         isActive: "true"
+                    }, {
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
                     })
                         .then(response => {
                             if (response.status !== 200) {
@@ -118,9 +128,13 @@ const AdminUpdateProductComponent = () => {
                 if (!supplierName) {
                     Swal.showValidationMessage('Tên nhà cung cấp không được để trống');
                 } else {
-                    return axios.post('http://localhost:8080/sugarnest/v0.1/suppliers/create', {
+                    return axios.post(`${REST_API_BASE_URL}/suppliers/create`, {
                         nameSupplier: supplierName,
                         isActive: "true"
+                    }, {
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
                     })
                         .then(response => {
                             if (response.status !== 200) {
@@ -147,7 +161,11 @@ const AdminUpdateProductComponent = () => {
     };
     const fetchProduct = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/sugarnest/v0.1/products/${id}`);
+            const response = await axios.get(`${REST_API_BASE_URL}/products/${id}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
             if (response.status === 200) {
                 const product = response.data.result;
                 setProductName(product.nameProduct);
@@ -178,7 +196,7 @@ const AdminUpdateProductComponent = () => {
     };
 
     const fetchCategories = () => {
-        axios.get('http://localhost:8080/sugarnest/v0.1/categories/all')
+        axios.get(`${REST_API_BASE_URL}/categories/all`)
             .then(response => {
                 if (response.status === 200) {
                     setCategories(response.data.result);
@@ -192,7 +210,7 @@ const AdminUpdateProductComponent = () => {
     };
 
     const fetchProducers = () => {
-        axios.get('http://localhost:8080/sugarnest/v0.1/producers/all')
+        axios.get(`${REST_API_BASE_URL}/producers/all`)
             .then(response => {
                 if (response.status === 200) {
                     setProducers(response.data.result);
@@ -206,7 +224,7 @@ const AdminUpdateProductComponent = () => {
     };
 
     const fetchSuppliers = () => {
-        axios.get('http://localhost:8080/sugarnest/v0.1/suppliers/all')
+        axios.get(`${REST_API_BASE_URL}/suppliers/all`)
             .then(response => {
                 if (response.status === 200) {
                     setSuppliers(response.data.result);
@@ -290,7 +308,7 @@ const AdminUpdateProductComponent = () => {
                 const formData = new FormData();
                 formData.append('file', mainImage);
 
-                const response = await axios.post('http://localhost:8080/sugarnest/v0.1/uploadFile', formData, {
+                const response = await axios.post(`${REST_API_BASE_URL}/uploadFile`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                 });
 
@@ -304,7 +322,7 @@ const AdminUpdateProductComponent = () => {
                     const formData = new FormData();
                     formData.append('file', file);
 
-                    const response = await axios.post('http://localhost:8080/sugarnest/v0.1/uploadFile', formData, {
+                    const response = await axios.post(`${REST_API_BASE_URL}/uploadFile`, formData, {
                         headers: { 'Content-Type': 'multipart/form-data' },
                     });
 
@@ -370,7 +388,11 @@ const AdminUpdateProductComponent = () => {
                 ]
             };
 
-            const response = await axios.put(`http://localhost:8080/sugarnest/v0.1/products/${id}`, payloadJSON);
+            const response = await axios.put(`${REST_API_BASE_URL}/products/${id}`, payloadJSON, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
 
             if (response.status === 200) {
                 Swal.fire('Thành công!', 'Sản phẩm đã được cập nhật thành công', 'success').then(() => {
@@ -491,64 +513,64 @@ const AdminUpdateProductComponent = () => {
                                         {products.map((product, index) => (
                                             <tr key={index}>
                                                 <td>
-                                                        <input
-                                                            className="form-control"
-                                                            type="text"
-                                                            name="size"
-                                                            value={product.size}
-                                                            onChange={(e) => handleInputChange(index, e)}
-                                                            placeholder="Nhập kích thước"
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            className="form-control"
-                                                            type="text"
-                                                            name="color"
-                                                            value={product.color}
-                                                            onChange={(e) => handleInputChange(index, e)}
-                                                            placeholder="Nhập màu sắc"
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            className="form-control"
-                                                            type="number"
-                                                            name="quantity"
-                                                            value={product.quantity}
-                                                            onChange={(e) => handleInputChange(index, e)}
-                                                            placeholder="Nhập số lượng"
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            className="form-control"
-                                                            type="number"
-                                                            name="listPrice"
-                                                            value={product.listPrice}
-                                                            onChange={(e) => handleInputChange(index, e)}
-                                                            placeholder="Nhập giá"
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            className="form-control"
-                                                            type="number"
-                                                            name="discount"
-                                                            value={product.discount}
-                                                            onChange={(e) => handleInputChange(index, e)}
-                                                            placeholder="Nhập giảm giá"
-                                                        />
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-danger btn-sm"
-                                                            onClick={() => removeProduct(index)}
-                                                        >
-                                                            <i className="fas fa-trash"></i>
-                                                        </button>
-                                                    </td>
+                                                    <input
+                                                        className="form-control"
+                                                        type="text"
+                                                        name="size"
+                                                        value={product.size}
+                                                        onChange={(e) => handleInputChange(index, e)}
+                                                        placeholder="Nhập kích thước"
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        className="form-control"
+                                                        type="text"
+                                                        name="color"
+                                                        value={product.color}
+                                                        onChange={(e) => handleInputChange(index, e)}
+                                                        placeholder="Nhập màu sắc"
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        className="form-control"
+                                                        type="number"
+                                                        name="quantity"
+                                                        value={product.quantity}
+                                                        onChange={(e) => handleInputChange(index, e)}
+                                                        placeholder="Nhập số lượng"
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        className="form-control"
+                                                        type="number"
+                                                        name="listPrice"
+                                                        value={product.listPrice}
+                                                        onChange={(e) => handleInputChange(index, e)}
+                                                        placeholder="Nhập giá"
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        className="form-control"
+                                                        type="number"
+                                                        name="discount"
+                                                        value={product.discount}
+                                                        onChange={(e) => handleInputChange(index, e)}
+                                                        placeholder="Nhập giảm giá"
+                                                    />
+                                                </td>
+                                                <td className="text-center">
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-danger btn-sm"
+                                                        onClick={() => removeProduct(index)}
+                                                    >
+                                                        <i className="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -585,7 +607,7 @@ const AdminUpdateProductComponent = () => {
                                                     alt="Thumb image"
                                                     id="thumbimage"
                                                     src={typeof mainImage === 'string' ? mainImage : URL.createObjectURL(mainImage)}
-                                                    />
+                                                />
                                                 <button
                                                     type="button"
                                                     className="removeimg"
