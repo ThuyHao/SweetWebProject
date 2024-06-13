@@ -63,6 +63,7 @@ public class AccountService implements IAccountService {
     }
 
 
+    //    @PreAuthorize("hasAuthority('ACCOUNTS_PUT')")
     @Override
     public void editAccount(Long id, AccountRequest accountDto) {
         AccountEntity accountEntity = iAccountRepository.findById(id)
@@ -131,6 +132,7 @@ public class AccountService implements IAccountService {
     }
 
 
+    //    @PreAuthorize("hasAuthority('ACCOUNTS_GET')")
     @Override
     public List<AccountResponse> findAll() {
         List<AccountEntity> accountEntities = iAccountRepository.findAll();
@@ -138,6 +140,7 @@ public class AccountService implements IAccountService {
         return accountEntities.stream().map(iAccountMapper::mapToAccountDto).toList();
     }
 
+    //    @PreAuthorize("hasAuthority('ACCOUNTS_GET')")
     @Override
     public AccountResponse findById(Long id) {
         AccountEntity accountEntity = iAccountRepository.findById(id)
@@ -166,5 +169,12 @@ public class AccountService implements IAccountService {
         accountEntity.setIsDelete("true");
         accountEntity.setUpdateAt();
         iAccountRepository.save(accountEntity);
+    }
+
+    @Override
+    public AccountEntity getAccount(){
+        var context = SecurityContextHolder.getContext();
+        String accountName = context.getAuthentication().getName();
+        return iAccountRepository.findByAccountName(accountName).orElseThrow(() -> new RuntimeException("Account not found"));
     }
 }

@@ -24,4 +24,6 @@ public interface IAccountService {
     boolean checkExistedEmail(String email);
 
     void deleteAccount(Long id);
+
+    AccountEntity getAccount();
 }

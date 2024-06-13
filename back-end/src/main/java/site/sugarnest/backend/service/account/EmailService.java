@@ -36,7 +36,6 @@ public class EmailService {
             message.setSubject(subject);
             message.setText("Mã xác thực: " + body);
             javaMailSender.send(message);
-            System.out.println("Email sent");
         } catch (UnsupportedEncodingException e) {
             throw new AppException(ErrorCode.SEND_MAIL_FAILED);
         }
