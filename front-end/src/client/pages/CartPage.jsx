@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import MyPayPalButton from '../util/MyPayPalButton.jsx';
 import { REST_API_BASE_URL } from '../services/ProductService.js';
+import Swal from 'sweetalert2';
+
 
 const CartPage = () => {
    const [cart, setCart] = useState([]);
@@ -12,15 +14,19 @@ const CartPage = () => {
    const { user, token } = useAuth();
    const { updateCart } = useCart();
    const navigate = useNavigate();
+
    if (!user) {
       navigate('/login');
    }
+
    function getProduct(id) {
       navigate(`/products/${id}`);
    }
+
    function getLoginPage() {
       navigate('/login');
    }
+
    function getHomePage() {
       navigate('/');
    }
@@ -30,6 +36,7 @@ const CartPage = () => {
          getLoginPage();
          return;
       }
+
       axios.get(`${REST_API_BASE_URL}/carts/my-cart`, {
          headers: {
             "Authorization": `Bearer ${token}`
@@ -44,6 +51,7 @@ const CartPage = () => {
             console.error("There was an error with the Axios operation:", error);
          });
    }, [token, updateCart]);
+
    const deleteCartItem = (cartItemId) => {
       axios.delete(`${REST_API_BASE_URL}/carts/remove-item/${cartItemId}`, {
          headers: {
@@ -57,6 +65,7 @@ const CartPage = () => {
             console.error("There was an error removing the cart item:", error);
          });
    };
+
    const increaseQuantity = (cartItemId) => {
       axios.put(`${REST_API_BASE_URL}/carts/increase-quantity/${cartItemId}`, {}, {
          headers: {
@@ -84,12 +93,59 @@ const CartPage = () => {
             console.error("There was an error decreasing the item quantity:", error);
          });
    };
+
+   const handleCheckout = () => {
+      const address = document.getElementById('address').value;
+      const deliveryAt = document.getElementById('datepicker').value;
+      const note = document.getElementById('note').value;
+
+
+      if (!address || !deliveryAt || !note) {
+         Swal.fire({
+            icon: 'error',
+            title: 'Missing Information',
+            text: 'Please fill out all required fields.',
+         });
+         return;
+      }
+
+      const orderData = {
+         address: address,
+         deliveryAt: deliveryAt,
+         note: note,
+         sale: ''
+      };
+
+      axios.post('http://localhost:8080/sugarnest/v0.1/order', orderData, {
+         headers: {
+            "Authorization": `Bearer ${token}`
+         }
+      })
+         .then(response => {
+            updateCart(response.data.result);
+            console.log(response.data.result);
+            Swal.fire({
+               icon: 'success',
+               title: 'Order Placed',
+               text: 'Your order has been placed successfully!',
+            });
+         })
+         .catch(error => {
+            console.error('There was an error placing the order:', error);
+            Swal.fire({
+               icon: 'error',
+               title: 'Order Failed',
+               text: 'There was an error placing your order. Please try again later.',
+            });
+         });
+   };
+
    return (
       <section className="main-cart-page main-container col1-layout mobile-tab active" id="cart-tab" data-title="Giỏ hàng">
          <div className="wrap_background_aside padding-top-15 margin-bottom-40 padding-left-0 padding-right-0 cartmbstyle">
             <div className="cart-mobile container card border-0 py-2">
                {cartItems.length > 0 ? (
-                  <form action="/cart" method="post" className="margin-bottom-0">
+                  <form className="margin-bottom-0">
                      <div className="header-cart">
                         <div className=" title_cart_mobile heading-bar">
                            <h1 className="heading-bar__title">Giỏ hàng</h1>
@@ -164,15 +220,6 @@ const CartPage = () => {
                                              <input id="datepicker" className="ega-delivery__date ega-form__control" type="date" />
                                           </label>
                                           <label>
-                                             Thời gian nhận hàng
-                                             <select className="ega-delivery__date ega-form__control">
-                                                <option value="">Chọn thời gian</option>
-                                                <option value="08h00 - 12h00">08h00 - 12h00</option>
-                                                <option value="14h00 - 18h00">14h00 - 18h00</option>
-                                                <option value="19h00 - 21h00">19h00 - 21h00</option>
-                                             </select>
-                                          </label>
-                                          <label>
                                              Họ và tên
                                              <input id="nameOrder" className="ega-delivery__date ega-form__control" type="text" />
                                           </label>
@@ -229,7 +276,7 @@ const CartPage = () => {
                               </div>
                            </div>
                            <div className="checkout d-none d-sm-block">
-                              <button className="btn btn-block btn-proceed-checkout-mobile disabled" title="Tiến hành thanh toán" type="button">
+                              <button className="btn btn-block btn-proceed-checkout-mobile" title="Tiến hành thanh toán" type="button" onClick={handleCheckout}>
                                  <span>Thanh Toán</span>
                               </button>
                            </div>
@@ -282,6 +329,7 @@ const CartPage = () => {
             </div>
          </div>
       </section>
-   )
-}
-export default CartPage
+   );
+};
+
+export default CartPage;

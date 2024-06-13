@@ -36,16 +36,20 @@ public class OrderService implements IOrderService {
     private CartService cartService;
 
     @Autowired
+    private ICartRepository cartRepository;
+
+
+    @Autowired
     private IOrderMapper orderMapper;
 
     @Override
-    public OrderResponse saveOrder(OrderRequest orderRequest){
+    public OrderResponse saveOrder(OrderRequest orderRequest) {
         CartEntity cart = cartService.getMyCart();
         List<CartItemEntity> cartItems = cart.getCartItems();
         OrderEntity order = getOrderEntity(orderRequest, cart);
         iorderRepository.save(order);
 
-        for(CartItemEntity cartItem : cartItems){
+        for (CartItemEntity cartItem : cartItems) {
             OrderDetailEntity orderDetail = new OrderDetailEntity();
             orderDetail.setPrice(cartItem.getPrice());
             orderDetail.setProductColor(cartItem.getProductColor());
@@ -57,8 +61,10 @@ public class OrderService implements IOrderService {
             iOrderDetailRepository.save(orderDetail);
             iCartItemRepository.delete(cartItem);
         }
-
-        iCartRepository.delete(cart);
+        cart.getCartItems().removeAll(cartItems);
+        cart.setUpdatedAt(new Date());
+        cart.setTotalPrice(0.0);
+        cartRepository.save(cart);
         return orderMapper.toOrderEntity(order);
     }
 
@@ -79,11 +85,11 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public List<OrderResponse> getOrders(){
+    public List<OrderResponse> getOrders() {
         AccountEntity accountEntity = iaccountService.getAccount();
         List<OrderEntity> orderEntitieslist = iorderRepository.findByAccountEntity(accountEntity);
         List<OrderResponse> orderResponseListlist = new ArrayList<>();
-        for(OrderEntity order : orderEntitieslist){
+        for (OrderEntity order : orderEntitieslist) {
             OrderResponse orderResponse = orderMapper.toOrderEntity(order);
             orderResponseListlist.add(orderResponse);
         }
