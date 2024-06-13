@@ -161,4 +161,11 @@ public class AccountService implements IAccountService {
     public boolean checkExistedEmail(String email) {
         return iAccountRepository.findByEmail(email).isPresent();
     }
+
+    @Override
+    public AccountEntity getAccount(){
+        var context = SecurityContextHolder.getContext();
+        String accountName = context.getAuthentication().getName();
+        return iAccountRepository.findByAccountName(accountName).orElseThrow(() -> new RuntimeException("Account not found"));
+    }
 }
