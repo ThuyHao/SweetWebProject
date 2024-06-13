@@ -9,6 +9,7 @@ import site.sugarnest.backend.service.order.IOrderService;
 import java.util.List;
 import java.util.ListIterator;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/order")
 public class OrderController {
