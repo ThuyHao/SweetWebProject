@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import site.sugarnest.backend.exception.AppException;
 import site.sugarnest.backend.exception.ErrorCode;
-import site.sugarnest.backend.utils.ProductSpecification;
+import site.sugarnest.backend.util.ProductSpecification;
 import site.sugarnest.backend.dto.dto.ProductDto;
 import site.sugarnest.backend.dto.dto.ProductFilterDto;
 import site.sugarnest.backend.entities.ImageProductEntity;
@@ -78,7 +78,7 @@ public class ProductService implements IProductService {
     }
 
     public Page<ProductDto> getAllProduct(Pageable pageable, ProductFilterDto filter) {
-        Page<ProductEntity> products = iProductRepository.findAll(ProductSpecification.getSpecifications(filter), pageable);
+        Page<ProductEntity> products = iProductRepository.findAll(ProductSpecification.getSpecifications(filter, pageable), pageable);
         List<ProductDto> productDtos = products.stream()
                 .map(product -> iProductMapper.mapToProductDto(product))
                 .collect(Collectors.toList());

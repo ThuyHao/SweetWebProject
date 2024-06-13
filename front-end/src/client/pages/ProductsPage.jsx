@@ -1,6 +1,5 @@
-import React from 'react'
-import { useEffect, useState } from 'react'
-import { listProducts } from '../services/ProductService.js'
+import React, { useEffect, useState } from 'react';
+import { listProducts } from '../services/ProductService.js';
 import Coupon from '../components/Coupon.jsx';
 import Breadcrumb from '../components/Breadcrumb.jsx';
 import ItemProductComponent from '../components/ItemProduct.jsx';
@@ -8,60 +7,96 @@ import { Range, getTrackBackground } from 'react-range';
 import axios from 'axios';
 import { REST_API_BASE_URL } from '../services/ProductService.js';
 
-
-
 const ProductsPage = () => {
     const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [suppliers, setSuppliers] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [selectedSuppliers, setSelectedSuppliers] = useState([]);
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [priceRange, setPriceRange] = useState([0, 2000000]);
+    const [sortOption, setSortOption] = useState('id:asc');
 
     useEffect(() => {
-        listProducts(currentPage - 1).then((response) => {
+        fetchProducts();
+    }, [currentPage, selectedSuppliers, selectedCategories, priceRange, sortOption]);
+
+    const fetchProducts = async () => {
+        try {
+            const response = await axios.get(`${REST_API_BASE_URL}/products`, {
+                params: {
+                    page: currentPage - 1,
+                    size: 12,
+                    suppliers: selectedSuppliers.join(','),
+                    categories: selectedCategories.join(','),
+                    minPrice: priceRange[0],
+                    maxPrice: priceRange[1],
+                    sortBy: sortOption.split(':')[0],
+                    sortDirection: sortOption.split(':')[1].toUpperCase()
+                }
+            });
             setProducts(response.data.content);
             setTotalPages(response.data.totalPages);
-        }).catch((error) => { console.log(error) });
-    }, [currentPage]);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        }
+    };
+
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
     };
 
-    const [values, setValues] = useState([10000, 2000000]);
+    const fetchSuppliers = async () => {
+        try {
+            const response = await axios.get(`${REST_API_BASE_URL}/suppliers/all`);
+            if (response.status === 200) {
+                setSuppliers(response.data.result);
+            } else {
+                console.error('Error fetching suppliers:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching suppliers:', error);
+        }
+    };
 
-    const handleSliderChange = (values) => {
-        setValues(values);
-    };
-    const fetchSuppliers = () => {
-        axios.get(`${REST_API_BASE_URL}/suppliers/all`)
-            .then(response => {
-                if (response.status === 200) {
-                    setSuppliers(response.data.result);
-                } else {
-                    console.error('Lỗi khi lấy danh sách nhà cung cấp:', error);
-                }
-            })
-            .catch(error => {
-                console.error('Lỗi khi lấy danh sách nhà cung cấp:', error);
-            });
-    };
-    const fetchCategories = () => {
-        axios.get(`${REST_API_BASE_URL}/categories/all`)
-            .then(response => {
-                if (response.status === 200) {
-                    setCategories(response.data.result);
-                } else {
-                    console.error('Lỗi khi lấy danh sách danh mục:', response.statusText);
-                }
-            })
-            .catch(error => {
-                console.error('Lỗi khi lấy danh sách danh mục:', error);
-            });
+    const fetchCategories = async () => {
+        try {
+            const response = await axios.get(`${REST_API_BASE_URL}/categories/all`);
+            if (response.status === 200) {
+                setCategories(response.data.result);
+            } else {
+                console.error('Error fetching categories:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
     };
 
     useEffect(() => {
+        fetchCategories();
         fetchSuppliers();
     }, []);
+
+    const handleSupplierChange = (supplier) => {
+        setSelectedSuppliers((prev) =>
+            prev.includes(supplier) ? prev.filter((s) => s !== supplier) : [...prev, supplier]
+        );
+    };
+
+    const handleCategoryChange = (category) => {
+        setSelectedCategories((prev) =>
+            prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
+        );
+    };
+
+    const handleSortChange = (e) => {
+        setSortOption(e.target.value);
+    };
+
+    const handleSliderChange = (values) => {
+        setPriceRange(values);
+    };
 
     return (
         <div>
@@ -108,13 +143,15 @@ const ProductsPage = () => {
                                             <label className="left">
                                                 <span className=''>Sắp xếp: </span>
                                             </label>
-                                            <select className="content_ul" >
-                                                <option data-sort="name:asc" value="alpha-asc">Tên A &rarr; Z</option>
-                                                <option data-sort="name:desc" value="alpha-desc">Tên Z &rarr; A</option>
-                                                <option data-sort="price_min:asc" value="price-asc">Giá tăng dần</option>
-                                                <option data-sort="price_min:desc" value="price-desc">Giá giảm dần</option>
-                                                <option data-sort="created_on:desc" value="created-desc">Hàng mới</option>
+                                            <select className="content_ul" onChange={handleSortChange} value={sortOption}>
+                                                <option value="id:asc">Mặc định</option>
+                                                <option value="id:desc">Mới nhất</option>
+                                                <option value="nameProduct:asc">Tên A &rarr; Z</option>
+                                                <option value="nameProduct:desc">Tên Z &rarr; A</option>
+                                                <option value="listPrice:asc">Giá tăng dần</option>
+                                                <option value="listPrice:desc">Giá giảm dần</option>
                                             </select>
+
                                         </div>
                                     </div>
                                 </div>
@@ -126,7 +163,7 @@ const ProductsPage = () => {
                         </div>
                         <div className="row">
                             <div className="col-lg-3 col-md-12 col-sm-12">
-                                <aside className=" scroll card py-2 dqdt-sidebar sidebar left-content">
+                                <aside className="scroll card py-2 dqdt-sidebar sidebar left-content">
                                     <div className="wrap_background_aside asidecollection">
                                         <div className="filter-content aside-filter">
                                             <div className="filter-container">
@@ -144,7 +181,7 @@ const ProductsPage = () => {
                                                         <ul>
                                                             {suppliers.map((supplier, index) => (
                                                                 <li
-                                                                    key={supplier.id} // Assuming each supplier has a unique id
+                                                                    key={supplier.id}
                                                                     className="filter-item filter-item--check-box filter-item--green"
                                                                 >
                                                                     <span>
@@ -152,11 +189,7 @@ const ProductsPage = () => {
                                                                             <input
                                                                                 type="checkbox"
                                                                                 id={`filter-${index}`}
-                                                                                data-group="PRODUCT_VENDOR"
-                                                                                data-field="vendor.filter_key"
-                                                                                data-text={supplier.nameSupplier}
-                                                                                defaultValue={`("${supplier.nameSupplier}")`}
-                                                                                data-operator="OR"
+                                                                                onChange={() => handleSupplierChange(supplier.nameSupplier)}
                                                                             />
                                                                             <i className="fa" />
                                                                             {supplier.nameSupplier}
@@ -176,8 +209,8 @@ const ProductsPage = () => {
                                                     </div>
                                                     <div className="aside-content filter-group scroll">
                                                         <Range
-                                                            values={values}
-                                                            step={100000}
+                                                            values={priceRange}
+                                                            step={50000}
                                                             min={0}
                                                             max={2000000}
                                                             onChange={handleSliderChange}
@@ -189,7 +222,7 @@ const ProductsPage = () => {
                                                                         height: '6px',
                                                                         width: '100%',
                                                                         background: getTrackBackground({
-                                                                            values,
+                                                                            values: priceRange,
                                                                             colors: ['#ccc', '#548BF4', '#ccc'],
                                                                             min: 0,
                                                                             max: 2000000
@@ -229,13 +262,12 @@ const ProductsPage = () => {
                                                         <p>
                                                             <label htmlFor="amount">Giá:</label>
                                                             <span id="amount">
-                                                                {values[0].toLocaleString('vi-VN')}₫ - {values[1].toLocaleString('vi-VN')}₫
+                                                                {priceRange[0].toLocaleString('vi-VN')}₫ - {priceRange[1].toLocaleString('vi-VN')}₫
                                                             </span>
                                                         </p>
                                                     </div>
                                                 </aside>
-                                                {/* Lọc Loại */}
-                                                <aside className="aside-item aside-itemxx filter-type">
+                                                <aside className="aside-item filter-type">
                                                     <div className="aside-title">
                                                         <h2 className="title-head margin-top-0">
                                                             <span>Loại sản phẩm</span>
@@ -243,86 +275,21 @@ const ProductsPage = () => {
                                                     </div>
                                                     <div className="aside-content filter-group scroll">
                                                         <ul>
-                                                            <li className="filter-item filter-item--check-box filter-item--green ">
-                                                                <span>
-                                                                    <label
-                                                                        className="custom-checkbox"
-                                                                        htmlFor="filter-banh-can-lop"
-                                                                    >
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            id="filter-banh-can-lop"
-                                                                            data-group="PRODUCT_TYPE"
-                                                                            data-field="product_type.filter_key"
-                                                                            data-text=""
-                                                                            defaultValue='("Bánh cán lớp")'
-                                                                            data-operator="OR"
-                                                                        />
-                                                                        <i className="fa" />
-                                                                        Bánh cán lớp
-                                                                    </label>
-                                                                </span>
-                                                            </li>
-                                                            <li className="filter-item filter-item--check-box filter-item--green ">
-                                                                <span>
-                                                                    <label
-                                                                        className="custom-checkbox"
-                                                                        htmlFor="filter-banh-kem"
-                                                                    >
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            id="filter-banh-kem"
-                                                                            data-group="PRODUCT_TYPE"
-                                                                            data-field="product_type.filter_key"
-                                                                            data-text=""
-                                                                            defaultValue='("Bánh kem")'
-                                                                            data-operator="OR"
-                                                                        />
-                                                                        <i className="fa" />
-                                                                        Bánh kem
-                                                                    </label>
-                                                                </span>
-                                                            </li>
-                                                            <li className="filter-item filter-item--check-box filter-item--green ">
-                                                                <span>
-                                                                    <label
-                                                                        className="custom-checkbox"
-                                                                        htmlFor="filter-chocolate"
-                                                                    >
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            id="filter-chocolate"
-                                                                            data-group="PRODUCT_TYPE"
-                                                                            data-field="product_type.filter_key"
-                                                                            data-text=""
-                                                                            defaultValue='("Chocolate")'
-                                                                            data-operator="OR"
-                                                                        />
-                                                                        <i className="fa" />
-                                                                        Chocolate
-                                                                    </label>
-                                                                </span>
-                                                            </li>
-                                                            <li className="filter-item filter-item--check-box filter-item--green ">
-                                                                <span>
-                                                                    <label
-                                                                        className="custom-checkbox"
-                                                                        htmlFor="filter-cupcakes"
-                                                                    >
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            id="filter-cupcakes"
-                                                                            data-group="PRODUCT_TYPE"
-                                                                            data-field="product_type.filter_key"
-                                                                            data-text=""
-                                                                            defaultValue='("Cupcakes")'
-                                                                            data-operator="OR"
-                                                                        />
-                                                                        <i className="fa" />
-                                                                        Cupcakes
-                                                                    </label>
-                                                                </span>
-                                                            </li>
+                                                            {categories.map((category, index) => (
+                                                                <li key={category.id} className="filter-item filter-item--check-box filter-item--green">
+                                                                    <span>
+                                                                        <label className="custom-checkbox" htmlFor={`filter-category-${index}`}>
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                id={`filter-category-${index}`}
+                                                                                onChange={() => handleCategoryChange(category.nameCategory)}
+                                                                            />
+                                                                            <i className="fa" />
+                                                                            {category.nameCategory}
+                                                                        </label>
+                                                                    </span>
+                                                                </li>
+                                                            ))}
                                                         </ul>
                                                     </div>
                                                 </aside>
@@ -344,12 +311,9 @@ const ProductsPage = () => {
                                 <div className="category-products products">
                                     <div className="products-view products-view-grid collection_reponsive list_hover_pro">
                                         <div className="row product-list content-col">
-                                            {/* Render ProductSlider */}
-                                            {
-                                                products.map(product =>
-                                                    <ItemProductComponent key={product.id} product={product} />
-                                                )
-                                            }
+                                            {products.map(product => (
+                                                <ItemProductComponent key={product.id} product={product} />
+                                            ))}
                                         </div>
                                         <div className="section pagenav">
                                             <nav className="clearfix relative nav_pagi w_100">
@@ -379,9 +343,8 @@ const ProductsPage = () => {
                     </div>
                 </div>
             </section>
-
         </div>
-    )
-}
+    );
+};
 
-export default ProductsPage
+export default ProductsPage;

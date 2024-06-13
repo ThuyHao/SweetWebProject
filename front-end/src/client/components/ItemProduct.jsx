@@ -1,5 +1,5 @@
 import React from 'react'
-import {useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ProductSlider from './ProductSlider.jsx';
 
@@ -22,6 +22,7 @@ const ItemProductComponent = ({ product }) => {
     const closeModal = () => {
         setIsModalOpen(false);
     };
+    const minPrice = Math.min(...product.sizeColorProductsEntity.map(item => item.listPrice));
     return (
         <div className="col-6  col-sm-3  col-md-3 col-lg-3  product-col">
             {
@@ -65,7 +66,7 @@ const ItemProductComponent = ({ product }) => {
                             <div className="product-item-cta position-relative">
                                 <div className="price-box">
                                     <span className="price">{parseInt(product.sizeColorProductsEntity[0].discountPrice).toLocaleString('it-IT')}₫</span>
-                                    <span className="compare-price">{parseInt(product.sizeColorProductsEntity[0].listPrice).toLocaleString('it-IT')}₫</span>
+                                    <span className="compare-price">{parseInt(minPrice).toLocaleString('it-IT')}₫</span>
                                     <div className="label_product d-inline-block">
                                         <div className="label_wrapper">
                                             - {product.sizeColorProductsEntity[0].discount}%

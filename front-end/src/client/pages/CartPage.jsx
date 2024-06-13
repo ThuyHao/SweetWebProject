@@ -126,16 +126,16 @@ const CartPage = () => {
             console.log(response.data.result);
             Swal.fire({
                icon: 'success',
-               title: 'Order Placed',
-               text: 'Your order has been placed successfully!',
+               title: 'Đặt hàng',
+               text: 'Đặt hàng thành công!',
             });
          })
          .catch(error => {
             console.error('There was an error placing the order:', error);
             Swal.fire({
                icon: 'error',
-               title: 'Order Failed',
-               text: 'There was an error placing your order. Please try again later.',
+               title: 'Đặt hàng',
+               text: 'Đặt hàng thất bại. Vui lòng thử lại!',
             });
          });
    };
