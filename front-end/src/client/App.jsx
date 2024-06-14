@@ -21,7 +21,7 @@ import './assets/css/cartpage.css'
 import './assets/css/appcombo.css'
 import './assets/css/collection-style.css'
 import ProfileComponent from './components/ProfileComponent.jsx'
-import OrderComponent from './components/OrderComponent.jsx'
+import OrderHistoryPage from './pages/OrderHistoryPage.jsx'
 
 function App() {
   return (
@@ -31,12 +31,12 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/profile" element={<ProfileComponent />} />
-          <Route path="/orders" element={<OrderComponent />} />
           <Route path="/login" element={<LoginComponent />} />
           <Route path="/register" element={<RegisterComponent />} />
           <Route path="/products" element={<ListProductComponent />} />
           <Route path="/products/:id" element={<ProductComponent/>} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/orders" element={<OrderHistoryPage />} />
         </Routes>
         <Footer />
       </BrowserRouter>

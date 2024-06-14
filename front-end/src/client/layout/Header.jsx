@@ -83,6 +83,9 @@ const Header = () => {
   function getProduct(id) {
     navigator(`/products/${id}`);
   }
+  function getOrders() {
+    navigator(`/orders`);
+  }
 
   return (
     <div>
@@ -158,7 +161,7 @@ const Header = () => {
                     <ul
                       className="header-right mb-0 list-unstyled d-flex align-items-center justify-content-end">
                       <li className='media d-lg-block d-none '>
-                        <a href="/apps/kiem-tra-don-hang" className='d-block text-center' title="Đơn hàng">
+                        <a onClick={getOrders}  className='d-block text-center' title="Đơn hàng">
                           <img loading="lazy"
                             src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/order-icon.png?1704435927037"
                             width="24" height="24" className="align-self-center" alt="order-icon" />

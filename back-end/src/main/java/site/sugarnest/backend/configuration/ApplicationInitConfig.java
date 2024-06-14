@@ -45,6 +45,9 @@ public class ApplicationInitConfig {
             if (userRepository.findByAccountName(ADMIN_USER_NAME).isEmpty()) {
 
                 // Initialize permissions
+
+                PermissionEntity adminPanelPermission = permissionRepository.save(new PermissionEntity(PredefinedPermission.ADMIN_PANEL, "Admin panel"));
+
                 // Product permissions
 
                 PermissionEntity getProductsPermission = permissionRepository.save(new PermissionEntity(PredefinedPermission.PRODUCTS_GET, "Xem danh sách sản phẩm"));
@@ -81,7 +84,7 @@ public class ApplicationInitConfig {
                         getOrdersPermission, putOrdersPermission, postOrdersPermission, deleteOrdersPermission,
                         getSalesPermission, putSalesPermission, postSalesPermission, deleteSalesPermission,
                         getCartPermission, putCartPermission, postCartPermission, deleteCartPermission,
-                        postAccountsPermission, putAccountsPermission, getAccountsPermission, deleteAccountsPermission
+                        postAccountsPermission, putAccountsPermission, getAccountsPermission, deleteAccountsPermission,adminPanelPermission
                 )));
                 RoleEntity userRole = roleRepository.save(new RoleEntity(PredefinedRole.USER_ROLE, "Người dùng", Set.of(getCartPermission, putCartPermission, postCartPermission, deleteCartPermission)));
                 RoleEntity productManagerRole = roleRepository.save(new RoleEntity(PredefinedRole.PRODUCT_MANAGER_ROLE, "Quản lý sản phẩm", new HashSet<>()));

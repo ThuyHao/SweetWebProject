@@ -102,7 +102,7 @@ const ProductsPage = () => {
         <div>
             <Breadcrumb />
             <div className='collection_banner mb-3 container text-center'>
-                <a className="banner" href="/collections/all" title="Tất cả sản phẩm">
+                <a className="banner" title="Tất cả sản phẩm">
                     <picture>
                         <source media="(min-width: 768px)"
                             srcSet="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/collection_main_banner.jpg?1704435927037"

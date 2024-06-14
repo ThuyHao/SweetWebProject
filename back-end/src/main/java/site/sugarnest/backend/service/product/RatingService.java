@@ -3,11 +3,12 @@ package site.sugarnest.backend.service.product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import site.sugarnest.backend.dto.dto.RateDto;
-import site.sugarnest.backend.entities.PromotionEntity;
 import site.sugarnest.backend.entities.RateEntity;
 import site.sugarnest.backend.exception.AppException;
 import site.sugarnest.backend.exception.ErrorCode;
 import site.sugarnest.backend.reponsitoties.*;
+
+import java.util.List;
 
 @Service
 public class RatingService {
@@ -31,7 +32,13 @@ public class RatingService {
         return rateRepository.findByAccountEntity_IdAndProductEntity_Id(accountId, productId).map(rate -> new RateDto(rate.getId(), rate.getAccountEntity().getId(), rate.getProductEntity().getId(), rate.getNumberStar())).orElse(null);
     }
 
+    public Double getAvgRating(Long productId) {
+        List<RateEntity> rateEntities = rateRepository.findByProductEntity_Id(productId);
+        return rateEntities.stream().mapToDouble(RateEntity::getNumberStar).average().orElse(0);
+    }
+
     public RateDto createRating(RateDto rate) {
+        System.out.println(rate.getNumberStar());
         var account = iAccountRepository.findById(rate.getAccountId())
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
         var product = iProductRepository.findById(rate.getProductId()).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXITED));
@@ -39,18 +46,24 @@ public class RatingService {
             RateEntity rateEntity = new RateEntity();
             rateEntity.setProductEntity(product);
             rateEntity.setAccountEntity(account);
-            rateEntity.setNumberStar(rate.getRating());
+            rateEntity.setNumberStar(rate.getNumberStar());
+            rateEntity.setStatus("ACTIVE");
+            rateEntity.setNumberEdit(0);
             return new RateDto(rateRepository.save(rateEntity).getId(), rateEntity.getAccountEntity().getId(), rateEntity.getProductEntity().getId(), rateEntity.getNumberStar());
         } else {
             return null;
         }
     }
+
     public RateDto updateRating(RateDto rate) {
-        return rateRepository.findByAccountEntity_IdAndProductEntity_Id(rate.getAccountId(), rate.getProductId())
-                .map(existingRate -> {
-                    existingRate.setNumberStar(rate.getRating());
-                    return new RateDto(rateRepository.save(existingRate).getId(), existingRate.getAccountEntity().getId(), existingRate.getProductEntity().getId(), existingRate.getNumberStar());
-                })
-                .orElse(null);
+        RateEntity rateEntity = rateRepository.findByAccountEntity_IdAndProductEntity_Id(rate.getAccountId(), rate.getProductId()).orElseThrow(() -> new AppException(ErrorCode.RATE_NOT_EXITED));
+        if(rateEntity.getNumberEdit() >= 3) {
+            throw new AppException(ErrorCode.RATE_EDIT_LIMIT);
+        }else {
+            rateEntity.setNumberStar(rate.getNumberStar());
+            rateEntity.setNumberEdit(rateEntity.getNumberEdit() + 1);
+        }
+        return new RateDto(rateRepository.save(rateEntity).getId(), rateEntity.getAccountEntity().getId(), rateEntity.getProductEntity().getId(), rateEntity.getNumberStar());
     }
+
 }

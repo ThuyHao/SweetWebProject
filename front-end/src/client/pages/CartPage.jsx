@@ -103,8 +103,8 @@ const CartPage = () => {
       if (!address || !deliveryAt || !note) {
          Swal.fire({
             icon: 'error',
-            title: 'Missing Information',
-            text: 'Please fill out all required fields.',
+            title: 'Chưa đủ thông tin',
+            text: 'Vui lòng điền đầy đủ thông tin.',
          });
          return;
       }
@@ -116,7 +116,7 @@ const CartPage = () => {
          sale: ''
       };
 
-      axios.post('http://localhost:8080/sugarnest/v0.1/order', orderData, {
+      axios.post('http://localhost:8080/sugarnest/v0.1/orders', orderData, {
          headers: {
             "Authorization": `Bearer ${token}`
          }

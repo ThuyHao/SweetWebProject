@@ -54,6 +54,8 @@ public class SecurityConfig {
             "/images/{fileName}",
             "/uploadFile",
             "/ratings",
+            "/ratings/avg",
+            "/ratings/purchases/check",
             "/promotion/all",
             "/promotion/{id}",
             "/api/paypal/create-payment",

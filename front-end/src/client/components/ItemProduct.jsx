@@ -23,6 +23,8 @@ const ItemProductComponent = ({ product }) => {
         setIsModalOpen(false);
     };
     const minPrice = Math.min(...product.sizeColorProductsEntity.map(item => item.listPrice));
+    const minDiscountPrice = Math.min(...product.sizeColorProductsEntity.map(item => item.discountPrice));
+    const minDiscount = Math.min(...product.sizeColorProductsEntity.map(item => item.discount));
     return (
         <div className="col-6  col-sm-3  col-md-3 col-lg-3  product-col">
             {
@@ -46,7 +48,7 @@ const ItemProductComponent = ({ product }) => {
                             </a>
                             <div className="label_product d-none">
                                 <div className="label_wrapper">
-                                    - {product.sizeColorProductsEntity[0].discount}%
+                                    - {minDiscount}%
                                 </div>
                             </div>
                             <div className="product-action">
@@ -65,11 +67,11 @@ const ItemProductComponent = ({ product }) => {
                                 title="Happy Birthday Chocolate Cream Cake (Meta coupon)">{product.nameProduct}</a></h3>
                             <div className="product-item-cta position-relative">
                                 <div className="price-box">
-                                    <span className="price">{parseInt(product.sizeColorProductsEntity[0].discountPrice).toLocaleString('it-IT')}₫</span>
+                                    <span className="price product-price">{parseInt(minDiscountPrice).toLocaleString('it-IT')}₫</span>
                                     <span className="compare-price">{parseInt(minPrice).toLocaleString('it-IT')}₫</span>
                                     <div className="label_product d-inline-block">
                                         <div className="label_wrapper">
-                                            - {product.sizeColorProductsEntity[0].discount}%
+                                            - {minDiscount}%
                                         </div>
                                     </div>
 
