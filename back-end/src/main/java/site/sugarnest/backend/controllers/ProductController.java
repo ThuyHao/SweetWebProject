@@ -79,6 +79,43 @@ public class ProductController {
                 .result(productDtos)
                 .build();
     }
+
+    @GetMapping("/top-selling/{limit}")
+    public ApiResponse<List<ProductDto>> findTopSellingProducts(@PathVariable("limit") int limit) {
+        List<ProductDto> productDtos = iProductService.findTopSellingProducts(limit);
+        return ApiResponse.<List<ProductDto>>builder()
+                .message("Success")
+                .result(productDtos)
+                .build();
+    }
+
+    @GetMapping("/latest/{limit}")
+    public ApiResponse<List<ProductDto>> findLatestProducts(@PathVariable("limit") int limit) {
+        List<ProductDto> productDtos = iProductService.findLatestProducts(limit);
+                return ApiResponse.<List<ProductDto>>builder()
+                .message("Success")
+                .result(productDtos)
+                .build();
+    }
+
+    @GetMapping("/most-viewed/{limit}")
+    public ApiResponse<List<ProductDto>> findMostViewedProducts(@PathVariable("limit") int limit) {
+        List<ProductDto> productDtos = iProductService.findMostViewedProducts(limit);
+        return ApiResponse.<List<ProductDto>>builder()
+                .message("Success")
+                .result(productDtos)
+                .build();
+    }
+
+    @GetMapping("/recommended/{categoryId}/limit/{limit}")
+    public ApiResponse<List<ProductDto>> findRecommendedProducts(@PathVariable("categoryId") Long categoryId, @PathVariable("limit") int limit) {
+        List<ProductDto> productDtos = iProductService.findRecommendedProducts(categoryId, limit);
+        return ApiResponse.<List<ProductDto>>builder()
+                .message("Success")
+                .result(productDtos)
+                .build();
+    }
+
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('PRODUCTS_PUT')")
     public ApiResponse<ProductDto> updateProduct(@PathVariable("id") Long id, @RequestBody ProductDto updateProduct) {

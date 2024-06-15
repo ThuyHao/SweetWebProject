@@ -43,6 +43,10 @@ public class SecurityConfig {
             "/products/all",
             "/products/{id}",
             "/products/category/{id}/limit/{limit}",
+            "/products/top-selling/{limit}",
+            "/products/latest/{limit}",
+            "/products/most-viewed/{limit}",
+            "/products/recommended/{categoryId}/limit/{limit}",
             "/categories/all",
             "/categories/{id}",
             "/producers/all",
@@ -59,7 +63,7 @@ public class SecurityConfig {
             "/promotion/all",
             "/promotion/{id}",
             "/api/paypal/create-payment",
-            "/api/paypal/execute-payment"
+            "/api/paypal/execute-payment",
     };
 
     @Value("${SIGNER_KEY}")

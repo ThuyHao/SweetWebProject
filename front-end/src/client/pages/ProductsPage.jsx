@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { listProducts } from '../services/ProductService.js';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import Coupon from '../components/Coupon.jsx';
 import Breadcrumb from '../components/Breadcrumb.jsx';
 import ItemProductComponent from '../components/ItemProduct.jsx';
 import { Range, getTrackBackground } from 'react-range';
-import axios from 'axios';
 import { REST_API_BASE_URL } from '../services/ProductService.js';
 
 const ProductsPage = () => {
+    const { category } = useParams();
     const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
@@ -89,6 +90,12 @@ const ProductsPage = () => {
             prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
         );
     };
+
+    useEffect(() => {
+        if (category && !selectedCategories.includes(category)) {
+            setSelectedCategories((prev) => [...prev, category]);
+        }
+    }, [category]);
 
     const handleSortChange = (e) => {
         setSortOption(e.target.value);
@@ -282,6 +289,7 @@ const ProductsPage = () => {
                                                                             <input
                                                                                 type="checkbox"
                                                                                 id={`filter-category-${index}`}
+                                                                                checked={selectedCategories.includes(category.nameCategory)}
                                                                                 onChange={() => handleCategoryChange(category.nameCategory)}
                                                                             />
                                                                             <i className="fa" />

@@ -48,7 +48,6 @@ public class CartController {
     }
 
     @PutMapping("/increase-quantity/{cartItemId}")
-    @PreAuthorize("hasAuthority('CART_PUT')")
     public ApiResponse<Void> increaseQuantity(@PathVariable("cartItemId") Integer cartItemId) {
         cartService.increaseQuantity(cartItemId);
         return ApiResponse.<Void>builder()
@@ -57,7 +56,7 @@ public class CartController {
                 .build();
     }
 
-        @PutMapping("/decrease-quantity/{cartItemId}")
+    @PutMapping("/decrease-quantity/{cartItemId}")
     @PreAuthorize("hasAuthority('CART_PUT')")
     public ApiResponse<Void> decreaseQuantity(@PathVariable("cartItemId") Integer cartItemId) {
         cartService.decreaseQuantity(cartItemId);
@@ -75,6 +74,7 @@ public class CartController {
                 .result(cartService.getCartByAccountId(accountId))
                 .build();
     }
+
     @GetMapping("/cart-items/{cartId}")
     @PreAuthorize("hasAuthority('CART_GET')")
     public ApiResponse<List<CartItemEntity>> getCartItemsByCartId(@PathVariable Integer cartId) {
@@ -83,6 +83,7 @@ public class CartController {
                 .result(cartService.getCartItemsByCartId(cartId))
                 .build();
     }
+
     @GetMapping("/total-items/{accountId}")
     @PreAuthorize("hasAuthority('CART_GET')")
     public Double getTotalItemsInCart(@PathVariable Long accountId) {
@@ -91,6 +92,7 @@ public class CartController {
                 .result(Double.valueOf(cartService.getTotalItemsInCart(accountId)))
                 .build().getResult();
     }
+
     @GetMapping("/my-cart")
     @PreAuthorize("hasAuthority('CART_GET')")
     public ApiResponse<CartEntity> getMyCart() {

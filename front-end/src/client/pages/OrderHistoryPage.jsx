@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext.jsx';
-import { REST_API_BASE_URL } from '../services/ProductService.js';
+import { IMAGE_BASE_URL, REST_API_BASE_URL } from '../services/ProductService.js';
 
 const OrderHistoryPage = () => {
     const [orders, setOrders] = useState([]);
@@ -55,9 +55,9 @@ const OrderHistoryPage = () => {
                                             <div className="order-items-list">
                                                 {order.orderItems.map((item, itemIndex) => (
                                                     <React.Fragment key={itemIndex}>
-                                                        <a onClick={() => navigate(`/products/${item.productEntity.id}`)} className="d-block mb-2">
+                                                        <a onClick={() => navigate(`/product/${item.productEntity.id}`)} className="d-block mb-2">
                                                             <div className="d-flex align-items-center">
-                                                                <img src={item.productEntity.imageProductEntity[0].image} alt={item.productEntity.nameProduct} className="img-thumbnail" style={{ width: '80px', height: '80px', objectFit: 'cover' }} />
+                                                                <img src={`${IMAGE_BASE_URL}`+item.productEntity.imageProductEntity[0].image} alt={item.productEntity.nameProduct} className="img-thumbnail" style={{ width: '80px', height: '80px', objectFit: 'cover' }} />
                                                                 <div className="ml-3">
                                                                     <strong className="mb-1">{item.productEntity.nameProduct}</strong>
                                                                     <p className="mb-0">Size: {item.productSize} / Color: {item.productColor}</p>

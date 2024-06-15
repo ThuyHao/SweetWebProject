@@ -44,4 +44,15 @@ public class OrderController {
                 .result(orderResponseList)
                 .build();
     }
+
+    @PutMapping("{orderId}/status")
+    @PreAuthorize("hasAuthority('ORDERS_PUT')")
+    public ApiResponse<String> updateOrderStatus(@PathVariable Integer orderId, @RequestBody String status) {
+        iorderService.updateOrderStatus(orderId, status);
+        return ApiResponse.<String>builder()
+                .code(200)
+                .message("Success")
+                .build();
+    }
+
 }

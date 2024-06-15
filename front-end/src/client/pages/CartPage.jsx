@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import MyPayPalButton from '../util/MyPayPalButton.jsx';
-import { REST_API_BASE_URL } from '../services/ProductService.js';
+import { IMAGE_BASE_URL, REST_API_BASE_URL } from '../services/ProductService.js';
 import Swal from 'sweetalert2';
 
 
@@ -20,7 +20,7 @@ const CartPage = () => {
    }
 
    function getProduct(id) {
-      navigate(`/products/${id}`);
+      navigate(`/product/${id}`);
    }
 
    function getLoginPage() {
@@ -67,7 +67,7 @@ const CartPage = () => {
    };
 
    const increaseQuantity = (cartItemId) => {
-      axios.put(`${REST_API_BASE_URL}/carts/increase-quantity/${cartItemId}`, {}, {
+      axios.put(`${REST_API_BASE_URL}/carts/increase-quantity/${cartItemId}`, {
          headers: {
             "Authorization": `Bearer ${token}`
          }
@@ -80,8 +80,8 @@ const CartPage = () => {
          });
    };
 
-   const decreaseQuantity = (cartItemId) => {
-      axios.put(`${REST_API_BASE_URL}/carts/decrease-quantity/${cartItemId}`, {}, {
+   const decreaseQuantity = (cartItemId) => {   
+      axios.put(`${REST_API_BASE_URL}/carts/decrease-quantity/${cartItemId}`, {
          headers: {
             "Authorization": `Bearer ${token}`
          }
@@ -168,7 +168,7 @@ const CartPage = () => {
                                     </div>
                                     <div className="item-product-cart-mobile">
                                        <a onClick={() => getProduct(item.productEntity.id)} className="product-images1  pos-relative embed-responsive embed-responsive-1by1" title={item.productEntity.nameProduct}>
-                                          <img className="img-fluid" src={item.productEntity.imageProductEntity[0].image} alt={item.productEntity.nameProduct} />
+                                          <img className="img-fluid" src={`${IMAGE_BASE_URL}`+item.productEntity.imageProductEntity[0].image} alt={item.productEntity.nameProduct} />
                                        </a>
                                     </div>
                                     <div className="product-cart-infor">

@@ -86,6 +86,34 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public List<ProductDto> findTopSellingProducts(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        List<ProductEntity> products = iProductRepository.findTopSellingProducts(pageable);
+         return products.stream().map(product -> iProductMapper.mapToProductDto(product)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDto> findLatestProducts(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        List<ProductEntity> products = iProductRepository.findLatestProducts(pageable);
+        return products.stream().map(product -> iProductMapper.mapToProductDto(product)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDto> findMostViewedProducts(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        List<ProductEntity> products = iProductRepository.findMostViewedProducts(pageable);
+        return products.stream().map(product -> iProductMapper.mapToProductDto(product)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDto> findRecommendedProducts(Long categoryId, int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        List<ProductEntity> products = iProductRepository.findRecommendedProducts(categoryId, pageable);
+        return products.stream().map(product -> iProductMapper.mapToProductDto(product)).collect(Collectors.toList());
+    }
+
+    @Override
     public List<ProductDto> getProductByAdmin() {
         List<ProductEntity> products = iProductRepository.getProductByAdmin("false");
         return products.stream().map(product -> iProductMapper.mapToProductDto(product)).collect(Collectors.toList());
@@ -98,9 +126,13 @@ public class ProductService implements IProductService {
         return products.stream().map(product -> iProductMapper.mapToProductDto(product)).collect(Collectors.toList());
     }
 
+
+
     @Override
     public ProductDto getProductById(Long productId) {
         ProductEntity product = iProductRepository.findById(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+        product.setViews(product.getViews() + 1);
+        iProductRepository.save(product);
         return iProductMapper.mapToProductDto(product);
     }
 

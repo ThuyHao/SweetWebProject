@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Space } from 'antd';
-import {EyeOutlined } from '@ant-design/icons';
+import { EyeOutlined, CheckOutlined } from '@ant-design/icons';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import ReusableTableComponent from './ReusableTableComponent';
@@ -20,15 +20,16 @@ const AdminOrderComponent = () => {
         })
             .then(response => {
                 if (response.data.code === 200) {
-                    if (response.data.code === 200 && response.data.result.length > 0) {
+                    if (response.data.result.length > 0) {
                         setData(response.data.result.map(item => ({
                             key: item.id.toString(),
                             id: item.id,
-                            customerName: item.customerName,
+                            accountName: item.accountEntity.fullName,
                             orderItems: item.orderItems,
-                            quantity: item.orderItems.reduce((sum, orderItem) => sum + orderItem.quantity, 0),
+                            quantity: item.orderItems.map(orderItem => orderItem.quantity).join(', '),
                             totalPrice: item.totalPrice,
                             status: item.status,
+                            sizeColor: item.orderItems.map(orderItem => `${orderItem.productSize}/${orderItem.productColor}`).join(", "),
                         })));
                     }
                 }
@@ -38,19 +39,23 @@ const AdminOrderComponent = () => {
             });
     }, [token]);
 
+    const showDetailModal = (key) => {
+        // Implement the detail modal function
+    };
+
     const columns = [
         {
-            title: 'ID đơn hàng',
+            title: 'ID',
             dataIndex: 'id',
             key: 'id',
-            width: '10%',
+            width: '5%',
             searchable: true,
             sortable: true,
         },
         {
             title: 'Khách hàng',
-            dataIndex: 'customerName',
-            key: 'customerName',
+            dataIndex: 'accountName',
+            key: 'accountName',
             searchable: true,
             sortable: true,
         },
@@ -58,24 +63,49 @@ const AdminOrderComponent = () => {
             title: 'Đơn hàng',
             dataIndex: 'orderItems',
             key: 'orderItems',
-            render: orderItems => orderItems.map(item => item.productEntity.nameProduct).join(", "),
+            render: orderItems => (
+                <div>
+                    {orderItems.map((item, index) => (
+                        <div key={index}>{item.productEntity.nameProduct}</div>
+                    ))}
+                </div>
+            ),
+        },
+        {
+            title: 'Màu sắc/Kích thước',
+            dataIndex: 'sizeColor',
+            key: 'sizeColor',
+            render: (text) => (
+                <div>{text.split(', ').map((sizeColor, index) => (
+                    <div key={index}>{sizeColor}</div>
+                ))}</div>
+            ),
         },
         {
             title: 'Số lượng',
             dataIndex: 'quantity',
             key: 'quantity',
+            render: (text) => (
+                <div>{text.split(', ').map((sizeColor, index) => (
+                    <div key={index}>{sizeColor}</div>
+                ))}</div>
+            ),
         },
         {
             title: 'Tổng tiền',
             dataIndex: 'totalPrice',
             key: 'totalPrice',
+            render: (text) => (
+                <div>{parseInt(text).toLocaleString('it-IT')}đ</div>
+            ),
         },
         {
             title: 'Tình trạng',
             dataIndex: 'status',
             key: 'status',
-            render: (text) => (text === "Hoàn thành" ? <span className="badge bg-success">Hoàn thành</span> : <span className="badge bg-warning">Chưa hoàn thành</span>),
+            render: (text) => (<span className="badge bg-warning">{text}</span>),
         },
+
         {
             title: 'Tính năng',
             key: 'action',
@@ -88,6 +118,14 @@ const AdminOrderComponent = () => {
                         onClick={() => showDetailModal(record.key)}
                     >
                         Chi tiết
+                    </Button>
+                    <Button
+                        type="default"
+                        className='btn btn-success btn-sm'
+                        icon={<CheckOutlined />}
+                        onClick={() => showDetailModal(record.key)}
+                    >
+                        Duyệt
                     </Button>
                 </Space>
             ),

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext';
-import { REST_API_BASE_URL } from '../services/ProductService';
+import { IMAGE_BASE_URL, REST_API_BASE_URL } from '../services/ProductService';
 
 const AddToCartSuccess = ({ handleClose, product, cartItem }) => {
     const [cart, setCart] = useState([]);
@@ -48,7 +48,7 @@ const AddToCartSuccess = ({ handleClose, product, cartItem }) => {
                                 <div className="media">
                                     <div className="media-left thumb_img">
                                         <div className="thumb-1x1">
-                                            <img loading="lazy" src={product.imageProductEntity[0].image} alt="Bánh cupcake queen" />
+                                            <img loading="lazy" src={`${IMAGE_BASE_URL}`+product.imageProductEntity[0].image} alt="Bánh cupcake queen" />
                                         </div>
                                     </div>
                                     <div className="media-body body_content">

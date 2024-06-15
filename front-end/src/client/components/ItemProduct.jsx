@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ProductSlider from './ProductSlider.jsx';
+import { IMAGE_BASE_URL } from '../services/ProductService.js';
 
 const ItemProductComponent = ({ product }) => {
     const modalRef = useRef(null);
@@ -13,7 +14,7 @@ const ItemProductComponent = ({ product }) => {
         openModal();
     };
     function getProduct(id) {
-        navigator(`/products/${id}`)
+        navigator(`/product/${id}`)
     }
     const openModal = () => {
         setIsModalOpen(true);
@@ -38,13 +39,13 @@ const ItemProductComponent = ({ product }) => {
                                 <img loading="lazy"
                                     className='product-thumbnail__img product-thumbnail__img--primary'
                                     width="480" height="480" style={{ '--image-scale': '1' }}
-                                    src={product.imageProductEntity[0].image}
-                                    alt={product.imageProductEntity[0].image} />
+                                    src={`${IMAGE_BASE_URL}` + product.imageProductEntity[0].image}
+                                    alt={`${IMAGE_BASE_URL}` + product.imageProductEntity[0].image} />
                                 <img loading="lazy"
                                     className='product-thumbnail__img product-thumbnail__img--secondary'
                                     width="480" height="480" style={{ '--image-scale': '1' }}
-                                    src={product.imageProductEntity[1].image}
-                                    alt={product.imageProductEntity[0].image} />
+                                    src={`${IMAGE_BASE_URL}` + product.imageProductEntity[1].image}
+                                    alt={`${IMAGE_BASE_URL}` + product.imageProductEntity[0].image} />
                             </a>
                             <div className="label_product d-none">
                                 <div className="label_wrapper">
@@ -52,8 +53,7 @@ const ItemProductComponent = ({ product }) => {
                                 </div>
                             </div>
                             <div className="product-action">
-                                <div className="group_action"
-                                    data-url="/happy-birthday-chocolate-cream-cake">
+                                <div className="group_action">
                                     <a onClick={() => getIdProduct(product.id)} title="Xem nhanh"
                                         className="btn-views btn_view btn right-to quick-view">
                                         <i className="fa fa-paperclip" aria-hidden="true"></i>
@@ -63,7 +63,7 @@ const ItemProductComponent = ({ product }) => {
                         </div>
                         <div className="product-info">
                             <h3 className="product-name"><a
-                                href="/happy-birthday-chocolate-cream-cake"
+                                onClick={() => getProduct(product.id)}
                                 title="Happy Birthday Chocolate Cream Cake (Meta coupon)">{product.nameProduct}</a></h3>
                             <div className="product-item-cta position-relative">
                                 <div className="price-box">
@@ -77,7 +77,7 @@ const ItemProductComponent = ({ product }) => {
 
                                 </div>
 
-                                <button data-href="/happy-birthday-chocolate-cream-cake"
+                                <button onClick={() => getProduct(product.id)}
                                     className="product-item-btn btn-style2 btn left-to"
                                     title="Tùy chọn" type="button"
                                 >
