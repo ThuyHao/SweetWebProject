@@ -50,7 +50,6 @@ public class CartController {
     }
 
     @PutMapping("/increase-quantity/{cartItemId}")
-    @PreAuthorize("hasAuthority('CART_PUT')")
     public ApiResponse<Void> increaseQuantity(@PathVariable("cartItemId") Integer cartItemId) {
         cartService.increaseQuantity(cartItemId);
         return ApiResponse.<Void>builder()

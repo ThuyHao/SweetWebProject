@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+
 import { useAuth } from '../context/AuthContext.jsx';
 import { IMAGE_BASE_URL, REST_API_BASE_URL } from '../services/ProductService.js';
 
@@ -21,6 +22,7 @@ const OrderHistoryPage = () => {
     }, [token, user, navigate]);
 
     const refresh = () => {
+
         axios.get(`${REST_API_BASE_URL}/orders/my-orders`, {
             headers: { "Authorization": `Bearer ${token}` }
         })
@@ -104,7 +106,6 @@ const OrderHistoryPage = () => {
                                         ) : null}
                                     </div>
                                     <div className="order-total"><strong>Tổng cộng:</strong> {parseInt(order.totalPrice).toLocaleString('it-IT')}₫</div>
-
                                     {order.status === 'Chờ xác nhận' && (
                                         <div className="order-action text-right">
                                             <button style={{ color: 'red' }} className="btn btn_base" onClick={() => handleCancelOrder(`${order.id}`)}>Hủy đơn hàng</button>

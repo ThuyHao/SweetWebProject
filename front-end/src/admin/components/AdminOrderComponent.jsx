@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Space } from 'antd';
 import { EyeOutlined, CheckOutlined,CloseOutlined } from '@ant-design/icons';
+
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import ReusableTableComponent from './ReusableTableComponent';
@@ -9,12 +10,12 @@ import AppTitleComponent from './AppTitleComponent';
 import { REST_API_BASE_URL } from '../service/AdminService';
 import DetailModalOrder from '../util/DetailModalOrder';
 
+
 const AdminOrderComponent = () => {
     const [data, setData] = useState([]);
     const token = localStorage.getItem('token');
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [isDetailVisible, setIsDetailVisible] = useState(false);
-
 
     useEffect(() => {
         axios.get(`${REST_API_BASE_URL}/orders/admin-orders`, {
@@ -117,7 +118,6 @@ const AdminOrderComponent = () => {
         setIsDetailVisible(false);
     };
 
-
     const columns = [
         {
             title: 'ID',
@@ -178,6 +178,7 @@ const AdminOrderComponent = () => {
             title: 'Tình trạng',
             dataIndex: 'status',
             key: 'status',
+              
             render: (text) => {
                 let className = 'badge ';
                 if (text === 'Đã duyệt') {
@@ -246,6 +247,7 @@ const AdminOrderComponent = () => {
                             </Button>
                         )
                     }
+
                     <Button
                         type="default"
                         className='btn btn-secondary btn-sm detail'
@@ -253,6 +255,15 @@ const AdminOrderComponent = () => {
                         onClick={() => showDetailModal(record.key)}
                     >
                         Chi tiết
+                    </Button>
+
+                    <Button
+                        type="default"
+                        className='btn btn-success btn-sm'
+                        icon={<CheckOutlined />}
+                        onClick={() => showDetailModal(record.key)}
+                    >
+                        Duyệt
                     </Button>
                 </Space>
             ),

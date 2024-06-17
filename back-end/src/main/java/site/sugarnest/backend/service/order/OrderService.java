@@ -94,9 +94,7 @@ public class OrderService implements IOrderService {
         }
         return orderResponseListlist;
     }
-
-
-
+  
     @Override
     public List<OrderResponse> getOrdersByAdmin() {
         List<OrderEntity> orderEntitieslist = iorderRepository.findAll();
@@ -128,7 +126,7 @@ public class OrderService implements IOrderService {
         }
     }
 
-    @Override
+  @Override
     public void cancelOrder(Integer orderId) {
         AccountEntity accountEntity = iaccountService.getAccount();
         List<OrderEntity> orderEntitieslist = iorderRepository.findByAccountEntity(accountEntity);

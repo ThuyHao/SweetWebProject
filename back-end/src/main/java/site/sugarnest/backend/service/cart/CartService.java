@@ -37,7 +37,6 @@ public class CartService {
     @Autowired
     private ISizeColorProductRepository sizeColorProductRepository;
 
-
     @Transactional
     public CartItemResponse addItemToCart(CartItemRequest cartItemRequest) {
         AccountEntity account = accountRepository.findById(cartItemRequest.getAccountId())
