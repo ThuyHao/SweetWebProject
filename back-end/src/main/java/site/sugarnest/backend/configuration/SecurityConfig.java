@@ -9,9 +9,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -19,9 +16,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import site.sugarnest.backend.enums.Role;
 import site.sugarnest.backend.service.account.CustomOAuth2UserService;
-import site.sugarnest.backend.service.account.JwtService;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -34,6 +29,7 @@ public class SecurityConfig {
             "/account/register",
             "/account/edit",
             "/account/edit/password",
+            "/account/resetPassword",
             "/account/myInfo",
             "/account/checkEmail",
             "/auth/login",
@@ -43,6 +39,10 @@ public class SecurityConfig {
             "/products/all",
             "/products/{id}",
             "/products/category/{id}/limit/{limit}",
+            "/products/top-selling/{limit}",
+            "/products/latest/{limit}",
+            "/products/most-viewed/{limit}",
+            "/products/recommended/{categoryId}/limit/{limit}",
             "/categories/all",
             "/categories/{id}",
             "/producers/all",
@@ -50,14 +50,17 @@ public class SecurityConfig {
             "/suppliers/all",
             "/suppliers/{id}",
             "/email/send_email",
+            "/email/send_reset_password_email",
             "/email/verify_code",
             "/images/{fileName}",
             "/uploadFile",
             "/ratings",
+            "/ratings/avg",
+            "/ratings/purchases/check",
             "/promotion/all",
             "/promotion/{id}",
             "/api/paypal/create-payment",
-            "/api/paypal/execute-payment"
+            "/api/paypal/execute-payment",
     };
 
     @Value("${SIGNER_KEY}")

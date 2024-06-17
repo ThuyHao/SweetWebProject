@@ -7,6 +7,13 @@ const AdminHeader = () => {
     const [activeMenu, setActiveMenu] = useState(null);
     const [sidebarVisible, setSidebarVisible] = useState(false);
 
+
+    const logout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = `/`;
+    };
+
     const handleToggleSidebar = () => {
         setSidebarVisible(!sidebarVisible);
         const sidebar = document.querySelector('.app-sidebar');
@@ -55,7 +62,7 @@ const AdminHeader = () => {
                 <a className="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label={sidebarVisible ? "Hide Sidebar" : "Show Sidebar"} onClick={handleToggleSidebar}></a>
                 <ul className="app-nav">
                     <li>
-                        <a className="app-nav__item" href="/index.html">
+                        <a className="app-nav__item" onClick={logout}>
                             <i className="bx bx-log-out bx-rotate-180" />{" "}
                         </a>
                     </li>

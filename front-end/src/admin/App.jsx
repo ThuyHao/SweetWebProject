@@ -17,7 +17,7 @@ import UnauthorizedPage from './pages/UnauthorizedPage.jsx'; // Trang báo khôn
 
 function AppContent() {
   const location = useLocation();
-  const noHeaderFooterPaths = ['/admin/unauthorized'];
+  const noHeaderFooterPaths = ['/admin/error'];
   const showHeaderFooter = !noHeaderFooterPaths.includes(location.pathname);
 
   return (
@@ -56,7 +56,7 @@ function AppContent() {
           <Route path="/admin/report" element={<AdminReportComponent />} />
         </Route>
 
-        <Route path="/admin/unauthorized" element={<UnauthorizedPage />} /> {/* Route cho trang không có quyền */}
+        <Route path="/admin/error" element={<UnauthorizedPage />} /> {/* Route cho trang không có quyền */}
       </Routes>
       {showHeaderFooter && <AdminFooter />}
     </>

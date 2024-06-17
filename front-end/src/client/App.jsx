@@ -21,7 +21,12 @@ import './assets/css/cartpage.css'
 import './assets/css/appcombo.css'
 import './assets/css/collection-style.css'
 import ProfileComponent from './components/ProfileComponent.jsx'
-import OrderComponent from './components/OrderComponent.jsx'
+import OrderHistoryPage from './pages/OrderHistoryPage.jsx'
+import IntroductionPage from './pages/IntroductionPage.jsx'
+import ContactPage from './pages/ContactPage.jsx'
+import StoreAddress from './pages/StoreAddress.jsx'
+import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx'
+import ResetPasswordPage from './pages/ResetPasswordPage.jsx'
 
 function App() {
   return (
@@ -31,12 +36,17 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/profile" element={<ProfileComponent />} />
-          <Route path="/orders" element={<OrderComponent />} />
           <Route path="/login" element={<LoginComponent />} />
           <Route path="/register" element={<RegisterComponent />} />
-          <Route path="/products" element={<ListProductComponent />} />
-          <Route path="/products/:id" element={<ProductComponent/>} />
+          <Route path='/forgot-password' element={<ForgotPasswordPage />} />
+          <Route path='/reset-password' element={<ResetPasswordPage />} />
+          <Route path="/products/:category?" element={<ListProductComponent />} />
+          <Route path="/product/:id" element={<ProductComponent />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/orders" element={<OrderHistoryPage />} />
+          <Route path="/introduction" element={<IntroductionPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/store-address" element={<StoreAddress />} />
         </Routes>
         <Footer />
       </BrowserRouter>

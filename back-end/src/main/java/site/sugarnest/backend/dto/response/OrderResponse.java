@@ -1,12 +1,17 @@
 package site.sugarnest.backend.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import site.sugarnest.backend.entities.AccountEntity;
 import site.sugarnest.backend.entities.OrderDetailEntity;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class OrderResponse {
     private Integer id;
@@ -28,6 +33,8 @@ public class OrderResponse {
     private String address;
 
     private List<OrderDetailEntity> orderItems  = new ArrayList<>();
+
+    private AccountEntity accountEntity;
 
     private String note;
 

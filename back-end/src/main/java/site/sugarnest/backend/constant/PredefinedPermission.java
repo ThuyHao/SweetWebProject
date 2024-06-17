@@ -1,6 +1,7 @@
 package site.sugarnest.backend.constant;
 
 public class PredefinedPermission {
+    public static final String ADMIN_PANEL = "ADMIN_PANEL";
     public static final String PRODUCTS_POST = "PRODUCTS_POST";
     public static final String PRODUCTS_PUT = "PRODUCTS_PUT";
     public static final String PRODUCTS_GET = "PRODUCTS_GET";

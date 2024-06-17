@@ -67,13 +67,6 @@ public class FileStorageService {
                 throw new RuntimeException("Sorry! Filename contains invalid path sequence " + originalFileName);
             }
 
-            // Kiểm tra xem file có phải là hình ảnh không
-            BufferedImage image = ImageIO.read(new ByteArrayInputStream(file.getBytes()));
-            if (image == null) {
-                throw new RuntimeException(originalFileName + " is not an image file.");
-            }
-
-            // Generate a new unique file name
             String extension = getFileExtension(originalFileName);
             String newFileName = generateFileName() + "." + extension;
 

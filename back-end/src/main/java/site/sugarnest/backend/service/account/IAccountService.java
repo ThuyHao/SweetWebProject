@@ -16,6 +16,8 @@ public interface IAccountService {
 
     void editMyPassword(PasswordChangeRequest passwordChangeRequest);
 
+    void resetPassword(String token, String newPassword);
+
     List<AccountResponse> findAll();
 
     AccountResponse findById(Long id);

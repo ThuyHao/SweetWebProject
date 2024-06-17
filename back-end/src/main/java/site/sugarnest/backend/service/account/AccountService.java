@@ -12,12 +12,15 @@ import site.sugarnest.backend.dto.request.AccountRequest;
 import site.sugarnest.backend.dto.response.AccountResponse;
 import site.sugarnest.backend.entities.AccountEntity;
 import site.sugarnest.backend.entities.RoleEntity;
+import site.sugarnest.backend.entities.TokenEntity;
 import site.sugarnest.backend.exception.AppException;
 import site.sugarnest.backend.exception.ErrorCode;
 import site.sugarnest.backend.mapper.IAccountMapper;
 import site.sugarnest.backend.reponsitoties.IAccountRepository;
 import site.sugarnest.backend.reponsitoties.IRoleRepository;
+import site.sugarnest.backend.reponsitoties.ITokenRepository;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,6 +33,7 @@ public class AccountService implements IAccountService {
     private IAccountRepository iAccountRepository;
     private IAccountMapper iAccountMapper;
     private EmailService emailService;
+    private ITokenRepository tokenRepository;
     IRoleRepository roleRepository;
 
     public void createAccount(AccountRequest accountDto) {
@@ -131,6 +135,25 @@ public class AccountService implements IAccountService {
         iAccountRepository.save(accountEntity);
     }
 
+    @Override
+    public void resetPassword(String token, String newPassword) {
+        Optional<TokenEntity> tokenEntityOptional = tokenRepository.findByToken(token);
+        if (!tokenEntityOptional.isPresent() || tokenEntityOptional.get().getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new AppException(ErrorCode.INVALID_TOKEN);
+        }
+
+        TokenEntity tokenEntity = tokenEntityOptional.get();
+        AccountEntity accountEntity = iAccountRepository.findByEmail(tokenEntity.getEmail()).orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
+        if (accountEntity == null) {
+            throw new AppException(ErrorCode.ACCOUNT_NOT_EXITED);
+        }
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        accountEntity.setPassword(passwordEncoder.encode(newPassword));
+        accountEntity.setCurrentPassword(passwordEncoder.encode(newPassword));
+        accountEntity.setUpdateAt();
+        iAccountRepository.save(accountEntity);
+    }
+
 
     //    @PreAuthorize("hasAuthority('ACCOUNTS_GET')")
     @Override
@@ -172,7 +195,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public AccountEntity getAccount(){
+    public AccountEntity getAccount() {
         var context = SecurityContextHolder.getContext();
         String accountName = context.getAuthentication().getName();
         return iAccountRepository.findByAccountName(accountName).orElseThrow(() -> new RuntimeException("Account not found"));

@@ -14,5 +14,6 @@ public class RateDto {
 
     private Long productId;
 
-    private Long rating;
+    private Long numberStar;
+
 }

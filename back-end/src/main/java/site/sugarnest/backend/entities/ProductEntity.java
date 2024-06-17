@@ -21,6 +21,8 @@ public class ProductEntity {
 
     private String nameProduct;
 
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @ManyToOne
@@ -58,4 +60,6 @@ public class ProductEntity {
     @OneToMany(mappedBy = "productEntity")
     @JsonIgnore
     private List<OrderDetailEntity> orderDetailsEntity;
+
+    private int views;
 }

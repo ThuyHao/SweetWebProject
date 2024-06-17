@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import MyPayPalButton from '../util/MyPayPalButton.jsx';
-import { REST_API_BASE_URL } from '../services/ProductService.js';
+import { IMAGE_BASE_URL, REST_API_BASE_URL } from '../services/ProductService.js';
 import Swal from 'sweetalert2';
 
 
@@ -20,7 +20,7 @@ const CartPage = () => {
    }
 
    function getProduct(id) {
-      navigate(`/products/${id}`);
+      navigate(`/product/${id}`);
    }
 
    function getLoginPage() {
@@ -53,7 +53,7 @@ const CartPage = () => {
    }, [token, updateCart]);
 
    const deleteCartItem = (cartItemId) => {
-      axios.delete(`${REST_API_BASE_URL}/carts/remove-item/${cartItemId}`, {
+      axios.delete(`http://localhost:8080/sugarnest/v0.1/carts/remove-item/${cartItemId}`, {
          headers: {
             "Authorization": `Bearer ${token}`
          }
@@ -66,33 +66,35 @@ const CartPage = () => {
          });
    };
 
-   const increaseQuantity = (cartItemId) => {
-      axios.put(`${REST_API_BASE_URL}/carts/increase-quantity/${cartItemId}`, {}, {
-         headers: {
-            "Authorization": `Bearer ${token}`
-         }
-      })
-         .then(response => {
-            updateCart(response.data.result);
-         })
-         .catch(error => {
-            console.error("There was an error increasing the item quantity:", error);
-         });
-   };
-
-   const decreaseQuantity = (cartItemId) => {
-      axios.put(`${REST_API_BASE_URL}/carts/decrease-quantity/${cartItemId}`, {}, {
-         headers: {
-            "Authorization": `Bearer ${token}`
-         }
-      })
-         .then(response => {
-            updateCart(response.data.result);
-         })
-         .catch(error => {
-            console.error("There was an error decreasing the item quantity:", error);
-         });
-   };
+   // Hàm tăng số lượng sản phẩm trong giỏ hàng
+const increaseQuantity = (cartItemId) => {
+   axios.put(`${REST_API_BASE_URL}/carts/increase-quantity/${cartItemId}`, {}, {
+     headers: {
+       "Authorization": `Bearer ${token}`
+     }
+   })
+   .then(response => {
+     updateCart(response.data.result);
+   })
+   .catch(error => {
+     console.error("There was an error increasing the item quantity:", error);
+   });
+ };
+ 
+ // Hàm giảm số lượng sản phẩm trong giỏ hàng
+ const decreaseQuantity = (cartItemId) => {   
+   axios.put(`${REST_API_BASE_URL}/carts/decrease-quantity/${cartItemId}`, {}, {
+     headers: {
+       "Authorization": `Bearer ${token}`
+     }
+   })
+   .then(response => {
+     updateCart(response.data.result);
+   })
+   .catch(error => {
+     console.error("There was an error decreasing the item quantity:", error);
+   });
+ };
 
    const handleCheckout = () => {
       const address = document.getElementById('address').value;
@@ -100,11 +102,11 @@ const CartPage = () => {
       const note = document.getElementById('note').value;
 
 
-      if (!address || !deliveryAt || !note) {
+      if (!address || !deliveryAt) {
          Swal.fire({
             icon: 'error',
-            title: 'Missing Information',
-            text: 'Please fill out all required fields.',
+            title: 'Chưa đủ thông tin',
+            text: 'Vui lòng điền đầy đủ thông tin.',
          });
          return;
       }
@@ -112,11 +114,11 @@ const CartPage = () => {
       const orderData = {
          address: address,
          deliveryAt: deliveryAt,
-         note: note,
+         note: note || '',
          sale: ''
       };
 
-      axios.post('http://localhost:8080/sugarnest/v0.1/order', orderData, {
+      axios.post('http://localhost:8080/sugarnest/v0.1/orders', orderData, {
          headers: {
             "Authorization": `Bearer ${token}`
          }
@@ -168,7 +170,7 @@ const CartPage = () => {
                                     </div>
                                     <div className="item-product-cart-mobile">
                                        <a onClick={() => getProduct(item.productEntity.id)} className="product-images1  pos-relative embed-responsive embed-responsive-1by1" title={item.productEntity.nameProduct}>
-                                          <img className="img-fluid" src={item.productEntity.imageProductEntity[0].image} alt={item.productEntity.nameProduct} />
+                                          <img className="img-fluid" src={`${IMAGE_BASE_URL}`+item.productEntity.imageProductEntity[0].image} alt={item.productEntity.nameProduct} />
                                        </a>
                                     </div>
                                     <div className="product-cart-infor">

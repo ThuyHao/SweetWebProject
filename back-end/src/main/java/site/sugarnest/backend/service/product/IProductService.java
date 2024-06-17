@@ -25,5 +25,13 @@ public interface IProductService {
 
     Page<ProductDto> getAllProduct(Pageable pageable, ProductFilterDto filter);
 
+    List<ProductDto> findTopSellingProducts(int limit);
+
+    List<ProductDto> findLatestProducts(int limit);
+
+    List<ProductDto> findMostViewedProducts(int limit);
+
+    List<ProductDto> findRecommendedProducts(Long categoryId, int limit);
+
 }
 
