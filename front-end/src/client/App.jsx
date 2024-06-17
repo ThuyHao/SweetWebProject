@@ -25,6 +25,8 @@ import OrderHistoryPage from './pages/OrderHistoryPage.jsx'
 import IntroductionPage from './pages/IntroductionPage.jsx'
 import ContactPage from './pages/ContactPage.jsx'
 import StoreAddress from './pages/StoreAddress.jsx'
+import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx'
+import ResetPasswordPage from './pages/ResetPasswordPage.jsx'
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
           <Route path="/profile" element={<ProfileComponent />} />
           <Route path="/login" element={<LoginComponent />} />
           <Route path="/register" element={<RegisterComponent />} />
+          <Route path='/forgot-password' element={<ForgotPasswordPage />} />
+          <Route path='/reset-password' element={<ResetPasswordPage />} />
           <Route path="/products/:category?" element={<ListProductComponent />} />
           <Route path="/product/:id" element={<ProductComponent />} />
           <Route path="/cart" element={<CartPage />} />

@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext.jsx';
 import './layout.css'
 import Sidebar from './Sidebar.jsx'
 import { IMAGE_BASE_URL, REST_API_BASE_URL } from '../services/ProductService.js';
+import { hasPermission } from '../services/AuthService.js';
 
 const Header = () => {
   const [cart, setCart] = useState([]);
@@ -14,9 +15,11 @@ const Header = () => {
   const { user, logout, token } = useAuth();
   const { updateCart } = useCart();
   const [cartTotal, setCartTotal] = useState(0);
+  const [checkPermission, setCheckPermission] = useState(false);
 
   useEffect(() => {
     if (user && user.id) {
+      setCheckPermission(hasPermission('ADMIN_PANEL'));
       axios.get(`${REST_API_BASE_URL}/carts/total-items/${user.id}`, {
         headers: {
           "Authorization": `Bearer ${token}`
@@ -67,6 +70,13 @@ const Header = () => {
         console.error("There was an error removing the cart item:", error);
       });
   };
+
+  function getLogout() {
+    setCheckPermission(false);
+    logout();
+    navigator(`/`);
+  }
+
   function getHomePage() {
     navigator(`/`);
   }
@@ -85,6 +95,9 @@ const Header = () => {
   }
   function getOrders() {
     navigator(`/orders`);
+  }
+  function getAdmin() {
+    window.location.href = `/admin`;
   }
 
   return (
@@ -196,10 +209,14 @@ const Header = () => {
                               alt="account_icon"
                               className="align-self-center"
                             />
+                             {checkPermission && (
+                              <i onClick={() => getAdmin()} className="fa fa-cog" aria-hidden="true"  title="Truy cập vào quản trị viên"></i>
+                            )}
                             <span className='d-none d-xl-block mt-1'>{user ? user.fullName : 'Tài khoản'}</span>
+                           
                           </a>
                           {user && (
-                            <button onClick={logout} className="logout-button">Đăng xuất
+                            <button onClick={() => getLogout()} className="logout-button">Đăng xuất
                             </button>
                           )}
                         </div>

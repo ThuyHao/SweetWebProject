@@ -155,10 +155,10 @@ const AddtoCart = ({ product }) => {
                     </span>
                 </div>
                 <div className="price-box">
-                    <span className="special-price"><span className="price product-price">{parseInt(oldListPrice).toLocaleString('it-IT')}₫</span>
+                    <span className="special-price"><span className="price product-price">{parseInt(oldDiscountPrice).toLocaleString('it-IT')}₫</span>
                     </span>
                     <span className="old-price">
-                        <del className="product-price-old sale">{parseInt(oldDiscountPrice).toLocaleString('it-IT')}₫</del>
+                        <del className="product-price-old sale">{parseInt(oldListPrice).toLocaleString('it-IT')}₫</del>
                     </span>
 
                     <div className="label_product">

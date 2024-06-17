@@ -53,7 +53,7 @@ const CartPage = () => {
    }, [token, updateCart]);
 
    const deleteCartItem = (cartItemId) => {
-      axios.delete(`${REST_API_BASE_URL}/carts/remove-item/${cartItemId}`, {
+      axios.delete(`http://localhost:8080/sugarnest/v0.1/carts/remove-item/${cartItemId}`, {
          headers: {
             "Authorization": `Bearer ${token}`
          }
@@ -66,33 +66,35 @@ const CartPage = () => {
          });
    };
 
-   const increaseQuantity = (cartItemId) => {
-      axios.put(`${REST_API_BASE_URL}/carts/increase-quantity/${cartItemId}`, {
-         headers: {
-            "Authorization": `Bearer ${token}`
-         }
-      })
-         .then(response => {
-            updateCart(response.data.result);
-         })
-         .catch(error => {
-            console.error("There was an error increasing the item quantity:", error);
-         });
-   };
-
-   const decreaseQuantity = (cartItemId) => {   
-      axios.put(`${REST_API_BASE_URL}/carts/decrease-quantity/${cartItemId}`, {
-         headers: {
-            "Authorization": `Bearer ${token}`
-         }
-      })
-         .then(response => {
-            updateCart(response.data.result);
-         })
-         .catch(error => {
-            console.error("There was an error decreasing the item quantity:", error);
-         });
-   };
+   // Hàm tăng số lượng sản phẩm trong giỏ hàng
+const increaseQuantity = (cartItemId) => {
+   axios.put(`${REST_API_BASE_URL}/carts/increase-quantity/${cartItemId}`, {}, {
+     headers: {
+       "Authorization": `Bearer ${token}`
+     }
+   })
+   .then(response => {
+     updateCart(response.data.result);
+   })
+   .catch(error => {
+     console.error("There was an error increasing the item quantity:", error);
+   });
+ };
+ 
+ // Hàm giảm số lượng sản phẩm trong giỏ hàng
+ const decreaseQuantity = (cartItemId) => {   
+   axios.put(`${REST_API_BASE_URL}/carts/decrease-quantity/${cartItemId}`, {}, {
+     headers: {
+       "Authorization": `Bearer ${token}`
+     }
+   })
+   .then(response => {
+     updateCart(response.data.result);
+   })
+   .catch(error => {
+     console.error("There was an error decreasing the item quantity:", error);
+   });
+ };
 
    const handleCheckout = () => {
       const address = document.getElementById('address').value;
@@ -100,7 +102,7 @@ const CartPage = () => {
       const note = document.getElementById('note').value;
 
 
-      if (!address || !deliveryAt || !note) {
+      if (!address || !deliveryAt) {
          Swal.fire({
             icon: 'error',
             title: 'Chưa đủ thông tin',
@@ -112,7 +114,7 @@ const CartPage = () => {
       const orderData = {
          address: address,
          deliveryAt: deliveryAt,
-         note: note,
+         note: note || '',
          sale: ''
       };
 

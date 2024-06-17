@@ -3,6 +3,7 @@ package site.sugarnest.backend.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import site.sugarnest.backend.dto.dto.OrderStatus;
 import site.sugarnest.backend.dto.request.OrderRequest;
 import site.sugarnest.backend.dto.response.ApiResponse;
 import site.sugarnest.backend.dto.response.OrderResponse;
@@ -45,10 +46,29 @@ public class OrderController {
                 .build();
     }
 
-    @PutMapping("{orderId}/status")
+    @GetMapping("/{orderId}")
+    @PreAuthorize("hasAuthority('ORDERS_GET')")
+    public ApiResponse<OrderResponse> getOrderById(@PathVariable Integer orderId) {
+        OrderResponse orderResponse = iorderService.getOrderById(orderId);
+        return ApiResponse.<OrderResponse>builder()
+                .code(200)
+                .result(orderResponse)
+                .build();
+    }
+
+    @PutMapping("/update-status/{orderId}")
     @PreAuthorize("hasAuthority('ORDERS_PUT')")
-    public ApiResponse<String> updateOrderStatus(@PathVariable Integer orderId, @RequestBody String status) {
-        iorderService.updateOrderStatus(orderId, status);
+    public ApiResponse<String> updateOrderStatus(@PathVariable Integer orderId, @RequestBody OrderStatus orderStatus) {
+        iorderService.updateOrderStatus(orderId, orderStatus.getStatus());
+        return ApiResponse.<String>builder()
+                .code(200)
+                .message("Success")
+                .build();
+    }
+
+    @PutMapping("/cancel/{orderId}")
+    public ApiResponse<String> cancelOrder(@PathVariable Integer orderId) {
+        iorderService.cancelOrder(orderId);
         return ApiResponse.<String>builder()
                 .code(200)
                 .message("Success")

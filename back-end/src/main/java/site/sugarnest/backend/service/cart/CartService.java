@@ -20,23 +20,22 @@ import java.util.Optional;
 public class CartService {
 
     @Autowired
-    private  ICartRepository cartRepository;
+    private ICartRepository cartRepository;
 
     @Autowired
-    private  IProductRepository productRepository;
+    private IProductRepository productRepository;
 
     @Autowired
-    private  ICartItemRepository cartItemRepository;
+    private ICartItemRepository cartItemRepository;
 
     @Autowired
-    private  IAccountRepository accountRepository;
+    private IAccountRepository accountRepository;
 
     @Autowired
-    private  ICartMapper cartMapper;
+    private ICartMapper cartMapper;
 
     @Autowired
-    private  ISizeColorProductRepository sizeColorProductRepository;
-
+    private ISizeColorProductRepository sizeColorProductRepository;
 
     @Transactional
     public CartItemResponse addItemToCart(CartItemRequest cartItemRequest) {
@@ -58,8 +57,7 @@ public class CartService {
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
         SizeColorProductEntity sizeColorProduct = sizeColorProductRepository.findByProductEntityAndSizeAndColor(
-                        product, cartItemRequest.getProductSize(), cartItemRequest.getProductColor())
-                .orElseThrow(() -> new AppException(ErrorCode.SIZE_COLOR_PRODUCT_NOT_FOUND));
+                        product, cartItemRequest.getProductSize(), cartItemRequest.getProductColor());
 
         Optional<CartItemEntity> existingCartItemOpt = cart.getCartItems().stream()
                 .filter(item -> item.getProductEntity().equals(product) &&
@@ -131,8 +129,9 @@ public class CartService {
         CartItemEntity cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
 
         cartItem.setQuantity(cartItem.getQuantity() + 1);
-        cartItem.setPrice(cartItem.getProductEntity().getSizeColorProductsEntity().get(1).getDiscountPrice() * cartItem.getQuantity());
-
+        SizeColorProductEntity sizeColorProduct = sizeColorProductRepository.findByProductEntityAndSizeAndColor(
+                cartItem.getProductEntity(), cartItem.getProductSize(), cartItem.getProductColor());
+        cartItem.setPrice(sizeColorProduct.getDiscountPrice() * cartItem.getQuantity());
         cartItemRepository.save(cartItem);
         cart.setUpdatedAt(new Date());
         double totalPrice = cart.getCartItems().stream()
@@ -156,7 +155,9 @@ public class CartService {
             cartItemRepository.delete(cartItem);
         } else {
             cartItem.setQuantity(newQuantity);
-            cartItem.setPrice(cartItem.getProductEntity().getSizeColorProductsEntity().get(1).getDiscountPrice() * cartItem.getQuantity());
+            SizeColorProductEntity sizeColorProduct = sizeColorProductRepository.findByProductEntityAndSizeAndColor(
+                    cartItem.getProductEntity(), cartItem.getProductSize(), cartItem.getProductColor());
+            cartItem.setPrice(sizeColorProduct.getDiscountPrice() * cartItem.getQuantity());
             cartItemRepository.save(cartItem);
         }
 

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import site.sugarnest.backend.constant.PredefinedPermission;
 import site.sugarnest.backend.dto.dto.PasswordChangeRequest;
 import site.sugarnest.backend.dto.request.EmailExistResquest;
+import site.sugarnest.backend.dto.request.PasswordResetRequest;
 import site.sugarnest.backend.dto.response.ApiResponse;
 import site.sugarnest.backend.dto.request.AccountRequest;
 import site.sugarnest.backend.dto.response.AccountResponse;
@@ -53,6 +54,15 @@ public class AccountController {
     @PutMapping("edit/password")
     public ApiResponse<String> editMyPassword(@RequestBody PasswordChangeRequest passwordChangeRequest) {
         iAccountService.editMyPassword(passwordChangeRequest);
+        return ApiResponse.<String>builder()
+                .code(200)
+                .message("Success")
+                .build();
+    }
+
+    @PutMapping("/resetPassword")
+    public ApiResponse<String> resetPassword(@RequestBody PasswordResetRequest passwordResetRequest) {
+        iAccountService.resetPassword(passwordResetRequest.getToken(), passwordResetRequest.getNewPassword());
         return ApiResponse.<String>builder()
                 .code(200)
                 .message("Success")

@@ -70,7 +70,6 @@ public class OrderService implements IOrderService {
 
     private OrderEntity getOrderEntity(OrderRequest orderRequest, CartEntity cart) {
         OrderEntity order = new OrderEntity();
-
         order.setAddress(orderRequest.getAddress());
         order.setDeliveryAt(orderRequest.getDeliveryAt());
         order.setNote(orderRequest.getNote());
@@ -95,7 +94,7 @@ public class OrderService implements IOrderService {
         }
         return orderResponseListlist;
     }
-
+  
     @Override
     public List<OrderResponse> getOrdersByAdmin() {
         List<OrderEntity> orderEntitieslist = iorderRepository.findAll();
@@ -108,12 +107,34 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    public OrderResponse getOrderById(Integer orderId) {
+        Optional<OrderEntity> orderEntity = iorderRepository.findById(orderId);
+        if (orderEntity.isPresent()) {
+            OrderEntity order = orderEntity.get();
+            return orderMapper.toOrderEntity(order);
+        }
+        return null;
+    }
+
+    @Override
     public void updateOrderStatus(Integer orderId, String status) {
         Optional<OrderEntity> orderEntity = iorderRepository.findById(orderId);
         if (orderEntity.isPresent()) {
             OrderEntity order = orderEntity.get();
             order.setStatus(status);
             iorderRepository.save(order);
+        }
+    }
+
+  @Override
+    public void cancelOrder(Integer orderId) {
+        AccountEntity accountEntity = iaccountService.getAccount();
+        List<OrderEntity> orderEntitieslist = iorderRepository.findByAccountEntity(accountEntity);
+        for (OrderEntity order : orderEntitieslist) {
+            if (order.getId().equals(orderId)&&order.getStatus().equals("Chờ xác nhận")){
+                order.setStatus("Đã hủy");
+                iorderRepository.save(order);
+            }
         }
     }
 }
