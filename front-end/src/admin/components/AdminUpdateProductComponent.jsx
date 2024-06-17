@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import AppTitleComponent from './AppTitleComponent';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { REST_API_BASE_URL } from '../service/AdminService';
+import { IMAGE_BASE_URL, REST_API_BASE_URL } from '../service/AdminService';
 
 const AdminUpdateProductComponent = () => {
     const navigate = useNavigate();
@@ -606,7 +606,7 @@ const AdminUpdateProductComponent = () => {
                                                     width={400}
                                                     alt="Thumb image"
                                                     id="thumbimage"
-                                                    src={typeof mainImage === 'string' ? mainImage : URL.createObjectURL(mainImage)}
+                                                    src={`${IMAGE_BASE_URL}`+mainImage}
                                                 />
                                                 <button
                                                     type="button"
@@ -641,7 +641,7 @@ const AdminUpdateProductComponent = () => {
                                                     height={100}
                                                     width={100}
                                                     alt="Thumb image"
-                                                    src={typeof image === 'string' ? image : URL.createObjectURL(image)}
+                                                    src={`${IMAGE_BASE_URL}`+image}
                                                 />
                                                 <button
                                                     type="button"
@@ -667,9 +667,9 @@ const AdminUpdateProductComponent = () => {
                                 <button className="btn btn-save" type="sumit">
                                     Lưu lại
                                 </button>
-                                <a style={{ marginLeft: 5 }} className="btn btn-cancel" onClick={getProductManager}>
+                                <button style={{ marginLeft: 5 }} className="btn btn-cancel" onClick={getProductManager}>
                                     Hủy bỏ
-                                </a>
+                                </button>
                             </form>
                         </div>
 

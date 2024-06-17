@@ -95,4 +95,25 @@ public class OrderService implements IOrderService {
         }
         return orderResponseListlist;
     }
+
+    @Override
+    public List<OrderResponse> getOrdersByAdmin() {
+        List<OrderEntity> orderEntitieslist = iorderRepository.findAll();
+        List<OrderResponse> orderResponseListlist = new ArrayList<>();
+        for (OrderEntity order : orderEntitieslist) {
+            OrderResponse orderResponse = orderMapper.toOrderEntity(order);
+            orderResponseListlist.add(orderResponse);
+        }
+        return orderResponseListlist;
+    }
+
+    @Override
+    public void updateOrderStatus(Integer orderId, String status) {
+        Optional<OrderEntity> orderEntity = iorderRepository.findById(orderId);
+        if (orderEntity.isPresent()) {
+            OrderEntity order = orderEntity.get();
+            order.setStatus(status);
+            iorderRepository.save(order);
+        }
+    }
 }

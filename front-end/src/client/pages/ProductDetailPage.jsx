@@ -1,22 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getProduct } from '../services/ProductService.js';
+import { useParams, useNavigate } from 'react-router-dom';
+import { IMAGE_BASE_URL, getProduct, getRecommendedProducts } from '../services/ProductService.js';
 import ProductSlider from '../components/ProductSlider.jsx';
 import Breadcrumb from '../components/Breadcrumb.jsx';
 import Blog from '../components/Blog.jsx';
 import CommentComponent from '../components/CommentComponent.jsx';
 import { initFacebookSDK } from '../util/uitl.js';
+import ItemProductComponent from '../components/ItemProduct.jsx';
 
 const ProductDetailComponent = () => {
     window.scrollTo(0, 0);
 
     const [product, setProduct] = useState(null);
+    const [recommendedProducts, setRecommendedProducts] = useState([]);
+    const navigate = useNavigate();
     const { id } = useParams();
     useEffect(() => {
         if (id) {
             getProduct(id).then((res) => {
                 setProduct(res.data.result);
             }).catch((err) => {
+                console.log(err);
+            });
+
+            getRecommendedProducts(1, 8).then((res) => {
+                setRecommendedProducts(res.data.result);
+            }
+            ).catch((err) => {
                 console.log(err);
             });
         }
@@ -52,10 +62,41 @@ const ProductDetailComponent = () => {
         return <div>Loading...</div>;
     }
 
+
     return (
         <div>
             <Breadcrumb />
             <ProductSlider product={product} />
+            <section className="section sec_tab mt-0 mb-lg-4 mb-3 mb-sm-0">
+                <div className="container">
+                    <div className="row ml-sm-0 mr-sm-0">
+                        <div className="col-12 pl-0 pr-0">
+                            <div className="related-product">
+                                <div className="title_module heading-bar d-flex justify-content-between align-items-center" style={{ backgroundColor: "#2d2d2d" }}>
+                                    <h2 className="bf_flower heading-bar__title" tyle={{ color: "#ffffff" }}>
+                                        <a href="/banh-kem-tiramisu" title="SẢN PHẨM THƯỜNG MUA CÙNG">
+                                            SẢN PHẨM THƯỜNG MUA CÙNG
+                                        </a>
+                                    </h2>
+                                </div>
+                                <div id="sidebarproduct" className="card border-0 px-2 pt-1 pb-2">
+                                    <div className="section_prd_feature section products product_related slick-product slickrelated row slick-initialized slick-slider">
+                                        <div className="row one-row">
+                                            {recommendedProducts.map((product) => (
+                                                <ItemProductComponent key={product.id} product={product} />
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <a onClick={() => navigate(`/products/${product.categoryEntity.nameCategory}`)} className="seemore btn btn-main btn-pill mx-auto mt-3" style={{}}>
+                                        Xem tất cả
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <section className="section sec_tab">
                 <div className="container">
                     <div className="row mr-sm-0 ml-sm-0 align-items-start">
@@ -72,8 +113,8 @@ const ProductDetailComponent = () => {
                                     <p>{product.description}</p>
                                     <p>&nbsp;</p>
                                     <p style={{ textAlign: 'center' }}>
-                                        <img loading="lazy" alt="Bánh Mousse Chocolate 3 Lớp | TRIPLE CHOCOLATE MOUSSE CAKE - YouTube"
-                                            src={product.imageProductEntity.length > 0 ? product.imageProductEntity[0].image : ""} />
+                                        <img loading="lazy" alt={product.nameProduct}
+                                            src={product.imageProductEntity.length > 0 ? `${IMAGE_BASE_URL}` + product.imageProductEntity[0].image : ""} />
                                     </p>
                                     <p><span style={{ fontSize: '16px' }}><strong>HƯỚNG DẪN ĐẶT HÀNG ONLINE</strong></span></p>
                                     <p style={{ textAlign: 'center' }}>

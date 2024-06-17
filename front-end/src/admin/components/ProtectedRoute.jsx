@@ -9,7 +9,7 @@ const ProtectedRoute = ({ requiredPermission }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
   if (!userHasPermission) {
-    return <Navigate to="/admin/unauthorized" state={{ from: location }} replace />;
+    return <Navigate to="/admin/error" state={{ from: location }} replace />;
   }
 
   return <Outlet />;

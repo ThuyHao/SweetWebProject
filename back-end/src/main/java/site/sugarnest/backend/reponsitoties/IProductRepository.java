@@ -21,4 +21,17 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long>, 
 
     @Query("SELECT p FROM ProductEntity p WHERE p.isDelete = :isDelete")
     List<ProductEntity> getProductByAdmin(@Param("isDelete") String isDelete);
+
+    @Query("SELECT od.productEntity FROM OrderDetailEntity od GROUP BY od.productEntity ORDER BY SUM(od.quantity) DESC")
+    List<ProductEntity> findTopSellingProducts(Pageable pageable);
+
+    @Query("SELECT p FROM ProductEntity p ORDER BY p.id DESC")
+    List<ProductEntity> findLatestProducts(Pageable pageable);
+
+    @Query("SELECT p FROM ProductEntity p ORDER BY p.views DESC")
+    List<ProductEntity> findMostViewedProducts(Pageable pageable);
+
+    @Query("SELECT p FROM ProductEntity p WHERE p.categoryEntity.id = :categoryId ORDER BY p.views DESC")
+    List<ProductEntity> findRecommendedProducts(@Param("categoryId") Long categoryId, Pageable pageable);
+
 }
