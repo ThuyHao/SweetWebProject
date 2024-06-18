@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import MyPayPalButton from '../util/MyPayPalButton.jsx';
-import { IMAGE_BASE_URL, REST_API_BASE_URL } from '../services/ProductService.js';
+import { REST_API_BASE_URL } from '../services/ProductService.js';
 import Swal from 'sweetalert2';
 
 
@@ -67,34 +67,38 @@ const CartPage = () => {
    };
 
    // Hàm tăng số lượng sản phẩm trong giỏ hàng
-const increaseQuantity = (cartItemId) => {
-   axios.put(`${REST_API_BASE_URL}/carts/increase-quantity/${cartItemId}`, {}, {
-     headers: {
-       "Authorization": `Bearer ${token}`
-     }
-   })
-   .then(response => {
-     updateCart(response.data.result);
-   })
-   .catch(error => {
-     console.error("There was an error increasing the item quantity:", error);
-   });
- };
- 
- // Hàm giảm số lượng sản phẩm trong giỏ hàng
- const decreaseQuantity = (cartItemId) => {   
-   axios.put(`${REST_API_BASE_URL}/carts/decrease-quantity/${cartItemId}`, {}, {
-     headers: {
-       "Authorization": `Bearer ${token}`
-     }
-   })
-   .then(response => {
-     updateCart(response.data.result);
-   })
-   .catch(error => {
-     console.error("There was an error decreasing the item quantity:", error);
-   });
- };
+   const increaseQuantity = (cartItemId) => {
+      axios.put(`${REST_API_BASE_URL}/carts/increase-quantity/${cartItemId}`, {}, {
+         headers: {
+            "Authorization": `Bearer ${token}`
+         }
+      })
+         .then(response => {
+            updateCart(response.data.result);
+         })
+         .catch(error => {
+           Swal.fire({
+               icon: 'error',
+               title: 'Số lượng sản phẩm đã hết',
+               text: 'Số lượng sản phẩm trong kho không đủ.',
+           });
+         });
+   };
+
+   // Hàm giảm số lượng sản phẩm trong giỏ hàng
+   const decreaseQuantity = (cartItemId) => {
+      axios.put(`${REST_API_BASE_URL}/carts/decrease-quantity/${cartItemId}`, {}, {
+         headers: {
+            "Authorization": `Bearer ${token}`
+         }
+      })
+         .then(response => {
+            updateCart(response.data.result);
+         })
+         .catch(error => {
+            console.error("There was an error decreasing the item quantity:", error);
+         });
+   };
 
    const handleCheckout = () => {
       const address = document.getElementById('address').value;
@@ -170,7 +174,7 @@ const increaseQuantity = (cartItemId) => {
                                     </div>
                                     <div className="item-product-cart-mobile">
                                        <a onClick={() => getProduct(item.productEntity.id)} className="product-images1  pos-relative embed-responsive embed-responsive-1by1" title={item.productEntity.nameProduct}>
-                                          <img className="img-fluid" src={`${IMAGE_BASE_URL}`+item.productEntity.imageProductEntity[0].image} alt={item.productEntity.nameProduct} />
+                                          <img className="img-fluid" src={item.productEntity.imageProductEntity[0].image} alt={item.productEntity.nameProduct} />
                                        </a>
                                     </div>
                                     <div className="product-cart-infor">
@@ -287,7 +291,7 @@ const increaseQuantity = (cartItemId) => {
                                  Phương thức thanh toán
                               </span>
                               <div className="trustbadge">
-                                 <a href="/public" target="_blank" title="Phương thức thanh toán">
+                                 <a target="_blank" title="Phương thức thanh toán">
                                     <img className=" img-fluid" src="//bizweb.dktcdn.net/100/419/628/themes/897067/assets/footer_trustbadge.jpg?1704435927037" alt="" width="246" height="53" />
                                  </a>
                               </div>
@@ -325,7 +329,7 @@ const increaseQuantity = (cartItemId) => {
                         Hổng có gì trong giỏ hết
                      </h3>
                      <p>	Về trang cửa hàng để chọn mua sản phẩm bạn nhé!!</p>
-                     <a href="/public" title="Mua sắm ngay" className="btn btn-main">Mua sắm ngay</a>
+                     <a title="Mua sắm ngay" className="btn btn-main">Mua sắm ngay</a>
                   </div>
                </div>
             </div>

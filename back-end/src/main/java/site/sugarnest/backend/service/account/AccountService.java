@@ -2,6 +2,8 @@ package site.sugarnest.backend.service.account;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -155,7 +157,6 @@ public class AccountService implements IAccountService {
     }
 
 
-    //    @PreAuthorize("hasAuthority('ACCOUNTS_GET')")
     @Override
     public List<AccountResponse> findAll() {
         List<AccountEntity> accountEntities = iAccountRepository.findAll();
@@ -199,5 +200,17 @@ public class AccountService implements IAccountService {
         var context = SecurityContextHolder.getContext();
         String accountName = context.getAuthentication().getName();
         return iAccountRepository.findByAccountName(accountName).orElseThrow(() -> new RuntimeException("Account not found"));
+    }
+    @Override
+    public Long totalAccount() {
+        return iAccountRepository.count();
+    }
+
+    @Override
+    public List<AccountResponse> getNewAccounts(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        List<AccountEntity> accountEntities = iAccountRepository.findNewAccounts(pageable);
+        accountEntities.removeIf(accountEntity -> accountEntity.getAccountName().equals("admin"));
+        return accountEntities.stream().map(iAccountMapper::mapToAccountDto).toList();
     }
 }

@@ -123,4 +123,24 @@ public class AccountController {
                 .build();
     }
 
+    @GetMapping("/new-accounts/{limit}")
+    @PreAuthorize("hasAuthority('ACCOUNTS_GET')")
+    public ApiResponse<List<AccountResponse>> getNewAccounts(@PathVariable int limit) {
+        return ApiResponse.<List<AccountResponse>>builder()
+                .code(200)
+                .message("Success")
+                .result(iAccountService.getNewAccounts(limit))
+                .build();
+    }
+
+    @GetMapping("/total")
+    @PreAuthorize("hasAuthority('ACCOUNTS_GET')")
+    public ApiResponse<Long> getTotalAccount() {
+        return ApiResponse.<Long>builder()
+                .code(200)
+                .message("Success")
+                .result(iAccountService.totalAccount())
+                .build();
+    }
+
 }

@@ -127,10 +127,12 @@ public class CartService {
         AccountEntity account = accountRepository.findByAccountName(accountName).orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXITED));
         CartEntity cart = cartRepository.findByAccountEntity(account).orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
         CartItemEntity cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
-
-        cartItem.setQuantity(cartItem.getQuantity() + 1);
         SizeColorProductEntity sizeColorProduct = sizeColorProductRepository.findByProductEntityAndSizeAndColor(
                 cartItem.getProductEntity(), cartItem.getProductSize(), cartItem.getProductColor());
+        if (sizeColorProduct != null && cartItem.getQuantity()>sizeColorProduct.getInventoryEntity().getQuantity()) {
+            throw new AppException(ErrorCode.SIZE_COLOR_PRODUCT_NOT_FOUND);
+        }
+        cartItem.setQuantity(cartItem.getQuantity() + 1);
         cartItem.setPrice(sizeColorProduct.getDiscountPrice() * cartItem.getQuantity());
         cartItemRepository.save(cartItem);
         cart.setUpdatedAt(new Date());

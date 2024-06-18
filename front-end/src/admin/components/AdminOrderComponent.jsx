@@ -256,15 +256,6 @@ const AdminOrderComponent = () => {
                     >
                         Chi tiết
                     </Button>
-
-                    <Button
-                        type="default"
-                        className='btn btn-success btn-sm'
-                        icon={<CheckOutlined />}
-                        onClick={() => showDetailModal(record.key)}
-                    >
-                        Duyệt
-                    </Button>
                 </Space>
             ),
         },

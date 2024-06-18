@@ -27,6 +27,7 @@ import ContactPage from './pages/ContactPage.jsx'
 import StoreAddress from './pages/StoreAddress.jsx'
 import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx'
 import ResetPasswordPage from './pages/ResetPasswordPage.jsx'
+import SearchResults from './components/SearchResults.jsx'
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
           <Route path='/reset-password' element={<ResetPasswordPage />} />
           <Route path="/products/:category?" element={<ListProductComponent />} />
           <Route path="/product/:id" element={<ProductComponent />} />
+          <Route path="/search/:search" element={<SearchResults />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/orders" element={<OrderHistoryPage />} />
           <Route path="/introduction" element={<IntroductionPage />} />

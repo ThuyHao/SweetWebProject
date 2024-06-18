@@ -76,7 +76,7 @@ const ForgotPasswordPage = () => {
                                             <button className="btn btn-style btn-recover btn-block" type="submit">
                                                 Lấy lại mật khẩu
                                             </button>
-                                            <a href="#" className="btn btn-style link btn-style-active" onClick={() => navigate('/login')}>
+                                            <a className="btn btn-style link btn-style-active" onClick={() => navigate('/login')}>
                                                 Quay lại
                                             </a>
                                         </div>

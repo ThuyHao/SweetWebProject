@@ -8,7 +8,9 @@ import site.sugarnest.backend.dto.request.OrderRequest;
 import site.sugarnest.backend.dto.response.ApiResponse;
 import site.sugarnest.backend.dto.response.OrderResponse;
 import site.sugarnest.backend.service.order.IOrderService;
+
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin("*")
 @RestController
@@ -75,4 +77,48 @@ public class OrderController {
                 .build();
     }
 
+
+    @GetMapping("total")
+    @PreAuthorize("hasAuthority('ORDERS_GET')")
+    public ApiResponse<Long> getTotalOrders() {
+        Long totalOrders = iorderService.getTotalOrders();
+        return ApiResponse.<Long>builder()
+                .code(200)
+                .result(totalOrders)
+                .build();
+    }
+
+    @GetMapping("total-amount")
+    @PreAuthorize("hasAuthority('ORDERS_GET')")
+    public ApiResponse<Double> getTotalAmount() {
+        Double totalAmount = iorderService.getTotalAmount();
+        return ApiResponse.<Double>builder()
+                .code(200)
+                .result(totalAmount)
+                .build();
+    }
+
+    @GetMapping("/revenue")
+    @PreAuthorize("hasAuthority('ORDERS_GET')")
+    public ApiResponse<Map<String, Double>> getRevenue(@RequestParam("startMonth") int startMonth,
+                                                       @RequestParam("startYear") int startYear,
+                                                       @RequestParam("endMonth") int endMonth,
+                                                       @RequestParam("endYear") int endYear) {
+        return ApiResponse.<Map<String, Double>>builder()
+                .code(200)
+                .result(iorderService.getMonthlyRevenue(startMonth, startYear, endMonth, endYear))
+                .build();
+
+    }
+
+    @GetMapping("/revenue-by-category")
+    @PreAuthorize("hasAuthority('ORDERS_GET')")
+    public ApiResponse<Map<String, Double>> getRevenueByCategoryForMonth(
+            @RequestParam("month") int month,
+            @RequestParam("year") int year) {
+        return ApiResponse.<Map<String, Double>>builder()
+                .code(200)
+                .result(iorderService.getRevenueByCategoryForMonth(month, year))
+                .build();
+    }
 }

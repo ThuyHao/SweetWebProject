@@ -1,5 +1,4 @@
 import React from 'react';
-import { IMAGE_BASE_URL } from '../service/AdminService';
 
 const DetailModalOrder = ({ order, onCancel }) => {
     if (!order) {
@@ -63,7 +62,7 @@ const DetailModalOrder = ({ order, onCancel }) => {
                       {item.productEntity.imageProductEntity.map((img, imgIndex) => (
                         <img
                           key={imgIndex}
-                          src={`${IMAGE_BASE_URL}`+ img.image}
+                          src={img.image}
                           alt={item.productEntity.nameProduct}
                           style={{ width: '50px', marginRight: '5px' }}
                         />

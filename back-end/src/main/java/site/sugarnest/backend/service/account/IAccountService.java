@@ -29,4 +29,7 @@ public interface IAccountService {
     void deleteAccount(Long id);
 
     AccountEntity getAccount();
+    Long totalAccount();
+    List<AccountResponse> getNewAccounts(int limit);
+
 }

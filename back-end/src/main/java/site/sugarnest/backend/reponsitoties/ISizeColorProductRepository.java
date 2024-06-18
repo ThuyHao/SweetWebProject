@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface ISizeColorProductRepository extends JpaRepository<SizeColorProductEntity, Long> {
     void deleteByProductEntity(ProductEntity productEntity);
     SizeColorProductEntity findByProductEntityAndSizeAndColor(ProductEntity product, String size, String color);
+
+    SizeColorProductEntity findByProductEntityIdAndSizeAndColor(Long productId, String size, String color);
 }
